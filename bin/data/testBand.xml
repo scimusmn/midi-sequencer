@@ -1,0 +1,60 @@
+<band>
+	<instrument name="washboard">
+		<strike beat="7" length="7"></strike>
+	</instrument>
+	<instrument name="clicker">
+		<strike beat="3" length="6"></strike>
+	</instrument>
+	<instrument name="cowbell">
+		<strike beat="7" length="6"></strike>
+	</instrument>
+	<instrument name="chime 1">
+		<strike beat="14" length="6"></strike>
+		<strike beat="2" length="6"></strike>
+	</instrument>
+	<instrument name="chime 2">
+		<strike beat="4" length="6"></strike>
+	</instrument>
+	<instrument name="chime 3">
+		<strike beat="9" length="6"></strike>
+		<strike beat="19" length="6"></strike>
+		<strike beat="3" length="6"></strike>
+	</instrument>
+	<instrument name="chime 4">
+		<strike beat="2" length="6"></strike>
+		<strike beat="8" length="3"></strike>
+	</instrument>
+	<instrument name="chime 5">
+		<strike beat="8" length="3"></strike>
+		<strike beat="2" length="6"></strike>
+		<strike beat="19" length="6"></strike>
+	</instrument>
+	<instrument name="cymbal">
+		<strike beat="13" length="6"></strike>
+	</instrument>
+	<instrument name="rainstick">
+		<strike beat="21" length="6"></strike>
+		<strike beat="2" length="6"></strike>
+	</instrument>
+	<instrument name="windchime 1">
+		<strike beat="4" length="8"></strike>
+	</instrument>
+	<instrument name="windchime 2">
+		<strike beat="13" length="6"></strike>
+		<strike beat="4" length="8"></strike>
+	</instrument>
+	<instrument name="flute 1"></instrument>
+	<instrument name="flute 2">
+		<strike beat="6" length="6"></strike>
+	</instrument>
+	<instrument name="flute 3">
+		<strike beat="13" length="3"></strike>
+	</instrument>
+	<instrument name="flute 4">
+		<strike beat="8" length="3"></strike>
+	</instrument>
+	<instrument name="flute 5">
+		<strike beat="18" length="5"></strike>
+	</instrument>
+	<instrument name="flute 6"></instrument>
+</band>
