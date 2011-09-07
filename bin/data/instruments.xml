@@ -1,5 +1,5 @@
 <band font="ArialNarrow.ttf" xmlns:blck="http://www.smm.org/">
-	<instrument name="washboard" color="0x0070A0">
+	<instrument name="Low C Chime" color="0x0070A0">
 		<note>60</note>
 		<channel>1</channel>
 		<repeat>true</repeat>
@@ -9,73 +9,73 @@
 			<dds>CLOSE</dds>
 		</dropdown>
 	</instrument>
-	<instrument name="clicker" color="0x0070A0">
+	<instrument name="D Chime" color="0x0070A0">
 		<note>61</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="cowbell" color="0xff70A0">
+	<instrument name="E Chime" color="0xff70A0">
 		<note>62</note>
 		<channel>0</channel>
 		<repeat>true</repeat>
 		<percussive>true</percussive>
 		<delay>1</delay>
 	</instrument>
-	<instrument name="chime 1" color="0x0070A0">
+	<instrument name="F Chime" color="0x0070A0">
 		<note>63</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
-	<instrument name="chime 2" color="0x0070A0">
-		<note>69</note>
+	<instrument name="G Chime" color="0x0070A0">
+		<note>64</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
-	<instrument name="chime 3" color="0x0070A0">
+	<instrument name="A Chime" color="0x0070A0">
 		<note>65</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
-	<instrument name="chime 4" color="0x0070A0">
+	<instrument name="B Chime" color="0x0070A0">
 		<note>66</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
-	<instrument name="chime 5" color="0x0070A0">
+	<instrument name="High C Chime" color="0x0070A0">
 		<note>67</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
-	<instrument name="cymbal" color="0x0070A0">
+	<instrument name="Wood Block" color="0x0070A0">
 		<note>68</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
-	<instrument name="rainstick" color="0x0070A0">
+	<instrument name="Cabasa" color="0x0070A0">
+		<note>69</note>
+		<channel>0</channel>
+	</instrument>
+	<instrument name="Rainstick" color="0x0070A0">
 		<note>70</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="windchime 1" color="0x0070A0">
+	<instrument name="Clicker" color="0x0070A0">
 		<note>71</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="windchime 2" color="0x0070A0">
+	<instrument name="Cymbal" color="0x0070A0">
 		<note>72</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="flute 1" color="0x0070A0">
+	<instrument name="flute 2" color="0x0070A0">
 		<note>73</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="flute 2" color="0x0070A0">
+	<instrument name="flute 3" color="0x0070A0">
 		<note>74</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="flute 3" color="0x0070A0">
-		<note>75</note>
-		<channel>0</channel>
-	</instrument>
 	<instrument name="flute 4" color="0x0070A0">
-		<note>76</note>
+		<note>75</note>
 		<channel>0</channel>
 	</instrument>
 	<instrument name="flute 5" color="0x0070A0">

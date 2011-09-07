@@ -100,9 +100,9 @@ void midiSequencer::saveSong(string filename)
 
 void midiSequencer::drawMark()
 {
-	ofSetColor(255, 0, 0);
+	ofSetColor(255, 255, 0);
 	ofTriangle(mark.x-mark.w/2, mark.y, mark.x+mark.w/2, mark.y, mark.x, mark.y+mark.h);
-	ofSetColor(255, 0, 0,128);
+	ofSetColor(255, 255, 0,128);
 	ofLine(mark.x, y, mark.x, ofGetHeight());
 }
 
@@ -122,9 +122,11 @@ void midiSequencer::drawDivs(bool full)
 #if F_YEAH_WOOD
 			if(j%2) ofSetColor(0x60,0x43,0x1B,64);
 			else ofSetColor(0x60,0x43,0x1B,128);
+      if(j==0) ofSetColor(0x60,0x43,0x1B,200);
 #else
 			if(j%2) ofSetColor(0x77,0x77,0,64);
 			else ofSetColor(0x66,0x66,0,128);
+      if(j==0) ofSetColor(128,128,128,200);
 #endif
 			ofLine(x+measureLength*i+measureLength*j/divsPerMeasure-bar.getScrollPosition(), \
 				   (full)?y:(abs(j-double(divsPerMeasure)/2)<=.5)?y+10:(j==0)?y+5:y+15,\
@@ -204,7 +206,7 @@ void midiSequencer::draw(int _x, int _y)
 	ofSetColor(0, 128, 200);
 	label.setMode(OF_FONT_LEFT);
 	int secs=metronome.getElapsed();
-	//display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), x+w/2+playBut.w/2+20, botY+(botH-display.h)/2);
+	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), x+w/2+playBut.w/2+20, botY+(botH-display.h)/2);
 }
 
 void midiSequencer::update()

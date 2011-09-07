@@ -378,7 +378,7 @@ void instrument::drawBackground()
 bool instrument::clickDown(int _x, int _y)
 {
 	bool ret=0;
-	if(!bHolding&&base.over(_x, _y)&&!bDefault){
+	if(!bHolding&&base.over(_x, _y-scrollY)&&!bDefault){
     cout << "Why are we here?" << endl;
 		blocks.push_back(dragBlock(base));
 		ret=1;

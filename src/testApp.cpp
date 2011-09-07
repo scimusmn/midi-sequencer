@@ -21,7 +21,7 @@ void testApp::setup(){
 	rolandSynth.openPort("decoder");
 	background.loadImage("images/background.jpg");
 	kb.setup(800, 4);
-	conductor.setup(10, 1, 100, ofGetWidth()-band.w); //26 seconds at 100 pixels per second
+	conductor.setup(10, 1, 100, ofGetWidth()-band.w); //10 seconds at 100 pixels per second
 	conductor.registerPlayback(&band);
   conductor.setTimeSignature(4);
 	test.setup(200, 6);
@@ -38,7 +38,7 @@ void testApp::update(){
 	
 	
 	//Network
-	for(int i = 0; i < TCP.getNumClients(); i++){
+	/*for(int i = 0; i < TCP.getNumClients(); i++){
 		TCP.send(i, "hello client - you are connected on port - "+ofToString(TCP.getClientPort(i)) );
 	}
 	
@@ -78,7 +78,7 @@ void testApp::update(){
 			}
 		}
 		
-	}
+	}*/
 }
 
 //--------------------------------------------------------------
@@ -118,7 +118,7 @@ void testApp::draw(){
 	ofSetColor(0xDDDDDD);
 	report.setMode(OF_FONT_CENTER);
 	report.setSize(40);
-	report.drawString("Drag blocks and press play to make a rhythm!", ofGetWidth()/2, 75-20);
+	report.drawString("Compose a song", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
 }
 
 //--------------------------------------------------------------
