@@ -44,7 +44,7 @@ void bandBar::setHeight(double hgt,double top, double bot)
 	xGap=bar.w+2;
 	yGap=20;
 	xBlockSpace=10;
-	yBlockSpace=5;
+	yBlockSpace=10;
 	numBins=1;
 	for (unsigned int i=0; i<instruments.size(); i++) {
 		binWidth=max(binWidth,instruments[i].w+xBlockSpace*2);
@@ -54,64 +54,10 @@ void bandBar::setHeight(double hgt,double top, double bot)
 	double fullSize=binHeight*instruments.size();
 	bar.setup(20, viewSize, OF_VERT);
 	bar.registerArea(viewSize,fullSize);
-}
-
-void bandBar::setup(xmlParse * config)
-{
-	clearBut.setup("clear blocks","fonts/Arial.ttf",24);
-	clearBut.setAvailable(true);
-	sideBarBack.loadImage("images/sidebar.jpg");
-	string font=config->prop;
-	for (unsigned int i=0; i<config->size(); i++) {
-		xmlParse xml=config->child[i];
-		if (xml.label=="instrument") {
-			string col=xml.prop;
-			string title=xml.name;
-			long color=strtol(col.c_str(),NULL,0);
-			int curInst=instruments.size();
-			unsigned char note, channel;
-			bool repeat=false;
-			bool percussive=false;
-			double delay=0;
-			map<string,int> list;
-			list["note"]=0;
-			list["channel"]=1;
-			list["repeat"]=2;
-			list["delay"]=3;
-			list["dropdown"]=4;
-			list["percussive"]=5;
-			for(int j=0;j<xml.size();j++){
-				string * node=xml.getSubnode(j);
-				switch (list.find(node[0])->second) {
-					case 0:
-						note=ofToInt(node[1]);
-						break;
-					case 1:
-						channel=ofToInt(node[1]);
-						break;
-					case 2:
-						repeat=true;
-						break;
-					case 3:
-						delay=ofToFloat(node[1]);
-						break;
-					case 4:
-						//ddGroup.push_back(ofDropDown(&xml->child[i]));
-						break;
-					case 5:
-						percussive=true;
-						break;
-					default:
-						break;
-				}
-			}
-			addInstrument(title,channel,note,repeat);
-			instruments[curInst].setPercussive(percussive);
-			instruments[curInst].setColor(color);
-			instruments[curInst].setDelay(delay);
-		}
-	}
-	setHeight();
+  for (unsigned int i=0; i<instruments.size(); i++) {
+    instruments[i].fullWidth=w;
+  }
+  
 }
 
 void bandBar::setup(ofXML & xml)
@@ -122,6 +68,8 @@ void bandBar::setup(ofXML & xml)
   xml.setCurrentTag(";band");
 	string font=xml.getCurrentTag().getAttribute("font");
 	ofTag & tag=xml.getCurrentTag();
+  bHolding=false;
+  double maxWid=0;
 	for (unsigned int i=0; i<tag.size(); i++) {
 		if (tag[i].getLabel()=="instrument") {
 			string col=tag[i].getAttribute("color");
@@ -168,6 +116,7 @@ void bandBar::setup(ofXML & xml)
 			instruments[curInst].setPercussive(percussive);
 			instruments[curInst].setColor(color);
 			instruments[curInst].setDelay(delay);
+      //maxWid=max(maxWid,instruments[curInst].w);
 		}
 	}
 	setHeight();
@@ -189,7 +138,11 @@ void bandBar::drawBackground()
 		if(i%2) ofSetColor(0x66,0x66,0x66,128);
 		else ofSetColor(0x44,0x44,0x44,128);
 #endif
+    //ofSetColor(instruments[i].getColor()-.3*255);
+    ofColor k=instruments[i].getColor();
 		ofRect(instruments[i].x, instruments[i].y-3+instruments[i].yoff, ofGetWidth(), instruments[i].h+6);
+    ofSetColor(k.r, k.g, k.b,64);
+    ofRect(instruments[i].x, instruments[i].y+instruments[i].yoff+instruments[i].h/2-5, ofGetWidth(), 10);
 	}
 }
 
@@ -343,9 +296,7 @@ void bandBar::stopAll()
 void bandBar::checkActives(double xPos)
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		if(instruments[i].active(xPos))
-			instruments[i].play();
-		//else if(!instruments[i].active(xPos)&&instruments[i].isPlaying()) instruments[i].stop();
+		instruments[i].active(xPos);
 	}
 }
 

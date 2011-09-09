@@ -20,6 +20,7 @@
 
 class soundBlock : public ofInterObj{
 protected:
+  bool bPercussive;
 public:
 	string title;
 	ofColor color;
@@ -69,8 +70,10 @@ public:
 
 class dragBlock : public soundBlock {
 protected:
-	ofButton sizeAdj;
+	ofButton leftAdj;
+  ofButton rightAdj;
 	bool bResizing;
+  bool bLResize;
 	bool bActive;
 	bool bJustActive;
 	double aPos;
@@ -95,6 +98,8 @@ protected:
 	int lastBlock;
 	bool bDefault;
 	bool bPercussive;
+  int fullWidth;
+  unsigned long startPlay;
 public:
   vector<dragBlock> blocks;
 	int point;
@@ -121,13 +126,14 @@ public:
 	void mouseMotion(int _x, int _y);
 	void setMidi(unsigned char chan, unsigned char nt, bool repeat=false);
 	void setColor(unsigned long hex);
+  ofColor getColor(){ return base.color; }
 	void setDelay(double dly);
 	void setup(string objName, unsigned char chan, unsigned char nt, bool repeat);
 	void sendMidiMessage(vector<unsigned char> newMessage);
 	void play(unsigned char vel);
 	bool isPlaying(){ return base.isPlaying(); }
 	bool isHeld(){ return bHolding; }
-	void setPercussive(bool perc){bPercussive=perc;}
+	void setPercussive(bool perc);
 	void play();
 	void stop();
 	bool active(double pos);

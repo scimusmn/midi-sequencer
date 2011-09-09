@@ -19,6 +19,7 @@ void midiConductor::setup(double totalTime, double pixPerSecond)
 {
 	setPlaybackTime(totalTime);
 	pixelsPerSecond(pixPerSecond);
+  bPlaying=false;
 }
 
 void midiConductor::setPlaybackTime(double seconds)

@@ -21,39 +21,38 @@ soundBlock::~soundBlock()
 
 soundBlock::soundBlock(const soundBlock & t):ofInterObj(t.x, t.y, t.w, t.h)
 {
-	title=t.title;
-	header.loadFont("Arial.ttf");
-	int pt=t.header.point;
-	header.setSize(pt);
-	bPressed=t.bPressed;
-	color=t.color;
-	xDisp=t.xDisp;
-	yDisp=t.yDisp;
+	*(this)=t;
 }
 
 void soundBlock::operator=(const soundBlock & t)
 {
 	title=t.title;
 	cSetup(t.x, t.y, t.w, t.h);
-	header.loadFont("Arial.ttf");
+	header.loadFont("Arial.ttf"); 
+  header.setMode(OF_FONT_TOP);
+  header.setMode(OF_FONT_CENTER);
 	int pt=t.header.point;
 	header.setSize(pt);
 	bPressed=t.bPressed;
 	color=t.color;
-	xDisp=0;
-	yDisp=0;
+	relPos.x=0;
+	relPos.y=0;
+  bPercussive=t.bPercussive;
 }
 
 void soundBlock::setup(string objName)
 {
 	title=objName;
 	header.loadFont("Arial.ttf");
+  header.setMode(OF_FONT_TOP);
+  header.setMode(OF_FONT_CENTER);
 	header.setSize(24);
 	color.set(0, 112, 187);
 	w=max(float(150), header.stringWidth(title)+20);
-	h=max(float(20), header.stringHeight(title)+10);
-	xDisp=0;
-	yDisp=0;
+	h=max(float(20), header.stringHeight("Kjg")+10);
+	relPos.x=0;
+	relPos.y=0;
+  bPercussive=false;
 }
 
 void soundBlock::draw(int _x, int _y)
@@ -66,27 +65,27 @@ void soundBlock::draw(int _x, int _y)
 void soundBlock::draw()
 {
 	ofSetColor((bPressed)?color+.2*255:color);
-	ofRoundBox(x+xDisp, y+yDisp, w, h, h/8., .2);
+	ofRoundBox(x+relPos.x, y+relPos.y, w, h, h/8., .2);
 	ofSetColor(0, 0, 0);
 	ofEnableSmoothing();
-	ofRoundShape(x+xDisp, y+yDisp, w, h, h/8., false);
+	ofRoundShape(x+relPos.x, y+relPos.y, w, h, h/8., false);
 	ofDisableSmoothing();
 	ofSetColor(255, 255, 255);
-	if(header.stringWidth(title)<w){
+	if(header.stringWidth(title)<=w-20){
 		double scale=header.stringHeight(title);
-		header.drawString(title, x+xDisp+5, y+yDisp+header.stringHeight("K")+(h-header.stringHeight(title))/2);
+		header.drawString(title, x+relPos.x+w/2, y+relPos.y+(h-header.stringHeight("Kjg"))/2);
 	}
 }
 
 void soundBlock::update(double x_dis, double y_dis)
 {
-	xDisp=x_dis;
-	yDisp=y_dis;
+	relPos.x=x_dis;
+	relPos.y=y_dis;
 }
 
 bool soundBlock::clickDown(int _x, int _y)
 {
-	if(over(_x-xDisp, _y-yDisp)){
+	if(over(_x-relPos.x, _y-relPos.y)){
 		bPressed=true;
 	}
 	return bPressed;
@@ -100,7 +99,7 @@ bool soundBlock::clickUp()
 
 void soundBlock::mouseMotion(int _x, int _y)
 {
-	if(bPressed) move(_x-xDisp, _y-yDisp);
+	if(bPressed) move(_x-relPos.x, _y-relPos.y);
 }
 
 //**************************************************//
@@ -138,13 +137,13 @@ void rhythmBlock::setMidi(unsigned char chan,unsigned char nt, bool repeat, doub
 
 void rhythmBlock::update()
 {
-	if (rhythmTimer.justExpired()&&bRepeat&&bPlaying) {
+	/*if (rhythmTimer.justExpired()&&bRepeat&&bPlaying) {
 		play();
 	}
 	if (playTimer.justExpired()&&bRepeat&&bPlaying) {
 		stop();
 		bPlaying=true;
-	}
+	}*/
 }
 
 void rhythmBlock::sendMidiMessage(vector<unsigned char> newMessage)
@@ -166,10 +165,6 @@ void rhythmBlock::play()
 	//if(!bPlaying)
 	play(45);
 	bPlaying=true;
-	if (bRepeat) {
-		playTimer.set(playTime);
-		rhythmTimer.set(rhythmTime);
-	}
 }
 
 void rhythmBlock::stop()
@@ -181,7 +176,7 @@ void rhythmBlock::stop()
 bool rhythmBlock::clickDown(int _x, int _y)
 {
 	bool ret=0;
-	if(ret=over(_x-xDisp, _y-yDisp)){
+	if(ret=over(_x-relPos.x, _y-relPos.y)){
 		bPressed=true;
 		play();
 	}
@@ -197,14 +192,22 @@ bool rhythmBlock::clickUp()
 
 dragBlock::dragBlock(const rhythmBlock & t):soundBlock(t)
 {
-	sizeAdj.setup(28, 42, "images/resize.png");
-	bResizing=bActive=false;
+	rightAdj.setup(16, 32, "images/rightArrow.png");
+  leftAdj.setup(16, 32, "images/leftArrow.png");
+  if(bPercussive) w=40;
+  bPressed=true;
+  relMouse.x=0;
+	bResizing=bLResize=bActive=false;
 }
 
 dragBlock::dragBlock(int _x, int _w, rhythmBlock & t):soundBlock(t)
 {
-  sizeAdj.setup(28, 42, "images/resize.png");
-	bResizing=bActive=false;
+  rightAdj.setup(16, 32, "images/rightArrow.png");
+  leftAdj.setup(16, 32, "images/leftArrow.png");
+  if(bPercussive) w=40;
+  bPressed=true;
+  relMouse.x=0;
+	bResizing=bLResize=bActive=false;
   x=_x;
   w=_w;
 }
@@ -213,30 +216,42 @@ void dragBlock::draw(int _y)
 {
 	y=_y;
 	//if(bActive) color=color+.2*255;
+  header.setSize(10);
 	soundBlock::draw();
 	if(bActive){
-		ofShade(x+xDisp+aPos, y, aPos, h, OF_LEFT, .5, false);
-		ofShade(x+xDisp+aPos, y, w-aPos, h, OF_RIGHT, .5, false);
+		ofShade(x+relPos.x+aPos, y, aPos, h, OF_LEFT, .5, false);
+		ofShade(x+relPos.x+aPos, y, w-aPos, h, OF_RIGHT, .5, false);
 	}
-	sizeAdj.draw(x+xDisp+w-sizeAdj.w/2, y+yDisp+(h-sizeAdj.h)/2);
-	//if(bActive) color=color-.2*255;
+  if(!bPercussive){
+    rightAdj.draw(x+relPos.x+w-rightAdj.w-5, y+relPos.y+(h-rightAdj.h)/2);
+    if(w>30) leftAdj.draw(x+relPos.x+5, y+relPos.y+(h-leftAdj.h)/2);
+  }
 }
 
 bool dragBlock::clickDown(int _x, int _y)
 {
 	int ret=0;
-	if (sizeAdj.clickDown(_x, _y)) {
+	if (rightAdj.clickDown(_x, _y)) {
+    relMouse.x=x+w-_x;
 		bResizing=true;
 	}
-	else if(soundBlock::clickDown(_x,_y)) ret=1;
+  else if (leftAdj.clickDown(_x, _y)) {
+    relMouse.x=_x-x;
+		bLResize=true;
+	}
+	else if(soundBlock::clickDown(_x,_y)){
+    ret=1;
+    relMouse.x=_x-x;
+  }
 	return ret;
 }
 
 bool dragBlock::clickUp()
 {
 	bool ret=bPressed;
-	ret|=sizeAdj.clickUp();
-	bResizing=false;
+	ret|=rightAdj.clickUp();
+  ret|=leftAdj.clickUp();
+	bResizing=bLResize=false;
 	bPressed=false;
 	return ret;
 }
@@ -244,22 +259,27 @@ bool dragBlock::clickUp()
 void dragBlock::mouseMotion(int _x, int _y)
 {
 	if (bResizing){
-		int wid=_x-(x+xDisp);
+		int wid=_x+relMouse.x-(x+relPos.x);
 		w=(wid>30)?wid:30;
 	}
-	else if(bPressed) move(_x-xDisp, _y-yDisp);
+  else if (bLResize){
+		int wid=(x+relPos.x+w)-(_x-relMouse.x);
+		w=(wid>30)?wid:30;
+    x=_x-relMouse.x;
+	}
+	else if(bPressed) move(_x-relPos.x-relMouse.x, _y-relPos.y);
 }
 
 bool dragBlock::active(double xPos){
-	aPos=xPos-(x+xDisp);
-	return bActive=xPos>=x+xDisp&&xPos<=x+xDisp+w;
+	aPos=xPos-(x+relPos.x);
+	return bActive=xPos>=x+relPos.x&&xPos<=x+relPos.x+w;
 }
 
 bool dragBlock::justChanged(double xPos){
 	bool ret=false;
   bool temp;
-	aPos=xPos-(x+xDisp);
-	temp=xPos>=x+xDisp&&xPos<=x+xDisp+w;
+	aPos=xPos-(x+relPos.x);
+	temp=xPos>=x+relPos.x&&xPos<=x+relPos.x+w;
 	if(bActive!=temp) bActive=temp, ret=true;
 	return ret;
 }
@@ -273,7 +293,7 @@ instrument & instrument::operator=(const instrument & t)
 	bHolding=t.bHolding;
 	blocks=t.blocks;
 	title=t.title;
-	mousePosX=t.mousePosX, yoff=t.yoff;
+  yoff=t.yoff;
 	scrollX=t.scrollX,scrollY=t.scrollY;
 	lastBlock=t.lastBlock;
 	bDefault=t.bDefault;
@@ -293,6 +313,7 @@ void instrument::setup(string objName, unsigned char chan, unsigned char nt, boo
 	setMidi(chan,nt,repeat);
 	lastBlock=0;
 	bDefault=false;
+  bPercussive=false;
 }
 
 void instrument::setColor(unsigned long hex)
@@ -310,7 +331,7 @@ void instrument::resizeByFont(int fontSize)
 	point=fontSize;
 	base.header.setSize(point);
 	base.w=max(float(150), base.header.stringWidth(title)+20);
-	base.h=max(float(20), base.header.stringHeight(title)+10);
+	base.h=max(float(20), base.header.stringHeight("Kjg")+10);
 	w=base.w;
 	h=base.h;
 }
@@ -363,15 +384,15 @@ void instrument::draw(int _x,int _y)
 void instrument::draw()
 {
 	base.draw(x,y);
-	if(!base.isPlaying()) ofSetColor(255, 0, 0);
-	else ofSetColor(0, 255, 0);
-	//ofCircle(base.x, base.y+base.yDisp, 10);
+	//if(!base.isPlaying()) ofSetColor(255, 0, 0);
+//	else ofSetColor(0, 255, 0);
+//	ofCircle(base.x, base.y+base.relPos.y, 10);
 }
 
 void instrument::drawBackground()
 {
 	for (unsigned int i=0; i<blocks.size(); i++) {
-		blocks[i].draw(base.y+base.yDisp);
+		blocks[i].draw(base.y+base.relPos.y);
 	}
 }
 
@@ -381,13 +402,13 @@ bool instrument::clickDown(int _x, int _y)
 	if(!bHolding&&base.over(_x, _y-scrollY)&&!bDefault){
     cout << "Why are we here?" << endl;
 		blocks.push_back(dragBlock(base));
+    blocks[blocks.size()-1].x=_x-blocks[blocks.size()-1].w/2;
 		ret=1;
 	}
 	for (unsigned int i=0; i<blocks.size(); i++) {
 		if(!bHolding&&blocks[i].clickDown(_x,_y)){
 			play();
 			bHolding=true;
-			mousePosX=_x-blocks[i].x-scrollX;
 		}
 	}
 	return ret;
@@ -401,7 +422,7 @@ bool instrument::clickUp()
 		if(blocks[i].clickUp()){
 			ret=true;
 			lastBlock=i;
-			if (blocks[i].x<x+w) {
+			if (blocks[i].x<fullWidth) {
 				ret=false;
 				blocks.erase(blocks.begin()+i);
 				lastBlock=-1;
@@ -412,7 +433,7 @@ bool instrument::clickUp()
   for (unsigned int i=0; i<blocks.size(); i++) {
     for (unsigned int j=0; j<blocks.size(); j++) {
       if(blocks[j].x>blocks[i].x&&blocks[j].x<blocks[i].x+blocks[i].w){
-        if(blocks[j].w+blocks[j].x-30>blocks[i].x+blocks[i].w) blocks[j].w=blocks[j].w-((blocks[i].x+blocks[i].w)-blocks[j].x);
+        if(!bPercussive&&blocks[j].w+blocks[j].x-30>blocks[i].x+blocks[i].w) blocks[j].w=blocks[j].w-((blocks[i].x+blocks[i].w)-blocks[j].x);
         blocks[j].x=blocks[i].x+blocks[i].w;
       }
     }
@@ -424,29 +445,19 @@ bool instrument::clickUp()
 void instrument::mouseMotion(int _x, int _y)
 {
 	for (unsigned int i=0; i<blocks.size(); i++) {
-		//if(blocks[i].pressed()){
-			blocks[i].mouseMotion(_x-mousePosX,_y);
-		//}
+		blocks[i].mouseMotion(_x,_y);
 	}
 }
 
 bool instrument::active(double xPos)
 {
 	bool ret=false;
-	/*if(!bPercussive)
-		for (unsigned int i=0; i<blocks.size(); i++) {
-			ret|=blocks[i].active(xPos);
-		}
-	else {
-		for (unsigned int i=0; i<blocks.size(); i++) {
-			ret|=blocks[i].justChanged(xPos);
-		}
-	}*/
   for (unsigned int i=0; i<blocks.size(); i++) {
     if(blocks[i].justChanged(xPos)){
       if (blocks[i].active(xPos)) play();
       else stop();
     }
+    else if(bPercussive&&base.isPlaying()&&ofGetElapsedTimeMillis()>=150+startPlay) stop();
   }
 	return ret;
 }
@@ -458,18 +469,22 @@ void instrument::sendMidiMessage(vector<unsigned char> newMessage)
 
 void instrument::play(unsigned char vel)
 {
+  startPlay=ofGetElapsedTimeMillis();
 	base.play(vel);
 }
 
 void instrument::play()
 {
+  startPlay=ofGetElapsedTimeMillis();
 	base.play();
 }
 
 void instrument::stop()
 {
 	base.stop();
-	for (unsigned int i=0; i<blocks.size(); i++) {
-		blocks[i].bActive=false;
-	}
+}
+
+void instrument::setPercussive(bool perc){
+  bPercussive=perc;
+  base.bPercussive=perc;
 }

@@ -29,6 +29,19 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 	display.setup(200, 6);
 }
 
+void midiSequencer::resize(){
+  if(band) {
+    bar.setup(20, ofGetWidth()-band->w, OF_HOR);
+    bar.registerArea(ofGetWidth()-band->w, playTime*pps);
+    if(numMeasures*measureLength<ofGetWidth()-band->w){
+      double secondsPerMeasure=measureLength/pps;
+      measureLength=(ofGetWidth()-band->w)/numMeasures;
+      pps=measureLength/secondsPerMeasure;
+      midiConductor::setup(numMeasures*secondsPerMeasure,pps);
+    }
+  }
+}
+
 void midiSequencer::setTimeSignature(int beatsPerMeasure)
 {
   divsPerMeasure=beatsPerMeasure;
@@ -156,7 +169,7 @@ void midiSequencer::draw(int _x, int _y)
 #if F_YEAH_WOOD
 	ofSetColor(0xA0835B);
 #else
-	ofSetColor(0x333333);
+	ofSetColor(0x777777);
 #endif
 	ofRect(x, y, w, h);
 	ofShade(x, y+h, 15, w, OF_UP, .4);
@@ -212,13 +225,13 @@ void midiSequencer::draw(int _x, int _y)
 void midiSequencer::update()
 {
 	band->update(-getBarPosition(),OF_HOR);
-	if(isPlaying())
+	if(isPlaying()){
 		band->checkActives(cursor()+band->w);
+    if(!loopBut.pressed()&&cursor()+band->w>=numMeasures*measureLength+x)
+      pause(),reset();
+  }
 	if(loopBut.pressed()&&cursor()>band->farthestPoint()-x)
 		reset();
-	if (cursor()>=numMeasures*measureLength+x) {
-		reset();
-	}
 	if(metronome.justExpired())
 		reset();
 	midiConductor::update();

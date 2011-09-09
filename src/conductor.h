@@ -48,4 +48,5 @@ public:
 	void setScrollPos(double pos);
 	void play();
 	void pause();
+  void resize();
 };

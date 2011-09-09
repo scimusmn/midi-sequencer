@@ -11,13 +11,12 @@ void testApp::setup(){
 	
 	//we run at 60 fps!
 	ofSetVerticalSync(true);
-	//setup the server to listen on 11999
-	TCP.setup(11999);
+	
 	xml.loadFile("instruments.xml");
 	//MIDI setup
 	report.loadFont("fonts/DinC.ttf");
 	band.setup(xml);
-	keyboard.openPort("keyboard");
+	//keyboard.openPort("keyboard");
 	rolandSynth.openPort("decoder");
 	background.loadImage("images/background.jpg");
 	kb.setup(800, 4);
@@ -36,59 +35,18 @@ void testApp::update(){
 	band.update();
 	conductor.update();
 	
-	
-	//Network
-	/*for(int i = 0; i < TCP.getNumClients(); i++){
-		TCP.send(i, "hello client - you are connected on port - "+ofToString(TCP.getClientPort(i)) );
-	}
-	
-	//for each connected client lets get the data being sent and lets print it to the screen
-	for(int i = 0; i < TCP.getNumClients(); i++){
-		
-		//get the ip and port of the client
-		string port = ofToString( TCP.getClientPort(i) );
-		string ip   = TCP.getClientIP(i);
-		string info = "client "+ofToString(i)+" -connected from "+ip+" on port: "+port;
-		
-		
-		//if we don't have a string allocated yet
-		//lets create one
-		if(i >= storeText.size() ){
-			storeText.push_back( string() );
-		}
-		
-		string str = TCP.receive(i);
-		
-		if(str.length()){
-			//storeText[i] = str;
-			cout << str << " new string"<< endl;
-			vector<unsigned char> msg;
-			vector<string> token=ofSplitString(str, ".");
-			for (unsigned int i=0; i<token.size(); i++) {
-				if(!token[i].compare(MSG_START)){
-					msg.clear();
-					while(token[++i].compare(MSG_END)){
-						unsigned char tmp=ofToInt(token[i]);
-						cout << int(tmp)<< ".";
-						msg.push_back(tmp);
-					}
-					cout << " Message end size->"<< msg.size() << endl;
-					if(msg.size()) midiToSend(msg);
-				}
-			}
-		}
-		
-	}*/
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
+  ofPushMatrix();
+  //ofScale(ofGetWidth()/1920., ofGetHeight()/1200., 1);
 	ofSetColor(255, 255, 255);
 	
 #if F_YEAH_WOOD
 	background.draw(0, 75,ofGetWidth(),ofGetHeight());	
 #else
-	ofBackground(0x33, 0x33, 0x33);	
+	ofBackground(0x22, 0x22, 0x22);	
 #endif
 	
 	/*ofSetColor(0x444400);
@@ -119,6 +77,9 @@ void testApp::draw(){
 	report.setMode(OF_FONT_CENTER);
 	report.setSize(40);
 	report.drawString("Compose a song", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
+  ofShade(0, 75, 10, ofGetWidth(), OF_DOWN, .5);
+  
+  ofPopMatrix();
 }
 
 //--------------------------------------------------------------
@@ -173,11 +134,10 @@ void testApp::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::windowResized(int w, int h){
-
+  conductor.resize();
 }
 
 void testApp::midiToSend(vector< unsigned char > message){
-  if(message.size()>=3) cout << ((message[2])?"on":"off") << endl;
 	rolandSynth.sendMessage(message);
 }
 
