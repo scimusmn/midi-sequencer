@@ -78,6 +78,8 @@ protected:
 	bool bJustActive;
 	double aPos;
 public:
+  double w0;
+  double tempo;
   dragBlock(int x, int w, rhythmBlock & t);
 	dragBlock(const rhythmBlock & t);
 	void draw(int _y);
@@ -100,6 +102,7 @@ protected:
 	bool bPercussive;
   int fullWidth;
   unsigned long startPlay;
+  double tempo;
 public:
   vector<dragBlock> blocks;
 	int point;
@@ -137,9 +140,20 @@ public:
 	void play();
 	void stop();
 	bool active(double pos);
+  void scaleToTempo(double time);
 	friend class bandBar;
 	friend class remapBand;
 	friend class remapInst;
 };
 	
-
+class synthInstrument : public instrument{
+protected:
+public:
+  synthInstrument():instrument(){}
+	synthInstrument(string title, unsigned char chan, unsigned char nt, bool repeat=false);
+  void draw(int x, int y);
+  void draw();
+  void drawBackground();
+  bool clickDown(int _x, int _y);
+  bool clickUp();
+};

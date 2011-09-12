@@ -205,7 +205,7 @@ dragBlock::dragBlock(int _x, int _w, rhythmBlock & t):soundBlock(t)
   rightAdj.setup(16, 32, "images/rightArrow.png");
   leftAdj.setup(16, 32, "images/leftArrow.png");
   if(bPercussive) w=40;
-  bPressed=true;
+  bPressed=false;
   relMouse.x=0;
 	bResizing=bLResize=bActive=false;
   x=_x;
@@ -314,6 +314,7 @@ void instrument::setup(string objName, unsigned char chan, unsigned char nt, boo
 	lastBlock=0;
 	bDefault=false;
   bPercussive=false;
+  tempo=1;
 }
 
 void instrument::setColor(unsigned long hex)
@@ -477,6 +478,15 @@ void instrument::play()
 {
   startPlay=ofGetElapsedTimeMillis();
 	base.play();
+}
+
+void instrument::scaleToTempo(double time)
+{
+  for (unsigned int i=0; i<blocks.size(); i++) {
+    blocks[i].w*=time/tempo;
+    blocks[i].x=(blocks[i].x-fullWidth)*time/tempo+fullWidth;
+  }
+  tempo=time;
 }
 
 void instrument::stop()

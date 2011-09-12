@@ -139,10 +139,10 @@ void bandBar::drawBackground()
 		else ofSetColor(0x44,0x44,0x44,128);
 #endif
     //ofSetColor(instruments[i].getColor()-.3*255);
-    ofColor k=instruments[i].getColor();
+    //ofColor k=instruments[i].getColor();
 		ofRect(instruments[i].x, instruments[i].y-3+instruments[i].yoff, ofGetWidth(), instruments[i].h+6);
-    ofSetColor(k.r, k.g, k.b,64);
-    ofRect(instruments[i].x, instruments[i].y+instruments[i].yoff+instruments[i].h/2-5, ofGetWidth(), 10);
+    //ofSetColor(k.r, k.g, k.b,64);
+    //ofRect(instruments[i].x, instruments[i].y+instruments[i].yoff+instruments[i].h/2-5, ofGetWidth(), 10);
 	}
 }
 
@@ -303,4 +303,11 @@ void bandBar::checkActives(double xPos)
 dragBlock & bandBar::lastBlock()
 {
 	return instruments[lastInst][instruments[lastInst].lastBlock];
+}
+
+void bandBar::scaleToTempo(double time)
+{
+  for (unsigned int i=0; i<instruments.size(); i++) {
+    instruments[i].scaleToTempo(time);
+  }
 }

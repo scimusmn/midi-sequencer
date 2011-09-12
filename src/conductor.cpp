@@ -27,6 +27,7 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 	rewindBut.setup( 48, 48, "images/rewind.png");
 	loopBut.setup(48, 48, "images/repeat.png");
 	display.setup(200, 6);
+  tempoSlide.setup(30, 30);
 }
 
 void midiSequencer::resize(){
@@ -49,7 +50,13 @@ void midiSequencer::setTimeSignature(int beatsPerMeasure)
 
 void midiSequencer::setTempo(double secondsPerMeasure)
 {
-  
+  //measureLength=(ofGetWidth()-band->w)/numMeasures;
+  //pps=measureLength/secondsPerMeasure;
+  measureLength=secondsPerMeasure*pps;
+  midiConductor::setup(numMeasures*secondsPerMeasure,pps);
+  divsPerMeasure=4*int(secondsPerMeasure);
+  bar.registerArea(w, playTime*pps);
+  band->scaleToTempo(secondsPerMeasure);
 }
 
 void midiSequencer::registerPlayback(bandBar * bnd)
@@ -211,6 +218,8 @@ void midiSequencer::draw(int _x, int _y)
 	ofRoundShadow(x+w/2-playBut.w/2-indent/2-100, botY+(botH/2-loopBut.h/2)-indent/2, loopBut.w+indent, loopBut.h+indent, loopBut.w/2+indent/2, 1);
 	loopBut.draw(x+w/2-playBut.w/2-100, botY+(botH-loopBut.h)/2);
 	label.drawString("loop", loopBut.x+loopBut.w/2, loopBut.y+loopBut.h+15);
+  
+  tempoSlide.draw(x+100, botY+(botH-tempoSlide.h)/2,300,10);
 	
 	ofRoundShadow(display.x-10-indent/2, display.y-10-indent/2,\
 				  display.w+20+indent, display.h+20+indent, 5, 1);
@@ -257,6 +266,9 @@ bool midiSequencer::clickDown(int _x, int _y)
 	}
 	else if(rewindBut.clickDown(_x, _y)) reset(), setScrollPos(0);
 	else if(loopBut.toggle(_x, _y));
+  else if(tempoSlide.clickDown(_x, _y)){
+    setTempo(1+tempoSlide.getPercent()*3);
+  }
 		
 }
 
@@ -277,6 +289,7 @@ bool midiSequencer::clickUp()
 	mark.clickUp();
 	rewindBut.clickUp();
 	bar.clickUp();
+  tempoSlide.clickUp();
 }
 
 bool midiSequencer::mouseMotion(int _x, int _y)
@@ -288,7 +301,16 @@ bool midiSequencer::mouseMotion(int _x, int _y)
 		setCursorPosition(newPos);
 		mark.x=cursorPos+x;
 	}
+  else if(tempoSlide.pressed()){
+    tempoSlide.drag(_x, _y);
+    setTempo(1+tempoSlide.getPercent()*3);
+  }
 	else if(bar.mouseMotion(_x, _y));
+}
+
+void midiSequencer::drag(int _x, int _y)
+{
+	tempoSlide.drag(_x, _y);
 }
 
 void midiSequencer::snapTo(double & num)
@@ -306,6 +328,7 @@ void midiSequencer::snapTo(dragBlock & last)
 {
 	double & num = last.x;
 	double & wid = last.w;
+  //int k=0;
 	for (int i=0; i<numMeasures; i++) {
 		for (int j=0; j<divsPerMeasure; j++) {
 			if (abs((x+measureLength*i+measureLength*j/divsPerMeasure)-num)<=measureLength/(divsPerMeasure*2)) {
@@ -313,6 +336,7 @@ void midiSequencer::snapTo(dragBlock & last)
 			}
 			if (abs((x+measureLength*i+measureLength*j/divsPerMeasure)-(num+wid))<=measureLength/(divsPerMeasure*2)) {
 				wid=x+measureLength*i+measureLength*j/divsPerMeasure-num;
+        if(!wid) wid=measureLength/divsPerMeasure;
 			}
 			if(num>x+measureLength*numMeasures){
 				num=x+measureLength*numMeasures-wid;

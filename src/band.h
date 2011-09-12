@@ -56,5 +56,6 @@ public:
 	double farthestPoint();
 	void stopAll();
 	dragBlock & lastBlock();
+  void scaleToTempo(double time);
 	friend class conductor;
 };

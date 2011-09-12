@@ -115,6 +115,7 @@ void testApp::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
 	conductor.mouseMotion(x,y);
+  //conductor.drag(x, y);
 	band.mouseMotion(x, y);
 }
 

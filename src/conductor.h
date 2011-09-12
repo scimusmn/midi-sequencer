@@ -25,6 +25,7 @@ class midiSequencer : public midiConductor, public ofInterObj{
 	ofButton rewindBut;
 	ofButton loopBut;
 	digitDisplay display;
+  ofSlider tempoSlide;
 public:
 	midiSequencer():midiConductor(),ofInterObj(){
 	}
@@ -41,6 +42,7 @@ public:
 	bool clickDown(int _x, int _y);
 	bool clickUp();
 	bool mouseMotion(int _x, int _y);
+  void drag(int _x, int _y);
 	void snapTo(double & num);
 	void snapTo(dragBlock & last);
 	double getBarPosition();

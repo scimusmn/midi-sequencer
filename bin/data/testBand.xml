@@ -1,27 +1,47 @@
 <band>
 	<instrument name="Low C Chime"></instrument>
 	<instrument name="D Chime">
-		<strike beat="5" length="4"></strike>
+		<strike beat="18" length="1"></strike>
 	</instrument>
 	<instrument name="E Chime">
-		<strike beat="1" length="4"></strike>
+		<strike beat="3" length="1"></strike>
 	</instrument>
-	<instrument name="F Chime"></instrument>
+	<instrument name="F Chime">
+		<strike beat="1" length="1"></strike>
+	</instrument>
 	<instrument name="G Chime">
-		<strike beat="7" length="4"></strike>
+		<strike beat="14" length="1"></strike>
 	</instrument>
 	<instrument name="A Chime">
-		<strike beat="4" length="4"></strike>
+		<strike beat="3" length="1"></strike>
+		<strike beat="7" length="1"></strike>
+		<strike beat="10" length="1"></strike>
+		<strike beat="5" length="1"></strike>
+		<strike beat="0" length="1"></strike>
+		<strike beat="12" length="1"></strike>
+		<strike beat="14" length="1"></strike>
+		<strike beat="17" length="1"></strike>
+		<strike beat="19" length="1"></strike>
+		<strike beat="21" length="1"></strike>
 	</instrument>
-	<instrument name="B Chime"></instrument>
+	<instrument name="B Chime">
+		<strike beat="21" length="1"></strike>
+		<strike beat="2" length="1"></strike>
+	</instrument>
 	<instrument name="High C Chime">
-		<strike beat="6" length="6"></strike>
+		<strike beat="0" length="1"></strike>
 	</instrument>
 	<instrument name="Wood Block">
-		<strike beat="1" length="5"></strike>
+		<strike beat="16" length="1"></strike>
 	</instrument>
 	<instrument name="Cabasa"></instrument>
-	<instrument name="Rainstick"></instrument>
-	<instrument name="Clicker"></instrument>
-	<instrument name="Cymbals"></instrument>
+	<instrument name="Rainstick">
+		<strike beat="3" length="17"></strike>
+	</instrument>
+	<instrument name="Clicker">
+		<strike beat="1" length="4"></strike>
+	</instrument>
+	<instrument name="Cymbals">
+		<strike beat="11" length="4"></strike>
+	</instrument>
 </band>
