@@ -26,6 +26,8 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 	playBut.setup(64, 64, "images/play.png","images/pause.png");
 	rewindBut.setup( 48, 48, "images/rewind.png");
 	loopBut.setup(48, 48, "images/repeat.png");
+  waltz.setup(64,64, "images/threeFour.png");
+  blues.setup(64,64, "images/fourFour.png");
 	display.setup(200, 6);
   tempoSlide.setup(30, 30);
 }
@@ -73,6 +75,8 @@ void midiSequencer::loadSong(string filename)
   bandBar & bnd=*band;
   bnd.clear();
   xml.setCurrentTag(";band");
+  double tempo=ofToFloat(xml.getCurrentTag().getAttribute("tempo"));
+  double currentTempo=1+tempoSlide.getPercent()*3;
   ofTag & tag=xml.getCurrentTag();
   for (unsigned int i=0; i<tag.size(); i++) {
     if(tag[i].getLabel()=="instrument"){
@@ -86,7 +90,7 @@ void midiSequencer::loadSong(string filename)
               int length=ofToInt(tag[i][k].getAttribute("length"));
               double divLength=measureLength/divsPerMeasure;
               if(beat<numMeasures*divsPerMeasure){
-                bnd[j].blocks.push_back(dragBlock(beat*divLength+x,length*divLength,bnd[j].base));
+                bnd[j].blocks.push_back(dragBlock(beat*divLength*currentTempo/tempo+x,length*divLength*currentTempo/tempo,bnd[j].base));
               }
             }
           }
@@ -101,6 +105,7 @@ void midiSequencer::saveSong(string filename)
   ofXML xml;
   bandBar & bnd=*band;
   xml.newCurrentTag("band");
+  xml.addAttribute("tempo", ofToString(1+tempoSlide.getPercent()*3,1));
   for (unsigned int i=0; i<bnd.size(); i++) {
     xml.setCurrentTag(";band");
     xml.newCurrentTag("instrument");
@@ -219,7 +224,25 @@ void midiSequencer::draw(int _x, int _y)
 	loopBut.draw(x+w/2-playBut.w/2-100, botY+(botH-loopBut.h)/2);
 	label.drawString("loop", loopBut.x+loopBut.w/2, loopBut.y+loopBut.h+15);
   
+  ofRoundShadow(x+w-indent/2-200, botY+(botH-waltz.h/2)/2-indent/2, waltz.w+indent, waltz.h+indent, waltz.w/8+indent/2, 1);
+	waltz.draw(x+w-200, botY+(botH-waltz.h*.5)/2);
+  
+  ofRoundShadow(x+w-indent/2-100, botY+(botH-blues.h/2)/2-indent/2, blues.w+indent, blues.h+indent, blues.w/8+indent/2, 1);
+	blues.draw(x+w-100, botY+(botH-blues.h*.5)/2);
+	
+  label.setSize(20);
+  ofSetColor(255, 255, 255);
+  label.drawString("load song", (waltz.x+(blues.x+blues.w))/2, loopBut.y-5);
+  
+  ofSetColor(220,220,220);
+  //ofRect(tempoSlide.x, tempoSlide.y+5, 2, -15);
+//  ofRect(tempoSlide.x+tempoSlide.w/2-2, tempoSlide.y+5, 2, -15);
+//  ofRect(tempoSlide.x+tempoSlide.w-2, tempoSlide.y+5, 2, -15);
+  ofRoundShadow(tempoSlide.x-10, tempoSlide.y-10, tempoSlide.w+20, tempoSlide.h+20, (tempoSlide.h+20)/4, .2);
+  
   tempoSlide.draw(x+100, botY+(botH-tempoSlide.h)/2,300,10);
+  ofSetColor(255, 255, 255);
+  label.drawString("tempo", tempoSlide.x+tempoSlide.w/2, tempoSlide.y+tempoSlide.h+35);
 	
 	ofRoundShadow(display.x-10-indent/2, display.y-10-indent/2,\
 				  display.w+20+indent, display.h+20+indent, 5, 1);
@@ -227,6 +250,7 @@ void midiSequencer::draw(int _x, int _y)
 	ofRoundBox(display.x-10, display.y-10, display.w+20, display.h+20, 5, .2);
 	ofSetColor(0, 128, 200);
 	label.setMode(OF_FONT_LEFT);
+  label.setSize(12);
 	int secs=metronome.getElapsed();
 	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), x+w/2+playBut.w/2+20, botY+(botH-display.h)/2);
 }
@@ -247,7 +271,6 @@ void midiSequencer::update()
 	double temp=metronome.getElapsedf()*pps-w/2;
 	if (bPlaying&&cursorPos>=w/2+bar.getScrollPosition()&&bar.setScrollPosition(temp));
 	mark.x=cursor()+x;
-	//bar.update();
 }
 
 bool midiSequencer::clickDown(int _x, int _y)
@@ -266,6 +289,8 @@ bool midiSequencer::clickDown(int _x, int _y)
 	}
 	else if(rewindBut.clickDown(_x, _y)) reset(), setScrollPos(0);
 	else if(loopBut.toggle(_x, _y));
+  else if(waltz.clickDown(_x, _y)) loadSong("waltz.xml");
+  else if(blues.clickDown(_x, _y)) loadSong("blues.xml");
   else if(tempoSlide.clickDown(_x, _y)){
     setTempo(1+tempoSlide.getPercent()*3);
   }
@@ -289,7 +314,9 @@ bool midiSequencer::clickUp()
 	mark.clickUp();
 	rewindBut.clickUp();
 	bar.clickUp();
-  tempoSlide.clickUp();
+  waltz.clickUp();
+  blues.clickUp();
+  if(tempoSlide.clickUp()) setTempo(1+tempoSlide.getPercent()*3);
 }
 
 bool midiSequencer::mouseMotion(int _x, int _y)
@@ -310,7 +337,6 @@ bool midiSequencer::mouseMotion(int _x, int _y)
 
 void midiSequencer::drag(int _x, int _y)
 {
-	tempoSlide.drag(_x, _y);
 }
 
 void midiSequencer::snapTo(double & num)

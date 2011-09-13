@@ -77,13 +77,11 @@ void bandBar::setup(ofXML & xml)
 			long color=strtol(col.c_str(),NULL,0);
 			int curInst=instruments.size();
 			unsigned char note, channel;
-			bool repeat=false;
 			bool percussive=false;
 			double delay=0;
 			map<string,int> list;
 			list["note"]=0;
 			list["channel"]=1;
-			list["repeat"]=2;
 			list["delay"]=3;
 			list["dropdown"]=4;
 			list["percussive"]=5;
@@ -95,9 +93,6 @@ void bandBar::setup(ofXML & xml)
 						break;
 					case 1:
 						channel=ofToInt(node[1]);
-						break;
-					case 2:
-						repeat=true;
 						break;
 					case 3:
 						delay=ofToFloat(node[1]);
@@ -112,19 +107,18 @@ void bandBar::setup(ofXML & xml)
 						break;
 				}
 			}
-			addInstrument(title,channel,note,repeat);
+			addInstrument(title,channel,note);
 			instruments[curInst].setPercussive(percussive);
 			instruments[curInst].setColor(color);
-			instruments[curInst].setDelay(delay);
       //maxWid=max(maxWid,instruments[curInst].w);
 		}
 	}
 	setHeight();
 }
 
-void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt, bool repeat)
+void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt)
 {
-	instruments.push_back( instrument(title,channel,nt,repeat));
+	instruments.push_back( instrument(title,channel,nt));
 	setHeight();
 }
 
@@ -140,7 +134,7 @@ void bandBar::drawBackground()
 #endif
     //ofSetColor(instruments[i].getColor()-.3*255);
     //ofColor k=instruments[i].getColor();
-		ofRect(instruments[i].x, instruments[i].y-3+instruments[i].yoff, ofGetWidth(), instruments[i].h+6);
+		ofRect(instruments[i].x, instruments[i].y-3, ofGetWidth(), instruments[i].h+6);
     //ofSetColor(k.r, k.g, k.b,64);
     //ofRect(instruments[i].x, instruments[i].y+instruments[i].yoff+instruments[i].h/2-5, ofGetWidth(), 10);
 	}
@@ -171,6 +165,8 @@ void bandBar::draw(int _x, int _y)
 		double tmpY=instruments[i].y+binHeight+instruments[i].scrollY-yBlockSpace;
 		ofShade(x+xGap, tmpY, 3,binWidth, OF_UP, .3);
 		ofShade(x+xGap, tmpY, 3, binWidth, OF_DOWN, .3,false);
+    //ofSetColor(0, 0, 0,128);
+    //ofRect(x+xGap, tmpY-5, w-xGap, 10);
 	}
 	
 	ofShade(x+w-20, y+yoff, 10, viewSize, OF_LEFT, .3);
@@ -227,19 +223,8 @@ bool bandBar::clickUp()
 	return ret;
 }
 
-void bandBar::update(int xDisp, int yDisp)
-{
-	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].update(xDisp,yDisp);
-	}
-	bar.update();
-}
-
 void bandBar::update()
 {
-	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].update();
-	}
 	bar.update();
 }
 

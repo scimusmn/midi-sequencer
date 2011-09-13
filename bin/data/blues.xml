@@ -1,0 +1,68 @@
+<band tempo="1.0">
+	<instrument name="Low C Chime">
+		<strike beat="0" length="1"></strike>
+		<strike beat="3" length="1"></strike>
+		<strike beat="6" length="1"></strike>
+		<strike beat="9" length="1"></strike>
+	</instrument>
+	<instrument name="D Chime">
+		<strike beat="1" length="1"></strike>
+		<strike beat="4" length="1"></strike>
+		<strike beat="7" length="1"></strike>
+		<strike beat="10" length="1"></strike>
+	</instrument>
+	<instrument name="E Chime">
+		<strike beat="2" length="1"></strike>
+		<strike beat="5" length="1"></strike>
+		<strike beat="8" length="1"></strike>
+		<strike beat="11" length="1"></strike>
+	</instrument>
+	<instrument name="F Chime">
+		<strike beat="3" length="1"></strike>
+		<strike beat="6" length="1"></strike>
+		<strike beat="0" length="1"></strike>
+		<strike beat="9" length="1"></strike>
+	</instrument>
+	<instrument name="G Chime">
+		<strike beat="4" length="1"></strike>
+		<strike beat="7" length="1"></strike>
+		<strike beat="10" length="1"></strike>
+		<strike beat="1" length="1"></strike>
+	</instrument>
+	<instrument name="A Chime">
+		<strike beat="5" length="1"></strike>
+		<strike beat="8" length="1"></strike>
+		<strike beat="11" length="1"></strike>
+		<strike beat="2" length="1"></strike>
+	</instrument>
+	<instrument name="B Chime">
+		<strike beat="6" length="1"></strike>
+		<strike beat="9" length="1"></strike>
+		<strike beat="3" length="1"></strike>
+		<strike beat="0" length="1"></strike>
+	</instrument>
+	<instrument name="High C Chime">
+		<strike beat="7" length="1"></strike>
+		<strike beat="10" length="1"></strike>
+		<strike beat="4" length="1"></strike>
+		<strike beat="1" length="1"></strike>
+	</instrument>
+	<instrument name="Wood Block">
+		<strike beat="9" length="1"></strike>
+		<strike beat="1" length="1"></strike>
+		<strike beat="11" length="1"></strike>
+		<strike beat="3" length="1"></strike>
+		<strike beat="5" length="1"></strike>
+		<strike beat="7" length="1"></strike>
+	</instrument>
+	<instrument name="Cabasa">
+		<strike beat="0" length="2"></strike>
+		<strike beat="4" length="2"></strike>
+		<strike beat="8" length="2"></strike>
+	</instrument>
+	<instrument name="Rainstick">
+		<strike beat="0" length="12"></strike>
+	</instrument>
+	<instrument name="Clicker"></instrument>
+	<instrument name="Cymbals"></instrument>
+</band>

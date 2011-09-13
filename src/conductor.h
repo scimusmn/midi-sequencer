@@ -24,6 +24,8 @@ class midiSequencer : public midiConductor, public ofInterObj{
 	ofButton playBut;
 	ofButton rewindBut;
 	ofButton loopBut;
+  ofButton waltz;
+  ofButton blues;
 	digitDisplay display;
   ofSlider tempoSlide;
 public:

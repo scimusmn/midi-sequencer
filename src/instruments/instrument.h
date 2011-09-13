@@ -15,128 +15,69 @@
 #include "ofExtended.h"
 #include "ofxMidiIn.h"
 #include "ofxMidiOut.h"
+#include "soundBlocks.h"
 
-//typedef rhythmBlock;
-
-class soundBlock : public ofInterObj{
+class inst : public ofInterObj{
 protected:
+  bool bHolding;
   bool bPercussive;
-public:
-	string title;
-	ofColor color;
-	ofFont header;
-	double xDisp, yDisp;
-	soundBlock():ofInterObj(){}
-	soundBlock(string objName);
-	~soundBlock();
-	soundBlock(const soundBlock & t);
-	void operator=(const soundBlock & t);
-	void setup(string objName);
-	void update(double x_dis, double y_dis);
-	void draw(int _x, int _y);
-	void draw(int _y);
-	void draw();
-	bool clickDown(int _x, int _y);
-	bool clickUp();
-	void mouseMotion(int _x, int _y);
-	friend class instrument;
-};
-
-class rhythmBlock : public soundBlock {
-protected:
-	ofBaseApp * baseApp;
-	ofTimer rhythmTimer,playTimer;
-	double playTime,rhythmTime;
-	bool bPlaying,bRepeat;
-	unsigned char note;
-	unsigned char channel;
-	vector<unsigned char> message;
-public:
-	rhythmBlock():soundBlock(){}
-	rhythmBlock(const rhythmBlock & t);
-	void setup(string title, unsigned char nt, unsigned char chan, bool repeat=false);
-	void setMidi(unsigned char nt, unsigned char chan, bool repeat=false, double delay=1);
-	void setDelay(double dly);
-	void sendMidiMessage(vector<unsigned char> newMessage);
-	void play(unsigned char vel);
-	void play();
-	void stop();
-	void update();
-	bool clickDown(int _x, int _y);
-	bool clickUp();
-	bool isPlaying(){ return bPlaying;}
-	friend class instrument;
-};
-
-class dragBlock : public soundBlock {
-protected:
-	ofButton leftAdj;
-  ofButton rightAdj;
-	bool bResizing;
-  bool bLResize;
-	bool bActive;
-	bool bJustActive;
-	double aPos;
-public:
-  double w0;
-  double tempo;
-  dragBlock(int x, int w, rhythmBlock & t);
-	dragBlock(const rhythmBlock & t);
-	void draw(int _y);
-	void draw();
-	void mouseMotion(int _x, int _y);
-	bool clickDown(int _x, int _y);
-	bool clickUp();
-	bool active(double xPos);
-	bool justChanged(double xPos);
-	friend class instrument;
-};
-
-class instrument : public ofInterObj{
-protected:
-	bool bHolding;
-	double mousePosX, yoff;
-	double scrollX,scrollY;
-	int lastBlock;
-	bool bDefault;
-	bool bPercussive;
   int fullWidth;
   unsigned long startPlay;
   double tempo;
+  double scrollX,scrollY;
+  int lastBlock;
+	bool bDefault;
 public:
-  vector<dragBlock> blocks;
-	int point;
-	string title;
+  string title;
 	rhythmBlock base;
-	dragBlock & operator[](int i);
-	instrument & operator=(const instrument & t);
-	int size(){ return blocks.size();}
+  vector<dragBlock> blocks;
+  int size(){ return blocks.size();}
 	void clear(){ blocks.clear();}
-	instrument():ofInterObj(){}
-	instrument(string title, unsigned char chan, unsigned char nt, bool repeat=false);
+  bool isPlaying(){ return base.isPlaying(); }
+	bool isHeld(){ return bHolding; }
+  bool isDefault(){ return bDefault; }
+	void setDefault(bool holder){ bDefault=holder; } 
+  
+  //---.cpp defined functions
+  void setPercussive(bool perc);
+  dragBlock & operator[](int i);
+  void update(int disp,ofDirection dir);
+  void setMidi(unsigned char chan, unsigned char nt);
+  void setColor(unsigned long hex);
+  ofColor getColor(){ return base.color; }
+  void setup(string objName, unsigned char chan, unsigned char nt);
+	void sendMidiMessage(vector<unsigned char> newMessage);
+  
+  //--- should be moved to a class for the keyboard insts
+  
+  
+  //----- virtual functions
+  virtual void draw(int _x, int _y){}
+	virtual void draw(){}
+	virtual void drawBackground(){}
+  virtual bool clickDown(int _x, int _y){}
+	virtual bool clickUp(){}
+	virtual void mouseMotion(int _x, int _y){}
+};
+
+class instrument : public inst{
+protected:
+public:
+	int point;
+	instrument & operator=(const instrument & t);
+	instrument():inst(){}
+	instrument(string title, unsigned char chan, unsigned char nt);
 	void resizeByFont(int fontSize);
-	void update(int x_disp, int y_disp);
-	void update(int disp,ofDirection dir);
-	void update();
+  
+  //---- inst class functions
 	void draw(int _x, int _y);
 	void draw();
-	bool isDefault(){ return bDefault; }
-	void setDefault(bool holder){ bDefault=holder; } 
 	void drawBackground();
 	bool clickDown(int _x, int _y);
-	bool clickUp(vector<instrument> & holders);
 	bool clickUp();
 	void mouseMotion(int _x, int _y);
-	void setMidi(unsigned char chan, unsigned char nt, bool repeat=false);
-	void setColor(unsigned long hex);
-  ofColor getColor(){ return base.color; }
-	void setDelay(double dly);
-	void setup(string objName, unsigned char chan, unsigned char nt, bool repeat);
-	void sendMidiMessage(vector<unsigned char> newMessage);
+  
 	void play(unsigned char vel);
-	bool isPlaying(){ return base.isPlaying(); }
-	bool isHeld(){ return bHolding; }
-	void setPercussive(bool perc);
 	void play();
 	void stop();
 	bool active(double pos);
@@ -146,11 +87,11 @@ public:
 	friend class remapInst;
 };
 	
-class synthInstrument : public instrument{
+class synthInstrument : public inst{
 protected:
 public:
-  synthInstrument():instrument(){}
-	synthInstrument(string title, unsigned char chan, unsigned char nt, bool repeat=false);
+  synthInstrument():inst(){}
+	synthInstrument(string title, unsigned char chan, unsigned char nt);
   void draw(int x, int y);
   void draw();
   void drawBackground();

@@ -38,14 +38,13 @@ public:
 	void setup();
 	void setup(xmlParse * config);
   void setup(ofXML & xml);
-	void addInstrument(string title, unsigned char channel, unsigned char nt, bool repeat=false);
+	void addInstrument(string title, unsigned char channel, unsigned char nt);
 	void drawInstruments();
 	void drawBackground();
 	void clear();
 	void draw(int _x=0, int _y=0);
 	bool clickDown(int _x, int _y);
 	bool clickUp();
-	void update(int xDisp, int yDisp);
 	void update(int disp, ofDirection dir);
 	void update();
 	void mouseMotion(int _x, int _y);

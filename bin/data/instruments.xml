@@ -2,8 +2,6 @@
 	<instrument name="Low C Chime" color="0x700000">
 		<note>60</note>
 		<channel>1</channel>
-		<repeat>true</repeat>
-		<delay>1</delay>
 		<percussive>true</percussive>
 	</instrument>
 	<instrument name="D Chime" color="0x007000">
@@ -14,9 +12,7 @@
 	<instrument name="E Chime" color="0x2080F0">
 		<note>62</note>
 		<channel>0</channel>
-		<repeat>true</repeat>
 		<percussive>true</percussive>
-		<delay>1</delay>
 	</instrument>
 	<instrument name="F Chime" color="0x007070">
 		<note>63</note>
