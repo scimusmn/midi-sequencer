@@ -131,7 +131,6 @@ instrument & instrument::operator=(const instrument & t)
 instrument::instrument(string objName, unsigned char chan, unsigned char nt):inst()
 {
 	setup(objName, chan, nt);
-	
 }
 
 void instrument::resizeByFont(int fontSize)
@@ -153,6 +152,7 @@ void instrument::draw(int _x,int _y)
 void instrument::draw()
 {
 	base.draw(x,y);
+  //ofRect(x, y, w, h);
 	//if(!base.isPlaying()) ofSetColor(255, 0, 0);
 //	else ofSetColor(0, 255, 0);
 //	ofCircle(base.x, base.y+base.relPos.y, 10);
@@ -168,6 +168,8 @@ void instrument::drawBackground()
 bool instrument::clickDown(int _x, int _y)
 {
 	bool ret=0;
+  if(base.over(_x, _y-scrollY)) cout << " Block is " + title + " and we are "<< ((bHolding)?"":"not") << " holding.\n";
+  else cout << "The block coord is (" << x << " , " << y << ") with mouse coords (" << _x << "," << _y << ")\n";
 	if(!bHolding&&base.over(_x, _y-scrollY)){
 		blocks.push_back(dragBlock(base));
     blocks[blocks.size()-1].x=_x-blocks[blocks.size()-1].w/2;

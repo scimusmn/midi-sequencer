@@ -24,7 +24,7 @@ double bandBar::getBottomPos()
 	return y+h-yBot;
 }
 
-instrument & bandBar::operator[](int i)
+inst * bandBar::operator[](int i)
 {
   return instruments[i];
 }
@@ -47,15 +47,15 @@ void bandBar::setHeight(double hgt,double top, double bot)
 	yBlockSpace=10;
 	numBins=1;
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		binWidth=max(binWidth,instruments[i].w+xBlockSpace*2);
-		binHeight=max(binHeight, instruments[i].h+yBlockSpace*2);
+		binWidth=max(binWidth,instruments[i]->w+xBlockSpace*2);
+		binHeight=max(binHeight, instruments[i]->h+yBlockSpace*2);
 	}
 	w=(xGap+binWidth)*numBins+xGap;
 	double fullSize=binHeight*instruments.size();
 	bar.setup(20, viewSize, OF_VERT);
 	bar.registerArea(viewSize,fullSize);
   for (unsigned int i=0; i<instruments.size(); i++) {
-    instruments[i].setBandWidth(w);
+    instruments[i]->setBandWidth(w);
   }
   
 }
@@ -114,9 +114,9 @@ void bandBar::setup(ofXML & xml)
 				}
 			}
 			addInstrument(title,channel,note);
-			instruments[curInst].setPercussive(percussive);
-			instruments[curInst].setColor(color);
-      //maxWid=max(maxWid,instruments[curInst].w);
+			instruments[curInst]->setPercussive(percussive);
+			instruments[curInst]->setColor(color);
+      //maxWid=max(maxWid,instruments[curInst]->w);
 		}
 	}
 	setHeight();
@@ -124,8 +124,7 @@ void bandBar::setup(ofXML & xml)
 
 void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt)
 {
-	instruments.push_back( instrument(title,channel,nt));
-  cout << instruments.size() << " is the size\n";
+	instruments.push_back( new instrument(title,channel,nt));
 	setHeight();
 }
 
@@ -139,18 +138,18 @@ void bandBar::drawBackground()
 		if(i%2) ofSetColor(0x66,0x66,0x66,128);
 		else ofSetColor(0x44,0x44,0x44,128);
 #endif
-    //ofSetColor(instruments[i].getColor()-.3*255);
-    //ofColor k=instruments[i].getColor();
-		ofRect(instruments[i].x, instruments[i].y-3, ofGetWidth(), instruments[i].h+6);
+    //ofSetColor(instruments[i]->getColor()-.3*255);
+    //ofColor k=instruments[i]->getColor();
+		ofRect(instruments[i]->x, instruments[i]->y-3, ofGetWidth(), instruments[i]->h+6);
     //ofSetColor(k.r, k.g, k.b,64);
-    //ofRect(instruments[i].x, instruments[i].y+instruments[i].yoff+instruments[i].h/2-5, ofGetWidth(), 10);
+    //ofRect(instruments[i]->x, instruments[i]->y+instruments[i]->yoff+instruments[i]->h/2-5, ofGetWidth(), 10);
 	}
 }
 
 void bandBar::drawInstruments()
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].drawBackground();
+		instruments[i]->drawBackground();
 	}
 }
 
@@ -168,8 +167,8 @@ void bandBar::draw(int _x, int _y)
 	ofShade(x+w, y+yoff, 10, viewSize, OF_LEFT, .3);
 	
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].draw(x+xGap+xBlockSpace,y+yoff+yBlockSpace +binHeight*(i));
-		double tmpY=instruments[i].y+binHeight+instruments[i].vertScrollPos()-yBlockSpace;
+		instruments[i]->draw(x+xGap+xBlockSpace,y+yoff+yBlockSpace +binHeight*(i));
+		double tmpY=instruments[i]->y+binHeight+instruments[i]->vertScrollPos()-yBlockSpace;
 		ofShade(x+xGap, tmpY, 3,binWidth, OF_UP, .3);
 		ofShade(x+xGap, tmpY, 3, binWidth, OF_DOWN, .3,false);
     //ofSetColor(0, 0, 0,128);
@@ -204,7 +203,7 @@ void bandBar::draw(int _x, int _y)
 bool bandBar::clickDown(int _x, int _y)
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		if(!bHolding&&_y>yoff&&_y<yoff+viewSize&&instruments[i].clickDown(_x,_y)){
+		if(!bHolding&&_y>yoff&&_y<yoff+viewSize&&instruments[i]->clickDown(_x,_y)){
 			bHolding=true;
 			lastInst=i;
 		}
@@ -219,7 +218,7 @@ bool bandBar::clickUp()
 {
 	bool ret=false;
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		if(instruments[i].clickUp()){
+		if(instruments[i]->clickUp()){
 			ret=true;
 			lastInst=i;
 		}
@@ -238,7 +237,7 @@ void bandBar::update()
 void bandBar::update(int disp, ofDirection dir)
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].update(disp,dir);
+		instruments[i]->update(disp,dir);
 	}
 	update();
 }
@@ -246,11 +245,11 @@ void bandBar::update(int disp, ofDirection dir)
 void bandBar::mouseMotion(int _x, int _y)
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].mouseMotion(_x,_y);
+		instruments[i]->mouseMotion(_x,_y);
 	}
 	if(bar.mouseMotion(_x,_y)){
 		for (unsigned int i=0; i<instruments.size(); i++) {
-			instruments[i].update(-bar.getScrollPosition(),OF_VERT);
+			instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
 		}
 	}
 }
@@ -259,7 +258,7 @@ double bandBar::farthestPoint()
 {
 	double ret=0;
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		for (unsigned int j=0; j<instruments[i].size(); j++) {
+		for (unsigned int j=0; j<instruments[i]->size(); j++) {
 			ret=max(ret,instruments[i][j].x+instruments[i][j].w);
 		}
 	}
@@ -269,7 +268,7 @@ double bandBar::farthestPoint()
 void bandBar::clear()
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].clear();
+		instruments[i]->clear();
 	}
 }
 
@@ -281,25 +280,25 @@ void bandBar::drag(int _x, int _y)
 void bandBar::stopAll()
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].stop();
+		instruments[i]->stop();
 	}
 }
 
 void bandBar::checkActives(double xPos)
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i].active(xPos);
+		instruments[i]->active(xPos);
 	}
 }
 
 dragBlock & bandBar::lastBlock()
 {
-	return instruments[lastInst].lastDrop();
+	return instruments[lastInst]->lastDrop();
 }
 
 void bandBar::scaleToTempo(double time)
 {
   for (unsigned int i=0; i<instruments.size(); i++) {
-    instruments[i].scaleToTempo(time);
+    instruments[i]->scaleToTempo(time);
   }
 }

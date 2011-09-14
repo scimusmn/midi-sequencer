@@ -62,13 +62,13 @@ public:
   void play(unsigned char vel);
   
   //----- virtual functions
-  virtual void draw(int _x, int _y){ cout << "Why?\n";}
-	virtual void draw(){}
-	virtual void drawBackground(){}
-  virtual bool clickDown(int _x, int _y){}
-	virtual bool clickUp(){}
-	virtual void mouseMotion(int _x, int _y){}
-  virtual bool active(double pos){}
+  virtual void draw(int _x, int _y)=0;
+	virtual void draw()=0;
+	virtual void drawBackground()=0;
+  virtual bool clickDown(int _x, int _y)=0;
+	virtual bool clickUp()=0;
+	virtual void mouseMotion(int _x, int _y)=0;
+  virtual bool active(double pos)=0;
 };
 
 class instrument : public inst{

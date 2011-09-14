@@ -82,15 +82,15 @@ void midiSequencer::loadSong(string filename)
     if(tag[i].getLabel()=="instrument"){
       string which=tag[i].getAttribute("name");
       for (unsigned int j=0; j<bnd.size(); j++) {
-        cout << bnd[j].title << endl;
-        if(bnd[j].title==which){
+        cout << bnd[j]->title << endl;
+        if(bnd[j]->title==which){
           for (unsigned int k=0; k<tag[i].size(); k++) {
             if(tag[i][k].getLabel()=="strike"){
               int beat=ofToInt(tag[i][k].getAttribute("beat"));
               int length=ofToInt(tag[i][k].getAttribute("length"));
               double divLength=measureLength/divsPerMeasure;
               if(beat<numMeasures*divsPerMeasure){
-                bnd[j].blocks.push_back(dragBlock(beat*divLength*currentTempo/tempo+x,length*divLength*currentTempo/tempo,bnd[j].base));
+                bnd[j]->blocks.push_back(dragBlock(beat*divLength*currentTempo/tempo+x,length*divLength*currentTempo/tempo,bnd[j]->base));
               }
             }
           }
@@ -109,8 +109,8 @@ void midiSequencer::saveSong(string filename)
   for (unsigned int i=0; i<bnd.size(); i++) {
     xml.setCurrentTag(";band");
     xml.newCurrentTag("instrument");
-    xml.addAttribute("name", bnd[i].title);
-    for (unsigned int j=0; j<bnd[i].size(); j++) {
+    xml.addAttribute("name", bnd[i]->title);
+    for (unsigned int j=0; j<bnd[i]->size(); j++) {
       xml.newCurrentTag("strike");
       double divLength=measureLength/divsPerMeasure-1;
       int bt=(bnd[i][j].x-x)/divLength;

@@ -13,7 +13,7 @@
 
 class bandBar : public ofInterGroup{
 protected:
-	vector<instrument> instruments;
+	vector<inst *> instruments;
 	bool bHolding;
 	ofScrollBar bar;
 	int viewSize;
@@ -33,7 +33,7 @@ public:
 		lastInst=0;
 	}
 	~bandBar();
-  instrument & operator[](int i);
+  inst * operator[](int i);
   int size();
 	void setup();
 	void setup(xmlParse * config);
