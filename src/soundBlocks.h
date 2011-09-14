@@ -74,8 +74,7 @@ protected:
 	bool bJustActive;
 	double aPos;
 public:
-  double w0;
-  double tempo;
+  unsigned char note;
   dragBlock(int x, int w, rhythmBlock & t);
 	dragBlock(const rhythmBlock & t);
 	void draw(int _y);

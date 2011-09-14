@@ -55,7 +55,7 @@ void bandBar::setHeight(double hgt,double top, double bot)
 	bar.setup(20, viewSize, OF_VERT);
 	bar.registerArea(viewSize,fullSize);
   for (unsigned int i=0; i<instruments.size(); i++) {
-    instruments[i].fullWidth=w;
+    instruments[i].setBandWidth(w);
   }
   
 }
@@ -78,10 +78,12 @@ void bandBar::setup(ofXML & xml)
 			int curInst=instruments.size();
 			unsigned char note, channel;
 			bool percussive=false;
+      bool synth=false;
 			double delay=0;
 			map<string,int> list;
 			list["note"]=0;
 			list["channel"]=1;
+      list["synth"]=2;
 			list["delay"]=3;
 			list["dropdown"]=4;
 			list["percussive"]=5;
@@ -94,6 +96,10 @@ void bandBar::setup(ofXML & xml)
 					case 1:
 						channel=ofToInt(node[1]);
 						break;
+          case 2:
+            synth=true;
+            break;
+
 					case 3:
 						delay=ofToFloat(node[1]);
 						break;
@@ -119,6 +125,7 @@ void bandBar::setup(ofXML & xml)
 void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt)
 {
 	instruments.push_back( instrument(title,channel,nt));
+  cout << instruments.size() << " is the size\n";
 	setHeight();
 }
 
@@ -162,7 +169,7 @@ void bandBar::draw(int _x, int _y)
 	
 	for (unsigned int i=0; i<instruments.size(); i++) {
 		instruments[i].draw(x+xGap+xBlockSpace,y+yoff+yBlockSpace +binHeight*(i));
-		double tmpY=instruments[i].y+binHeight+instruments[i].scrollY-yBlockSpace;
+		double tmpY=instruments[i].y+binHeight+instruments[i].vertScrollPos()-yBlockSpace;
 		ofShade(x+xGap, tmpY, 3,binWidth, OF_UP, .3);
 		ofShade(x+xGap, tmpY, 3, binWidth, OF_DOWN, .3,false);
     //ofSetColor(0, 0, 0,128);
@@ -287,7 +294,7 @@ void bandBar::checkActives(double xPos)
 
 dragBlock & bandBar::lastBlock()
 {
-	return instruments[lastInst][instruments[lastInst].lastBlock];
+	return instruments[lastInst].lastDrop();
 }
 
 void bandBar::scaleToTempo(double time)

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AA3FB46F141FB22D0000CE74 /* soundBlocks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3FB46E141FB22D0000CE74 /* soundBlocks.cpp */; };
+		AA3FB52B141FF8F60000CE74 /* synthInst.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3FB52A141FF8F60000CE74 /* synthInst.cpp */; };
 		AA43713D13587E7F008C4F1D /* ofxTCPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43712E13587E7F008C4F1D /* ofxTCPClient.cpp */; };
 		AA43713E13587E7F008C4F1D /* ofxTCPManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713013587E7F008C4F1D /* ofxTCPManager.cpp */; };
 		AA43713F13587E7F008C4F1D /* ofxTCPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713213587E7F008C4F1D /* ofxTCPServer.cpp */; };
@@ -95,6 +96,8 @@
 /* Begin PBXFileReference section */
 		AA3FB46D141FB22D0000CE74 /* soundBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundBlocks.h; sourceTree = "<group>"; };
 		AA3FB46E141FB22D0000CE74 /* soundBlocks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundBlocks.cpp; sourceTree = "<group>"; };
+		AA3FB529141FF8F60000CE74 /* synthInst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synthInst.h; path = instruments/synthInst.h; sourceTree = "<group>"; };
+		AA3FB52A141FF8F60000CE74 /* synthInst.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = synthInst.cpp; path = instruments/synthInst.cpp; sourceTree = "<group>"; };
 		AA43712913587E7F008C4F1D /* Instructions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Instructions.txt; sourceTree = "<group>"; };
 		AA43712A13587E7F008C4F1D /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		AA43712C13587E7F008C4F1D /* ofxNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNetwork.h; sourceTree = "<group>"; };
@@ -323,6 +326,8 @@
 				AAA27C6F1343ADE2008FD322 /* band.cpp */,
 				AA3FB46D141FB22D0000CE74 /* soundBlocks.h */,
 				AA3FB46E141FB22D0000CE74 /* soundBlocks.cpp */,
+				AA3FB529141FF8F60000CE74 /* synthInst.h */,
+				AA3FB52A141FF8F60000CE74 /* synthInst.cpp */,
 			);
 			name = instruments;
 			sourceTree = "<group>";
@@ -730,6 +735,7 @@
 				AA43714013587E7F008C4F1D /* ofxUDPManager.cpp in Sources */,
 				AA43714113587E7F008C4F1D /* ofxThread.cpp in Sources */,
 				AA3FB46F141FB22D0000CE74 /* soundBlocks.cpp in Sources */,
+				AA3FB52B141FF8F60000CE74 /* synthInst.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

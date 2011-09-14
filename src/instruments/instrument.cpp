@@ -57,6 +57,63 @@ void inst::sendMidiMessage(vector<unsigned char> newMessage)
 	base.sendMidiMessage(newMessage);
 }
 
+void inst::play(unsigned char vel)
+{
+  startPlay=ofGetElapsedTimeMillis();
+	base.play(vel);
+}
+
+void inst::play()
+{
+  startPlay=ofGetElapsedTimeMillis();
+	base.play();
+}
+
+void inst::scaleToTempo(double time)
+{
+  for (unsigned int i=0; i<blocks.size(); i++) {
+    blocks[i].w*=time/tempo;
+    blocks[i].x=(blocks[i].x-fullWidth)*time/tempo+fullWidth;
+  }
+  tempo=time;
+}
+
+void inst::stop()
+{
+	base.stop();
+}
+
+bool inst::releaseDraggedBlock(){
+  bool ret=false;
+  for (unsigned int i=0; i<blocks.size(); i++) {
+    for (unsigned int j=0; j<blocks.size(); j++) {
+      if(j!=i&&blocks[j].x>=blocks[i].x&&blocks[j].x<blocks[i].x+blocks[i].w){
+        if(!bPercussive&&blocks[j].w+blocks[j].x-30>blocks[i].x+blocks[i].w) {
+          blocks[j].w=blocks[j].w-((blocks[i].x+blocks[i].w)-blocks[j].x);
+          blocks[j].x=blocks[i].x+blocks[i].w;
+        }
+        else if(bPercussive&&abs(blocks[j].x-blocks[i].x)<blocks[i].w/2&&blocks[j].pressed()){
+          blocks.erase(blocks.begin()+j);
+          lastBlock=-1;
+        }
+      }
+    }
+  }
+  for (unsigned int i=0; i<blocks.size(); i++) {
+		if(blocks[i].clickUp()){
+			ret=true;
+			lastBlock=i;
+			if (blocks[i].x<fullWidth) {
+				ret=false;
+				blocks.erase(blocks.begin()+i);
+				lastBlock=-1;
+			}
+			stop();
+		}
+	}
+  return ret;
+}
+
 //**************************************************//
 
 instrument & instrument::operator=(const instrument & t)
@@ -71,13 +128,11 @@ instrument & instrument::operator=(const instrument & t)
 	point=t.point;
 }
 
-instrument::instrument(string objName, unsigned char chan, unsigned char nt)
+instrument::instrument(string objName, unsigned char chan, unsigned char nt):inst()
 {
 	setup(objName, chan, nt);
 	
 }
-
-
 
 void instrument::resizeByFont(int fontSize)
 {
@@ -92,7 +147,7 @@ void instrument::resizeByFont(int fontSize)
 void instrument::draw(int _x,int _y)
 {
 	x=_x, y=_y;
-	draw();
+  instrument::draw();
 }
 
 void instrument::draw()
@@ -131,32 +186,7 @@ bool instrument::clickUp()
 {
 	base.clickUp();
 	bool ret=false;
-  for (unsigned int i=0; i<blocks.size(); i++) {
-    for (unsigned int j=0; j<blocks.size(); j++) {
-      if(j!=i&&blocks[j].x>=blocks[i].x&&blocks[j].x<blocks[i].x+blocks[i].w){
-        if(!bPercussive&&blocks[j].w+blocks[j].x-30>blocks[i].x+blocks[i].w) {
-          blocks[j].w=blocks[j].w-((blocks[i].x+blocks[i].w)-blocks[j].x);
-          blocks[j].x=blocks[i].x+blocks[i].w;
-        }
-        else if(bPercussive&&abs(blocks[j].x-blocks[i].x)<blocks[i].w/2&&blocks[j].pressed()){
-          blocks.erase(blocks.begin()+j);
-          lastBlock=-1;
-        }
-      }
-    }
-  }
-  for (unsigned int i=0; i<blocks.size(); i++) {
-		if(blocks[i].clickUp()){
-			ret=true;
-			lastBlock=i;
-			if (blocks[i].x<fullWidth) {
-				ret=false;
-				blocks.erase(blocks.begin()+i);
-				lastBlock=-1;
-			}
-			stop();
-		}
-	}
+  ret=releaseDraggedBlock();
 	bHolding=false;
 	return ret;
 }
@@ -181,30 +211,3 @@ bool instrument::active(double xPos)
 	return ret;
 }
 
-
-
-void instrument::play(unsigned char vel)
-{
-  startPlay=ofGetElapsedTimeMillis();
-	base.play(vel);
-}
-
-void instrument::play()
-{
-  startPlay=ofGetElapsedTimeMillis();
-	base.play();
-}
-
-void instrument::scaleToTempo(double time)
-{
-  for (unsigned int i=0; i<blocks.size(); i++) {
-    blocks[i].w*=time/tempo;
-    blocks[i].x=(blocks[i].x-fullWidth)*time/tempo+fullWidth;
-  }
-  tempo=time;
-}
-
-void instrument::stop()
-{
-	base.stop();
-}
