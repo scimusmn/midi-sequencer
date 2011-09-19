@@ -1,7 +1,22 @@
 <band font="ArialNarrow.ttf" xmlns:blck="http://www.smm.org/">
-	<instrument name="Low C Chime" color="0x700000">
+	<instrument name="synth" color="0xA07000">
 		<note>60</note>
 		<channel>1</channel>
+    <synth />
+	</instrument>
+  <instrument name="synth" color="0x00A070">
+		<note>60</note>
+		<channel>2</channel>
+    <synth />
+	</instrument>
+  <instrument name="synth" color="0xA00070">
+		<note>60</note>
+		<channel>3</channel>
+    <synth />
+	</instrument>
+  <instrument name="Low C Chime" color="0x700000">
+		<note>60</note>
+		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
 	<instrument name="D Chime" color="0x007000">
@@ -35,7 +50,7 @@
 		<percussive>true</percussive>
 	</instrument>
 	<instrument name="High C Chime" color="0x00A000">
-		<note>67</note>
+		<note>78</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
@@ -49,15 +64,15 @@
 		<channel>0</channel>
 	</instrument>
 	<instrument name="Rainstick" color="0x00A0A0">
-		<note>70</note>
+		<note>75</note>
 		<channel>0</channel>
 	</instrument>
 	<instrument name="Clicker" color="0xA000A0">
-		<note>71</note>
+		<note>76</note>
 		<channel>0</channel>
 	</instrument>
 	<instrument name="Cymbals" color="0x70A000">
-		<note>72</note>
+		<note>77</note>
 		<channel>0</channel>
 	</instrument>
 	

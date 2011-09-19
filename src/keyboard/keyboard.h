@@ -81,6 +81,7 @@ public:
 	void setup(double wid, double nOctaves);
 	void setChannel(unsigned char chan){ channel=chan; }
 	unsigned char getChannel(){ return channel; }
+  void mouseMotion(int _x, int _y);
 	void draw(int _x, int _y);
 	bool clickDown(int _x, int _y);
 	bool clickUp();

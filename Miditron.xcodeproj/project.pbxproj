@@ -98,6 +98,7 @@
 		AA3FB46E141FB22D0000CE74 /* soundBlocks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundBlocks.cpp; sourceTree = "<group>"; };
 		AA3FB529141FF8F60000CE74 /* synthInst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synthInst.h; path = instruments/synthInst.h; sourceTree = "<group>"; };
 		AA3FB52A141FF8F60000CE74 /* synthInst.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = synthInst.cpp; path = instruments/synthInst.cpp; sourceTree = "<group>"; };
+		AA3FB8E1142256BD0000CE74 /* midiPrograms.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = midiPrograms.ini; path = bin/data/midiPrograms.ini; sourceTree = "<group>"; };
 		AA43712913587E7F008C4F1D /* Instructions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Instructions.txt; sourceTree = "<group>"; };
 		AA43712A13587E7F008C4F1D /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		AA43712C13587E7F008C4F1D /* ofxNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNetwork.h; sourceTree = "<group>"; };
@@ -538,6 +539,7 @@
 				E4B69B5B0A3A1756003C02F2 /* MiditronDebug.app */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				AAA27CF21343C49C008FD322 /* instruments.xml */,
+				AA3FB8E1142256BD0000CE74 /* midiPrograms.ini */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4C2422310CC54B6004149E2 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,

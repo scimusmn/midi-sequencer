@@ -8,6 +8,7 @@
  */
 
 #include "band.h"
+#include "synthInst.h"
 
 bandBar::~bandBar()
 {
@@ -62,6 +63,7 @@ void bandBar::setHeight(double hgt,double top, double bot)
 
 void bandBar::setup(ofXML & xml)
 {
+  loadInstruments("midiPrograms.ini");
 	clearBut.setup("clear blocks","fonts/Arial.ttf",24);
 	clearBut.setAvailable(true);
 	sideBarBack.loadImage("images/sidebar.jpg");
@@ -113,7 +115,7 @@ void bandBar::setup(ofXML & xml)
 						break;
 				}
 			}
-			addInstrument(title,channel,note);
+			addInstrument(title,channel,note, synth);
 			instruments[curInst]->setPercussive(percussive);
 			instruments[curInst]->setColor(color);
       //maxWid=max(maxWid,instruments[curInst]->w);
@@ -122,9 +124,10 @@ void bandBar::setup(ofXML & xml)
 	setHeight();
 }
 
-void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt)
+void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt, bool synth)
 {
-	instruments.push_back( new instrument(title,channel,nt));
+	if(!synth) instruments.push_back( new instrument(title,channel,nt));
+  else instruments.push_back( new synthInstrument(title,channel,nt,this));
 	setHeight();
 }
 
@@ -140,9 +143,7 @@ void bandBar::drawBackground()
 #endif
     //ofSetColor(instruments[i]->getColor()-.3*255);
     //ofColor k=instruments[i]->getColor();
-		ofRect(instruments[i]->x, instruments[i]->y-3, ofGetWidth(), instruments[i]->h+6);
-    //ofSetColor(k.r, k.g, k.b,64);
-    //ofRect(instruments[i]->x, instruments[i]->y+instruments[i]->yoff+instruments[i]->h/2-5, ofGetWidth(), 10);
+		ofRect(instruments[i]->x, instruments[i]->y-bar.getScrollPosition()-3, ofGetWidth(), instruments[i]->h+6);
 	}
 }
 
@@ -174,8 +175,13 @@ void bandBar::draw(int _x, int _y)
     //ofSetColor(0, 0, 0,128);
     //ofRect(x+xGap, tmpY-5, w-xGap, 10);
 	}
-	
+  
 	ofShade(x+w-20, y+yoff, 10, viewSize, OF_LEFT, .3);
+  ofShade(x+w,getBottomPos(), 10, ofGetHeight()-y, OF_RIGHT, .4);
+  //shade to right of scrollbar
+	ofShade(x+xGap, y+yoff, 5, viewSize, OF_RIGHT, .3);
+  
+  if(activeInst) activeInst->draw();
 	
 	//Box at top of sidebar
 	ofSetColor(230, 230, 230);
@@ -194,20 +200,24 @@ void bandBar::draw(int _x, int _y)
 	ofShade(x, y+yoff, 5, bar.w+4, OF_DOWN, .3);
 	ofShade(x, y+yoff+viewSize, 5, bar.w+4, OF_UP, .3);
 	
-	//shade to right of scrollbar
-	ofShade(x+xGap, y+yoff, 5, viewSize, OF_RIGHT, .3);
 	
 	clearBut.draw((w-clearBut.w)/2, getBottomPos()+((yBot)-clearBut.h)/2);
 }
 
 bool bandBar::clickDown(int _x, int _y)
 {
-	for (unsigned int i=0; i<instruments.size(); i++) {
-		if(!bHolding&&_y>yoff&&_y<yoff+viewSize&&instruments[i]->clickDown(_x,_y)){
-			bHolding=true;
-			lastInst=i;
-		}
-	}
+  if(!activeInst){
+    for (unsigned int i=0; i<instruments.size(); i++) {
+      if(!bHolding&&_y>yoff&&_y<yoff+viewSize+100&&instruments[i]->clickDown(_x,_y)){
+        bHolding=true;
+        lastInst=i;
+      }
+    }
+  }
+  else {
+    activeInst->clickDown(_x, _y);
+  }
+
 	if(clearBut.clickDown(_x, _y))
 		clear();
 	if(bar.available())
@@ -232,6 +242,9 @@ bool bandBar::clickUp()
 void bandBar::update()
 {
 	bar.update();
+  for (unsigned int i=0; i<instruments.size(); i++) {
+		instruments[i]->update();
+	}
 }
 
 void bandBar::update(int disp, ofDirection dir)
@@ -254,12 +267,17 @@ void bandBar::mouseMotion(int _x, int _y)
 	}
 }
 
+void bandBar::setActive(inst * currentInst)
+{
+  activeInst=currentInst;
+}
+
 double bandBar::farthestPoint()
 {
 	double ret=0;
 	for (unsigned int i=0; i<instruments.size(); i++) {
 		for (unsigned int j=0; j<instruments[i]->size(); j++) {
-			ret=max(ret,instruments[i][j].x+instruments[i][j].w);
+			ret=max(ret,(*instruments[i])[j].x+(*instruments[i])[j].w+(*instruments[i])[j].relPos.x);
 		}
 	}
 	return ret;

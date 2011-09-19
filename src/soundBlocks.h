@@ -35,6 +35,7 @@ public:
 	bool clickDown(int _x, int _y);
 	bool clickUp();
 	void mouseMotion(int _x, int _y);
+  void changeTitle(string ttl);
 	friend class inst;
 };
 
@@ -44,10 +45,10 @@ protected:
 	ofTimer rhythmTimer,playTimer;
 	double playTime,rhythmTime;
 	bool bPlaying;
-	unsigned char note;
-	unsigned char channel;
 	vector<unsigned char> message;
 public:
+  unsigned char note;
+	unsigned char channel;
 	rhythmBlock():soundBlock(){}
 	rhythmBlock(const rhythmBlock & t);
 	void setup(string title, unsigned char nt, unsigned char chan);
@@ -61,6 +62,7 @@ public:
 	bool clickDown(int _x, int _y);
 	bool clickUp();
 	bool isPlaying(){ return bPlaying;}
+  
 	friend class instrument;
 };
 

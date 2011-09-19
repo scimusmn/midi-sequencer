@@ -96,6 +96,12 @@ bool soundBlock::clickUp()
 	
 }
 
+void soundBlock::changeTitle(string ttl)
+{
+  title=ttl;
+  w=max(float(150), header.stringWidth(title)+20);
+}
+
 void soundBlock::mouseMotion(int _x, int _y)
 {
 	if(bPressed) move(_x-relPos.x, _y-relPos.y);
@@ -145,7 +151,7 @@ void rhythmBlock::sendMidiMessage(vector<unsigned char> newMessage)
 void rhythmBlock::play(unsigned char vel)
 {
 	message.clear();
-	message.push_back(MIDI_NOTE_ON+0);
+	message.push_back(MIDI_NOTE_ON+channel);
 	message.push_back(note);
 	message.push_back(vel);
 	sendMidiMessage(message);
@@ -185,7 +191,7 @@ dragBlock::dragBlock(const rhythmBlock & t):soundBlock(t)
 {
 	rightAdj.setup(16, 32, "images/rightArrow.png");
   leftAdj.setup(16, 32, "images/leftArrow.png");
-  if(bPercussive) w=40;
+  if(bPercussive) w=80;
   bPressed=true;
   relMouse.x=0;
 	bResizing=bLResize=bActive=false;
@@ -195,7 +201,7 @@ dragBlock::dragBlock(int _x, int _w, rhythmBlock & t):soundBlock(t)
 {
   rightAdj.setup(16, 32, "images/rightArrow.png");
   leftAdj.setup(16, 32, "images/leftArrow.png");
-  if(bPercussive) w=40;
+  if(bPercussive) w=80;
   bPressed=false;
   relMouse.x=0;
 	bResizing=bLResize=bActive=false;

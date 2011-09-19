@@ -36,9 +36,9 @@ void midiSequencer::resize(){
   if(band) {
     bar.setup(20, ofGetWidth()-band->w, OF_HOR);
     bar.registerArea(ofGetWidth()-band->w, playTime*pps);
-    if(numMeasures*measureLength<ofGetWidth()-band->w){
+    if(numMeasures*measureLength<2*(ofGetWidth()-band->w)){
       double secondsPerMeasure=measureLength/pps;
-      measureLength=(ofGetWidth()-band->w)/numMeasures;
+      measureLength=2*(ofGetWidth()-band->w)/numMeasures;
       pps=measureLength/secondsPerMeasure;
       midiConductor::setup(numMeasures*secondsPerMeasure,pps);
     }
@@ -264,7 +264,7 @@ void midiSequencer::update()
       pause(),reset();
   }
 	if(loopBut.pressed()&&cursor()>band->farthestPoint()-x)
-		reset();
+		reset(),setScrollPos(0);
 	if(metronome.justExpired())
 		reset();
 	midiConductor::update();

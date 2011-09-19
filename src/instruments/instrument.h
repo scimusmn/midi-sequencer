@@ -11,11 +11,11 @@
 
 #define F_YEAH_WOOD 0
 
-#include "ofMain.h"
-#include "ofExtended.h"
-#include "ofxMidiIn.h"
-#include "ofxMidiOut.h"
 #include "soundBlocks.h"
+
+enum instRet {
+  NO_CLICK,BASE_CLICK,DRAG_CLICK,KB_CLICK
+};
 
 class inst : public ofInterObj{
 protected:
@@ -24,7 +24,7 @@ protected:
   int fullWidth;
   unsigned long startPlay;
   double tempo;
-  double scrollX,scrollY;
+  ofPoint scroll;
   int lastBlock;
 	bool bDefault;
 public:
@@ -42,7 +42,7 @@ public:
     if(lastBlock>=0&&lastBlock<blocks.size()) return blocks[lastBlock];
     return blocks[blocks.size()-1];
   }
-  double vertScrollPos(){ return scrollY;}
+  double vertScrollPos(){ return scroll.y;}
   
   //---.cpp defined functions
   void setPercussive(bool perc);
@@ -62,13 +62,14 @@ public:
   void play(unsigned char vel);
   
   //----- virtual functions
-  virtual void draw(int _x, int _y)=0;
-	virtual void draw()=0;
-	virtual void drawBackground()=0;
-  virtual bool clickDown(int _x, int _y)=0;
-	virtual bool clickUp()=0;
-	virtual void mouseMotion(int _x, int _y)=0;
-  virtual bool active(double pos)=0;
+  virtual void draw(int _x, int _y){}
+	virtual void draw(){}
+	virtual void drawBackground(){}
+  virtual bool clickDown(int _x, int _y){}
+	virtual bool clickUp(){}
+	virtual void mouseMotion(int _x, int _y){}
+  virtual void update(){}
+  virtual bool active(double pos){}
 };
 
 class instrument : public inst{

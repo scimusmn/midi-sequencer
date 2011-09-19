@@ -28,8 +28,10 @@ protected:
 	double xGap,yGap;
 	int numBlocksPerBin;
 	int numBins;
+  inst * activeInst;
 public:
 	bandBar():ofInterGroup(){
+    activeInst=0;
 		lastInst=0;
 	}
 	~bandBar();
@@ -38,7 +40,7 @@ public:
 	void setup();
 	void setup(xmlParse * config);
   void setup(ofXML & xml);
-	void addInstrument(string title, unsigned char channel, unsigned char nt);
+	void addInstrument(string title, unsigned char channel, unsigned char nt, bool synth);
 	void drawInstruments();
 	void drawBackground();
 	void clear();
@@ -51,6 +53,8 @@ public:
 	void drag(int _x, int _y);
 	void checkActives(double xPos);
 	void setHeight(double height=0, double top=30, double bot=95);
+  
+  void setActive(inst * currentInst);
 	double getBottomPos();
 	double farthestPoint();
 	void stopAll();

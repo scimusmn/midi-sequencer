@@ -23,11 +23,11 @@ void inst::update(int disp, ofDirection dir)
 {
 	bool vert=(dir==OF_VERT);
 	base.update();
-	if(!vert) scrollX=disp;
-	else scrollY=disp;
-	if(vert) base.soundBlock::update(0.,int(scrollY));
+	if(!vert) scroll.x=disp;
+	else scroll.y=disp;
+	if(vert) base.soundBlock::update(0.,int(scroll.y));
 	else for (unsigned int i=0; i< blocks.size(); i++) {
-		blocks[i].update(scrollX,0);
+		blocks[i].update(scroll.x,0);
 	}
 }
 
@@ -49,6 +49,7 @@ void inst::setup(string objName, unsigned char chan, unsigned char nt)
 	title=objName;
 	setMidi(chan,nt);
 	lastBlock=0;
+  scroll.y=scroll.x=0;
   bPercussive=false;
   tempo=1;
 }
@@ -123,7 +124,7 @@ instrument & instrument::operator=(const instrument & t)
 	bHolding=t.bHolding;
 	blocks=t.blocks;
 	title=t.title;
-	scrollX=t.scrollX,scrollY=t.scrollY;
+	scroll.x=t.scroll.x,scroll.y=t.scroll.y;
 	lastBlock=t.lastBlock;
 	point=t.point;
 }
@@ -146,7 +147,7 @@ void instrument::resizeByFont(int fontSize)
 void instrument::draw(int _x,int _y)
 {
 	x=_x, y=_y;
-  instrument::draw();
+  draw();
 }
 
 void instrument::draw()
@@ -168,9 +169,7 @@ void instrument::drawBackground()
 bool instrument::clickDown(int _x, int _y)
 {
 	bool ret=0;
-  if(base.over(_x, _y-scrollY)) cout << " Block is " + title + " and we are "<< ((bHolding)?"":"not") << " holding.\n";
-  else cout << "The block coord is (" << x << " , " << y << ") with mouse coords (" << _x << "," << _y << ")\n";
-	if(!bHolding&&base.over(_x, _y-scrollY)){
+	if(!bHolding&&base.over(_x, _y-scroll.y)){
 		blocks.push_back(dragBlock(base));
     blocks[blocks.size()-1].x=_x-blocks[blocks.size()-1].w/2;
 		ret=1;

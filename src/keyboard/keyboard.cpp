@@ -123,9 +123,10 @@ bool pianoKey::clickDown(int _x, int _y)
 
 bool pianoKey::clickUp()
 {
-	if(bPressed) bPressed=false;
+  bool ret=bPressed;
+	bPressed=false;
 	clearNotes.clickUp();
-	//buttons.clickUp();
+	return ret;
 }
 
 pianoOctave::pianoOctave(double width,char octave_begin_note):ofInterGroup()
@@ -186,6 +187,7 @@ void pianoOctave::draw(int _x, int _y)
 bool pianoOctave::clickDown(int _x, int _y)
 {
 	bool ret=false;
+  if(over(_x, _y)) bPressed=true;
 	for (unsigned int i=0; i<keys.size(); i++) {
 		if(keys[i].bSharp&&keys[i].clickDown(_x,_y)){
 			ret=true;
@@ -216,9 +218,12 @@ pianoKey & pianoOctave::getKey()
 
 bool pianoOctave::clickUp()
 {
+  bool ret=0;
+  bPressed=false;
 	for (unsigned int i=0; i<keys.size(); i++) {
-		keys[i].clickUp();
+		ret|=keys[i].clickUp();
 	}
+  return ret;
 }
 
 void pianoOctave::clear()
@@ -276,6 +281,7 @@ void pianoKeyboard::draw(int _x, int _y)
 bool pianoKeyboard::clickDown(int _x, int _y)
 {
 	bool ret=false;
+  if(over(_x, _y)) bPressed=true;
 	for (unsigned int i=0; i<octaves.size(); i++) {
 		if (octaves[i].clickDown(_x,_y)) {
 			oSelected=i;
@@ -295,13 +301,26 @@ int pianoKeyboard::size()
 
 bool pianoKeyboard::clickUp()
 {
+  bool ret=0;
+  bPressed=false;
 	for (unsigned int i=0; i<size(); i++) {
-		octaves[i/12][i%12].clickUp();
+		ret|=octaves[i/12][i%12].clickUp();
 	}
+  return ret;
 }
 
 void pianoKeyboard::update()
 {
+}
+
+void pianoKeyboard::mouseMotion(int _x, int _y)
+{
+  if(bPressed){
+    if(over(_x,_y)&&!getKey().over(_x, _y)){
+      clickUp();
+      clickDown(_x, _y);
+    }
+  }
 }
 
 pianoKey & pianoKeyboard::getKey()

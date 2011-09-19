@@ -20,7 +20,7 @@ void testApp::setup(){
 	rolandSynth.openPort("decoder");
 	background.loadImage("images/background.jpg");
 	kb.setup(800, 4);
-	conductor.setup(10, 1, 100, ofGetWidth()-band.w); //10 seconds at 100 pixels per second
+	conductor.setup(10, 1, 50, ofGetWidth()-band.w); //10 seconds at 100 pixels per second
 	conductor.registerPlayback(&band);
   conductor.setTimeSignature(4);
 	test.setup(200, 6);
@@ -62,8 +62,7 @@ void testApp::draw(){
 	band.draw(0,75);
 	
 	//shade to left of sidebar
-	ofShade(band.x+band.w, band.y+conductor.h, 10, band.getBottomPos()-conductor.h, OF_RIGHT, .4);
-	ofShade(band.x+band.w, band.getBottomPos(), 5, ofGetHeight()-band.getBottomPos(), OF_RIGHT, .4);
+	
 	ofShade(band.x+band.w, band.y, 5, conductor.h, OF_RIGHT, .4);
 	
 	//kb.draw(100, 500);
@@ -140,6 +139,11 @@ void testApp::windowResized(int w, int h){
 
 void testApp::midiToSend(vector< unsigned char > message){
 	rolandSynth.sendMessage(message);
+  /*cout << "Message Begin::";
+  for (unsigned int i=0; i<message.size(); i++) {
+    cout << int(message[i]) << "::";
+  }
+  cout << "Message end\n";*/
 }
 
 void testApp::midiReceived(double deltatime, std::vector< unsigned char > *message, int port){
