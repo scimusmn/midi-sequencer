@@ -28,7 +28,7 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 	loopBut.setup(48, 48, "images/repeat.png");
   waltz.setup(64,64, "images/threeFour.png");
   blues.setup(64,64, "images/fourFour.png");
-	display.setup(200, 6);
+	display.setup(300, 8);
   tempoSlide.setup(30, 30);
 }
 
@@ -135,31 +135,20 @@ void midiSequencer::drawDivs(bool full)
 {
 	for (int i=0; i<numMeasures; i++) {
 		if(!full){
-			//ofSetColor(0xE0C39B);
-#if F_YEAH_WOOD
-			ofSetColor(0, 0, 0);
-#else
 			ofSetColor(0xFFFFFF);
-#endif
-			label.drawString(ssprintf("%i",i), x+measureLength*i+1-bar.getScrollPosition(), y+label.stringHeight(ssprintf("%i",i)));
+			label.drawString(ofToString(i), x+measureLength*i+1-bar.getScrollPosition(), y+label.stringHeight(ofToString(i)));
 		}
 		for (int j=0; j<divsPerMeasure; j++) {
-#if F_YEAH_WOOD
-			if(j%2) ofSetColor(0x60,0x43,0x1B,64);
-			else ofSetColor(0x60,0x43,0x1B,128);
-      if(j==0) ofSetColor(0x60,0x43,0x1B,200);
-#else
 			if(j%2) ofSetColor(0x77,0x77,0,64);
 			else ofSetColor(0x66,0x66,0,128);
       if(j==0) ofSetColor(128,128,128,200);
-#endif
 			ofLine(x+measureLength*i+measureLength*j/divsPerMeasure-bar.getScrollPosition(), \
 				   (full)?y:(abs(j-double(divsPerMeasure)/2)<=.5)?y+10:(j==0)?y+5:y+15,\
 				   x+measureLength*i+measureLength*j/divsPerMeasure-bar.getScrollPosition(), (!full)?y+h:ofGetHeight());
 		}
 	}
 	ofSetColor(0xE0C39B);
-	label.drawString(ofToString(int(numMeasures)), x+measureLength*numMeasures+1-bar.getScrollPosition(), y+label.stringHeight(ssprintf("%i",numMeasures)));
+	label.drawString(ofToString(int(numMeasures)), x+measureLength*numMeasures+1-bar.getScrollPosition(), y+label.stringHeight(ofToString(numMeasures)));
 	ofSetColor(0x60,0x43,0x1B,128);
 	ofLine(x+measureLength*numMeasures-bar.getScrollPosition(),y+5, x+measureLength*numMeasures-bar.getScrollPosition(), (!full)?y+h:ofGetHeight());
 }
@@ -250,9 +239,10 @@ void midiSequencer::draw(int _x, int _y)
 	ofRoundBox(display.x-10, display.y-10, display.w+20, display.h+20, 5, .2);
 	ofSetColor(0, 128, 200);
 	label.setMode(OF_FONT_LEFT);
-  label.setSize(12);
+	label.setSize(12);
+	
 	int secs=metronome.getElapsed();
-	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), x+w/2+playBut.w/2+20, botY+(botH-display.h)/2);
+	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), x+w/2+playBut.w/2+40, botY+(botH-display.h)/2);
 }
 
 void midiSequencer::update()
@@ -275,6 +265,7 @@ void midiSequencer::update()
 
 bool midiSequencer::clickDown(int _x, int _y)
 {
+	bool ret=0;
 	if(mark.clickDown(_x, _y));
 	else if(_y<mark.y+mark.h){
 		mark.setPressed(true);
@@ -289,12 +280,12 @@ bool midiSequencer::clickDown(int _x, int _y)
 	}
 	else if(rewindBut.clickDown(_x, _y)) reset(), setScrollPos(0);
 	else if(loopBut.toggle(_x, _y));
-  else if(waltz.clickDown(_x, _y)) loadSong("waltz.xml");
-  else if(blues.clickDown(_x, _y)) loadSong("blues.xml");
-  else if(tempoSlide.clickDown(_x, _y)){
+	else if(waltz.clickDown(_x, _y)) loadSong("waltz.xml");
+	else if(blues.clickDown(_x, _y)) loadSong("blues.xml");
+	else if(tempoSlide.clickDown(_x, _y)){
     setTempo(1+tempoSlide.getPercent()*3);
   }
-		
+	return ret;
 }
 
 void midiSequencer::play()
@@ -311,16 +302,19 @@ void midiSequencer::pause()
 
 bool midiSequencer::clickUp()
 {
+	bool ret=0;
 	mark.clickUp();
 	rewindBut.clickUp();
 	bar.clickUp();
-  waltz.clickUp();
-  blues.clickUp();
-  if(tempoSlide.clickUp()) setTempo(1+tempoSlide.getPercent()*3);
+	waltz.clickUp();
+	blues.clickUp();
+	if(tempoSlide.clickUp()) setTempo(1+tempoSlide.getPercent()*3);
+	return ret;
 }
 
 bool midiSequencer::mouseMotion(int _x, int _y)
 {
+	bool ret=0;
 	if(mark.pressed()){
 		int newPos=_x-x+getBarPosition();
 		if(_x<x) newPos=0;
@@ -333,6 +327,7 @@ bool midiSequencer::mouseMotion(int _x, int _y)
     setTempo(1+tempoSlide.getPercent()*3);
   }
 	else if(bar.mouseMotion(_x, _y));
+	return ret;
 }
 
 void midiSequencer::drag(int _x, int _y)
@@ -357,10 +352,11 @@ void midiSequencer::snapTo(dragBlock & last)
   //int k=0;
 	for (int i=0; i<numMeasures; i++) {
 		for (int j=0; j<divsPerMeasure; j++) {
-			if (abs((x+measureLength*i+measureLength*j/divsPerMeasure)-num)<=measureLength/(divsPerMeasure*2)) {
+      if(num<x) num=x;
+			if(abs((x+measureLength*i+measureLength*j/divsPerMeasure)-num)<=measureLength/(divsPerMeasure*2)) {
 				num=x+measureLength*i+measureLength*j/divsPerMeasure;
 			}
-			if (abs((x+measureLength*i+measureLength*j/divsPerMeasure)-(num+wid))<=measureLength/(divsPerMeasure*2)) {
+			if(abs((x+measureLength*i+measureLength*j/divsPerMeasure)-(num+wid))<=measureLength/(divsPerMeasure*2)) {
 				wid=x+measureLength*i+measureLength*j/divsPerMeasure-num;
         if(!wid) wid=measureLength/divsPerMeasure;
 			}

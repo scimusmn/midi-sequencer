@@ -92,8 +92,9 @@ bool soundBlock::clickDown(int _x, int _y)
 
 bool soundBlock::clickUp()
 {
+	bool ret=bPressed;
 	if(bPressed) bPressed=false;
-	
+	return ret;
 }
 
 void soundBlock::changeTitle(string ttl)
@@ -182,31 +183,33 @@ bool rhythmBlock::clickDown(int _x, int _y)
 
 bool rhythmBlock::clickUp()
 {
+	bool ret=bPressed;
 	if(bPressed) bPressed=false, stop();
-	
+	return ret;
 }
 //**************************************************//
 
-dragBlock::dragBlock(const rhythmBlock & t):soundBlock(t)
+dragBlock::dragBlock(rhythmBlock & t):soundBlock(t)
 {
-	rightAdj.setup(16, 32, "images/rightArrow.png");
-  leftAdj.setup(16, 32, "images/leftArrow.png");
-  if(bPercussive) w=80;
-  bPressed=true;
-  relMouse.x=0;
-	bResizing=bLResize=bActive=false;
+  setup(t);
 }
 
 dragBlock::dragBlock(int _x, int _w, rhythmBlock & t):soundBlock(t)
 {
+  setup(t);
+  x=_x;
+  w=_w;
+}
+
+void dragBlock::setup(rhythmBlock & t)
+{
   rightAdj.setup(16, 32, "images/rightArrow.png");
   leftAdj.setup(16, 32, "images/leftArrow.png");
   if(bPercussive) w=80;
-  bPressed=false;
+  bPressed=true;
   relMouse.x=0;
+  bNewBlock=true;
 	bResizing=bLResize=bActive=false;
-  x=_x;
-  w=_w;
 }
 
 void dragBlock::draw(int _y)

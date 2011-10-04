@@ -9,9 +9,9 @@
 
 #pragma once
 
-#include "band.h"
+#include "../band.h"
 #include "instrument.h"
-#include "keyboard.h"
+#include "../keyboard/keyboard.h"
 
 void loadInstruments(string filename);
 
@@ -22,7 +22,10 @@ protected:
   pianoKeyboard kb;
   ofDropDown drop;
   ofTimer hold;
-  bool bNewBlock;
+  double xOrig;
+  
+  ofFont label;
+  ofFont subhead;
 public:
   synthInstrument():inst(){
     hold.set(1.0);
@@ -36,6 +39,7 @@ public:
   void draw(int x, int y);
   void draw();
   void drawBackground();
+  void drawForeground();
   bool clickDown(int _x, int _y);
   bool clickUp();
   void mouseMotion(int _x, int _y);

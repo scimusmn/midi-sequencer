@@ -8,7 +8,7 @@
  */
 
 #include "band.h"
-#include "synthInst.h"
+#include "instruments/synthInst.h"
 
 bandBar::~bandBar()
 {
@@ -22,7 +22,8 @@ void bandBar::setup()
 
 double bandBar::getBottomPos()
 {
-	return y+h-yBot;
+	//return y+h-yBot;
+  return y+yoff+viewSize;
 }
 
 inst * bandBar::operator[](int i)
@@ -38,25 +39,40 @@ int bandBar::size()
 void bandBar::setHeight(double hgt,double top, double bot)
 {
 	h=(hgt)?hgt:ofGetHeight();
+  int barWid=30;
 	yoff=top;
 	yBot=bot;
-	viewSize=h-(yoff+yBot);
-	xoff=30;
-	xGap=bar.w+2;
+  xoff=barWid+10;
+	xGap=barWid+2;
 	yGap=20;
 	xBlockSpace=10;
 	yBlockSpace=10;
 	numBins=1;
+  binWidth=0;
 	for (unsigned int i=0; i<instruments.size(); i++) {
 		binWidth=max(binWidth,instruments[i]->w+xBlockSpace*2);
 		binHeight=max(binHeight, instruments[i]->h+yBlockSpace*2);
 	}
 	w=(xGap+binWidth)*numBins+xGap;
+  binWidth+=(barWid-xBlockSpace*2);
 	double fullSize=binHeight*instruments.size();
-	bar.setup(20, viewSize, OF_VERT);
+  
+  scrollUp.setup(w,OF_HOR, "images/mInstUp.jpg");
+  scrollDown.setup(w,OF_HOR,"images/mInstDown.jpg");
+  
+  yoff=top+scrollUp.h;
+  
+  viewSize=h-(yoff+yBot)-scrollDown.h;
+  
+	bar.setup(barWid, viewSize, OF_VERT);
 	bar.registerArea(viewSize,fullSize);
   for (unsigned int i=0; i<instruments.size(); i++) {
     instruments[i]->setBandWidth(w);
+  }
+  
+  if(!bar.available()) {
+    scrollUp.setup(0,OF_HOR, "images/mInstUp.jpg");
+    scrollDown.setup(0,OF_HOR,"images/mInstDown.jpg");
   }
   
 }
@@ -160,10 +176,21 @@ void bandBar::draw(int _x, int _y)
 	
 	//sidebar background
 	ofSetColor(255, 255, 255);
-	sideBarBack.draw(x+w-(sideBarBack.height/h)*sideBarBack.width, y,(sideBarBack.height/h)*sideBarBack.width,h);
+	//sideBarBack.draw(x+w-(sideBarBack.height/h)*sideBarBack.width, y,(sideBarBack.height/h)*sideBarBack.width,h);
+  ofSetColor(0x333333);
+  ofRect(x, y, w, h);
+  ofSetColor(229, 224, 15,128);
+  double s=10;
+  for (int i=0; i<w/s; i++) {
+    ofLine(x+w-i*s, y, x+w-i*s, y+h);
+  }
+  for (int i=0; i<h/s; i++) {
+    ofLine(x, y+i*s, x+w, y+i*s);
+  }
+  ofShade(x+w, y+yoff, 10, viewSize+scrollDown.h, OF_RIGHT, .3);
 	
-	//
-	ofSetColor(0x80633B);
+	//ofSetColor(0x80633B);
+  ofSetColor(0x33, 0x33, 0x33,223);
 	ofRect(x+xGap, y+yoff, w-xoff-10, viewSize);
 	ofShade(x+w, y+yoff, 10, viewSize, OF_LEFT, .3);
 	
@@ -187,28 +214,40 @@ void bandBar::draw(int _x, int _y)
 	ofSetColor(230, 230, 230);
 	ofShadeBox(x, y, w, yoff, OF_DOWN, .4);
 	ofShade(x, y+yoff, 10, w, OF_DOWN, .3);
+  
+  //Box at bottom of sidebar
+	ofSetColor(230, 230, 230);
+	ofShadeBox(x, y+yoff+viewSize, w, yoff, OF_DOWN, .4);
 	
 	//box at bottom of sidebar
-	ofRoundBox(x-10, getBottomPos(), w+10, yBot, 10, .4);
+	ofRoundBox(x-10, getBottomPos()+scrollDown.h, w+10, yBot, 2, .4);
 	ofShade(x, getBottomPos(), 10, w, OF_UP, .3);
-	ofShade(x, getBottomPos(), 15, w, OF_DOWN, .2);
+	ofShade(x, getBottomPos()+scrollDown.h, 15, w, OF_DOWN, .2);
 	
-	if(bar.available())
+	if(bar.available()){
+    scrollUp.draw(x,y+yoff-scrollUp.h);
 		bar.draw(x,y+yoff);
+    scrollDown.draw(x,y+yoff+viewSize);
+  }
 	
 	//Shades over ends of the scroll bar
 	ofShade(x, y+yoff, 5, bar.w+4, OF_DOWN, .3);
 	ofShade(x, y+yoff+viewSize, 5, bar.w+4, OF_UP, .3);
 	
 	
-	clearBut.draw((w-clearBut.w)/2, getBottomPos()+((yBot)-clearBut.h)/2);
+	clearBut.draw((w-clearBut.w)/2, getBottomPos()+scrollDown.h+((yBot)-clearBut.h)/2);
+  
+  for (unsigned int i=0; i<instruments.size(); i++) {
+    instruments[i]->drawForeground();
+  }
 }
 
 bool bandBar::clickDown(int _x, int _y)
 {
+	bool ret=0;
   if(!activeInst){
     for (unsigned int i=0; i<instruments.size(); i++) {
-      if(!bHolding&&_y>yoff&&_y<yoff+viewSize+100&&instruments[i]->clickDown(_x,_y)){
+      if(!bHolding&&_y>y+yoff&&_y<y+yoff+viewSize&&instruments[i]->clickDown(_x,_y)){
         bHolding=true;
         lastInst=i;
       }
@@ -222,6 +261,23 @@ bool bandBar::clickDown(int _x, int _y)
 		clear();
 	if(bar.available())
 		bar.clickDown(_x, _y);
+  if(scrollUp.getAvailable()){
+    if(scrollUp.clickDown(_x, _y)){
+      bar.setScrollPosition(bar.getScrollPosition()-binHeight);
+      for (unsigned int i=0; i<instruments.size(); i++) {
+        instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
+      }
+  }
+  }
+  if(scrollDown.getAvailable()){
+    if(scrollDown.clickDown(_x, _y)){
+      bar.setScrollPosition(bar.getScrollPosition()+binHeight);
+      for (unsigned int i=0; i<instruments.size(); i++) {
+        instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
+      }
+    }
+  }
+	return ret;
 }
 
 bool bandBar::clickUp()
@@ -233,6 +289,8 @@ bool bandBar::clickUp()
 			lastInst=i;
 		}
 	}
+  scrollUp.clickUp();
+  scrollDown.clickUp();
 	bHolding=false;
 	clearBut.clickUp();
 	bar.clickUp();
@@ -242,6 +300,8 @@ bool bandBar::clickUp()
 void bandBar::update()
 {
 	bar.update();
+  scrollUp.setAvailable((bar.getScrollPosition()>binHeight));
+  scrollDown.setAvailable((bar.getScrollPosition()<(bar.getFullSize()-viewSize-binHeight)));
   for (unsigned int i=0; i<instruments.size(); i++) {
 		instruments[i]->update();
 	}

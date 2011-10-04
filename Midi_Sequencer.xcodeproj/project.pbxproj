@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA3FB46F141FB22D0000CE74 /* soundBlocks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3FB46E141FB22D0000CE74 /* soundBlocks.cpp */; };
 		AA3FB52B141FF8F60000CE74 /* synthInst.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3FB52A141FF8F60000CE74 /* synthInst.cpp */; };
+		AA3FBADB142796BE0000CE74 /* soundBlocks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3FBAD9142796BE0000CE74 /* soundBlocks.cpp */; };
+		AA3FBADE142796CF0000CE74 /* conductor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA3FBADC142796CF0000CE74 /* conductor.cpp */; };
 		AA43713D13587E7F008C4F1D /* ofxTCPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43712E13587E7F008C4F1D /* ofxTCPClient.cpp */; };
 		AA43713E13587E7F008C4F1D /* ofxTCPManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713013587E7F008C4F1D /* ofxTCPManager.cpp */; };
 		AA43713F13587E7F008C4F1D /* ofxTCPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713213587E7F008C4F1D /* ofxTCPServer.cpp */; };
@@ -23,7 +24,6 @@
 		AAA27A181342457D008FD322 /* instrument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAA27A171342457D008FD322 /* instrument.cpp */; };
 		AAA27BE813439AA9008FD322 /* timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAA27BE713439AA9008FD322 /* timeline.cpp */; };
 		AAA27C701343ADE2008FD322 /* band.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAA27C6F1343ADE2008FD322 /* band.cpp */; };
-		AAA2840E134625CB008FD322 /* conductor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAA2840D134625CB008FD322 /* conductor.cpp */; };
 		AAF445FD133BD39600EFE904 /* ofxMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AAF445FC133BD39600EFE904 /* ofxMidiOut.cpp */; };
 		E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE0A90E8CC67C009D7055 /* GLee.a */; };
 		E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE2E30E8CC69C009D7055 /* rtAudio.a */; };
@@ -94,11 +94,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AA3FB46D141FB22D0000CE74 /* soundBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundBlocks.h; sourceTree = "<group>"; };
-		AA3FB46E141FB22D0000CE74 /* soundBlocks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundBlocks.cpp; sourceTree = "<group>"; };
 		AA3FB529141FF8F60000CE74 /* synthInst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = synthInst.h; path = instruments/synthInst.h; sourceTree = "<group>"; };
 		AA3FB52A141FF8F60000CE74 /* synthInst.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = synthInst.cpp; path = instruments/synthInst.cpp; sourceTree = "<group>"; };
 		AA3FB8E1142256BD0000CE74 /* midiPrograms.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = midiPrograms.ini; path = bin/data/midiPrograms.ini; sourceTree = "<group>"; };
+		AA3FBAD9142796BE0000CE74 /* soundBlocks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = soundBlocks.cpp; sourceTree = "<group>"; };
+		AA3FBADA142796BE0000CE74 /* soundBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundBlocks.h; sourceTree = "<group>"; };
+		AA3FBADC142796CF0000CE74 /* conductor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = conductor.cpp; path = timeline/conductor.cpp; sourceTree = "<group>"; };
+		AA3FBADD142796CF0000CE74 /* conductor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = conductor.h; path = timeline/conductor.h; sourceTree = "<group>"; };
 		AA43712913587E7F008C4F1D /* Instructions.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Instructions.txt; sourceTree = "<group>"; };
 		AA43712A13587E7F008C4F1D /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		AA43712C13587E7F008C4F1D /* ofxNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNetwork.h; sourceTree = "<group>"; };
@@ -134,8 +136,6 @@
 		AAA27C6E1343ADE2008FD322 /* band.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = band.h; sourceTree = "<group>"; };
 		AAA27C6F1343ADE2008FD322 /* band.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = band.cpp; sourceTree = "<group>"; };
 		AAA27CF21343C49C008FD322 /* instruments.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = instruments.xml; path = bin/data/instruments.xml; sourceTree = "<group>"; };
-		AAA2840C134625CB008FD322 /* conductor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = conductor.h; sourceTree = "<group>"; };
-		AAA2840D134625CB008FD322 /* conductor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = conductor.cpp; sourceTree = "<group>"; };
 		AAD17A01139D7EDF00FE62FD /* testBand.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = testBand.xml; path = bin/data/testBand.xml; sourceTree = "<group>"; };
 		AAF445FB133BD39600EFE904 /* ofxMidiOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMidiOut.h; sourceTree = "<group>"; };
 		AAF445FC133BD39600EFE904 /* ofxMidiOut.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMidiOut.cpp; sourceTree = "<group>"; };
@@ -213,6 +213,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA3FBAD8142796BE0000CE74 /* soundBlocks */ = {
+			isa = PBXGroup;
+			children = (
+				AA3FBAD9142796BE0000CE74 /* soundBlocks.cpp */,
+				AA3FBADA142796BE0000CE74 /* soundBlocks.h */,
+			);
+			path = soundBlocks;
+			sourceTree = "<group>";
+		};
 		AA43712713587E7F008C4F1D /* ofxNetwork */ = {
 			isa = PBXGroup;
 			children = (
@@ -323,10 +332,6 @@
 			children = (
 				AAA27A161342457D008FD322 /* instrument.h */,
 				AAA27A171342457D008FD322 /* instrument.cpp */,
-				AAA27C6E1343ADE2008FD322 /* band.h */,
-				AAA27C6F1343ADE2008FD322 /* band.cpp */,
-				AA3FB46D141FB22D0000CE74 /* soundBlocks.h */,
-				AA3FB46E141FB22D0000CE74 /* soundBlocks.cpp */,
 				AA3FB529141FF8F60000CE74 /* synthInst.h */,
 				AA3FB52A141FF8F60000CE74 /* synthInst.cpp */,
 			);
@@ -336,10 +341,10 @@
 		AAA27BE913439AB8008FD322 /* timeline */ = {
 			isa = PBXGroup;
 			children = (
+				AA3FBADC142796CF0000CE74 /* conductor.cpp */,
+				AA3FBADD142796CF0000CE74 /* conductor.h */,
 				AAA27BE613439AA9008FD322 /* timeline.h */,
 				AAA27BE713439AA9008FD322 /* timeline.cpp */,
-				AAA2840C134625CB008FD322 /* conductor.h */,
-				AAA2840D134625CB008FD322 /* conductor.cpp */,
 			);
 			name = timeline;
 			sourceTree = "<group>";
@@ -550,6 +555,9 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				AAA27C6E1343ADE2008FD322 /* band.h */,
+				AAA27C6F1343ADE2008FD322 /* band.cpp */,
+				AA3FBAD8142796BE0000CE74 /* soundBlocks */,
 				AAA27BE913439AB8008FD322 /* timeline */,
 				AAA27A151342454B008FD322 /* instruments */,
 				AAA27A0F1342451E008FD322 /* keyboard */,
@@ -671,7 +679,7 @@
 /* Begin PBXProject section */
 		E4B69B4C0A3A1720003C02F2 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "Miditron" */;
+			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "Midi_Sequencer" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 0;
 			mainGroup = E4B69B4A0A3A1720003C02F2;
@@ -730,14 +738,14 @@
 				AAA27A181342457D008FD322 /* instrument.cpp in Sources */,
 				AAA27BE813439AA9008FD322 /* timeline.cpp in Sources */,
 				AAA27C701343ADE2008FD322 /* band.cpp in Sources */,
-				AAA2840E134625CB008FD322 /* conductor.cpp in Sources */,
 				AA43713D13587E7F008C4F1D /* ofxTCPClient.cpp in Sources */,
 				AA43713E13587E7F008C4F1D /* ofxTCPManager.cpp in Sources */,
 				AA43713F13587E7F008C4F1D /* ofxTCPServer.cpp in Sources */,
 				AA43714013587E7F008C4F1D /* ofxUDPManager.cpp in Sources */,
 				AA43714113587E7F008C4F1D /* ofxThread.cpp in Sources */,
-				AA3FB46F141FB22D0000CE74 /* soundBlocks.cpp in Sources */,
 				AA3FB52B141FF8F60000CE74 /* synthInst.cpp in Sources */,
+				AA3FBADB142796BE0000CE74 /* soundBlocks.cpp in Sources */,
+				AA3FBADE142796CF0000CE74 /* conductor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1013,7 +1021,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "Miditron" */ = {
+		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "Midi_Sequencer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B4E0A3A1720003C02F2 /* Debug */,

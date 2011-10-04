@@ -27,6 +27,7 @@ void midiConductor::setPlaybackTime(double seconds)
 	playTime=seconds;
 	metronome.set(playTime);
 	metronome.pause();
+  metronome.reset();
 }
 
 void midiConductor::setPlaybackSpeed(double times_normal)

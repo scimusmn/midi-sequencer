@@ -3,15 +3,13 @@
 
 #include "ofMain.h"
 #include "ofExtended.h"
-//#include "MyMidiListener.h"
 #include "ofxMidiIn.h"
 #include "ofxMidiOut.h"
 
-#include "keyboard.h"
-#include "instrument.h"
+
 #include "band.h"
-#include "conductor.h"
-#include "ofxNetwork.h"
+#include "keyboard/keyboard.h"
+#include "timeline/conductor.h"
 
 
 class testApp : public ofBaseApp{
@@ -57,7 +55,6 @@ class testApp : public ofBaseApp{
 	
 	//********* For Network *********//
 	
-	ofxTCPServer TCP;
 	vector <string> storeText;
 };
 

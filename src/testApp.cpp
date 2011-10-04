@@ -17,7 +17,7 @@ void testApp::setup(){
 	report.loadFont("fonts/DinC.ttf");
 	band.setup(xml);
 	//keyboard.openPort("keyboard");
-	rolandSynth.openPort("decoder");
+	rolandSynth.openPort(1);
 	background.loadImage("images/background.jpg");
 	kb.setup(800, 4);
 	conductor.setup(10, 1, 50, ofGetWidth()-band.w); //10 seconds at 100 pixels per second
@@ -72,10 +72,10 @@ void testApp::draw(){
 	ofSetColor(0x555555);
 #endif
 	ofRoundBox(-30, 0, ofGetWidth()+60, 75, 15, .2);
-	ofSetColor(0xDDDDDD);
+	ofSetColor(0xe5e00f);
 	report.setMode(OF_FONT_CENTER);
 	report.setSize(40);
-	report.drawString("Compose a song", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
+	report.drawString("COMPOSE A RHYTHM", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
   ofShade(0, 75, 10, ofGetWidth(), OF_DOWN, .5);
   
   ofPopMatrix();
@@ -128,6 +128,8 @@ void testApp::mousePressed(int x, int y, int button){
 void testApp::mouseReleased(int x, int y, int button){
 	if(band.clickUp()){
 		conductor.snapTo(band.lastBlock());
+    if (band.lastBlock().isNew())
+      band.lastBlock().makeOld();
 	}
 	conductor.clickUp();
 }
@@ -139,11 +141,11 @@ void testApp::windowResized(int w, int h){
 
 void testApp::midiToSend(vector< unsigned char > message){
 	rolandSynth.sendMessage(message);
-  /*cout << "Message Begin::";
+  cout << "Message Begin::";
   for (unsigned int i=0; i<message.size(); i++) {
     cout << int(message[i]) << "::";
   }
-  cout << "Message end\n";*/
+  cout << "Message end\n";
 }
 
 void testApp::midiReceived(double deltatime, std::vector< unsigned char > *message, int port){

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "instrument.h"
+#include "instruments/instrument.h"
 
 class bandBar : public ofInterGroup{
 protected:
@@ -29,6 +29,9 @@ protected:
 	int numBlocksPerBin;
 	int numBins;
   inst * activeInst;
+  
+  ofButton scrollUp;
+  ofButton scrollDown;
 public:
 	bandBar():ofInterGroup(){
     activeInst=0;
@@ -52,7 +55,7 @@ public:
 	void mouseMotion(int _x, int _y);
 	void drag(int _x, int _y);
 	void checkActives(double xPos);
-	void setHeight(double height=0, double top=30, double bot=95);
+	void setHeight(double height=0, double top=0, double bot=95);
   
   void setActive(inst * currentInst);
 	double getBottomPos();

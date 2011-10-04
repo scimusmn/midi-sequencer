@@ -104,7 +104,7 @@ bool inst::releaseDraggedBlock(){
 		if(blocks[i].clickUp()){
 			ret=true;
 			lastBlock=i;
-			if (blocks[i].x<fullWidth) {
+			if ((blocks[i].x+blocks[i].w/2<fullWidth&&!bNewBlock)||(blocks[i].x+blocks[i].w<fullWidth&&bNewBlock)) {
 				ret=false;
 				blocks.erase(blocks.begin()+i);
 				lastBlock=-1;
@@ -127,6 +127,7 @@ instrument & instrument::operator=(const instrument & t)
 	scroll.x=t.scroll.x,scroll.y=t.scroll.y;
 	lastBlock=t.lastBlock;
 	point=t.point;
+	return (*this);
 }
 
 instrument::instrument(string objName, unsigned char chan, unsigned char nt):inst()
@@ -172,7 +173,7 @@ bool instrument::clickDown(int _x, int _y)
 	if(!bHolding&&base.over(_x, _y-scroll.y)){
 		blocks.push_back(dragBlock(base));
     blocks[blocks.size()-1].x=_x-blocks[blocks.size()-1].w/2;
-		ret=1;
+    bNewBlock=ret=true;
 	}
 	for (unsigned int i=0; i<blocks.size(); i++) {
 		if(!bHolding&&blocks[i].clickDown(_x,_y)){
@@ -188,7 +189,7 @@ bool instrument::clickUp()
 	base.clickUp();
 	bool ret=false;
   ret=releaseDraggedBlock();
-	bHolding=false;
+	bNewBlock=bHolding=false;
 	return ret;
 }
 
@@ -207,7 +208,7 @@ bool instrument::active(double xPos)
       if (blocks[i].active(xPos)) play();
       else stop();
     }
-    else if(bPercussive&&base.isPlaying()&&ofGetElapsedTimeMillis()>=150+startPlay) stop();
+    else if(bPercussive&&base.isPlaying()&&ofGetElapsedTimeMillis()>=20+startPlay) stop();
   }
 	return ret;
 }

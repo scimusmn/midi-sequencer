@@ -10,7 +10,7 @@
 
 #include "ofMain.h"
 #include "ofExtended.h"
-#include "instrument.h"
+#include "../instruments/instrument.h"
 
 #define MIDI_KEYBOARD_START 36
 #define MIDI_KEYBOARD_END 84

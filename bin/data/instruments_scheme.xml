@@ -1,0 +1,79 @@
+<band font="ArialNarrow.ttf" xmlns:blck="http://www.smm.org/">
+	<instrument name="synth" color="0xE5E00F">
+		<note>60</note>
+		<channel>1</channel>
+    <synth />
+	</instrument>
+  <instrument name="synth" color="0xD1232A">
+		<note>60</note>
+		<channel>2</channel>
+    <synth />
+	</instrument>
+  <instrument name="synth" color="0xFBB017">
+		<note>60</note>
+		<channel>3</channel>
+    <synth />
+	</instrument>
+  <instrument name="Low C Chime" color="0x6DCAD0">
+		<note>60</note>
+		<channel>0</channel>
+		<percussive>true</percussive>
+	</instrument>
+	<instrument name="D Chime" color="0xE5E00F">
+		<note>61</note>
+		<channel>0</channel>
+    <percussive>true</percussive>
+	</instrument>
+	<instrument name="E Chime" color="0xD1232A">
+		<note>62</note>
+		<channel>0</channel>
+		<percussive>true</percussive>
+	</instrument>
+	<instrument name="F Chime" color="0xFBB017">
+		<note>63</note>
+		<channel>0</channel>
+		<percussive>true</percussive>
+	</instrument>
+	<instrument name="G Chime" color="0x6DCAD0">
+		<note>64</note>
+		<channel>0</channel>
+		<percussive>true</percussive>
+	</instrument>
+	<instrument name="A Chime" color="0xE5E00F">
+		<note>65</note>
+		<channel>0</channel>
+		<percussive>true</percussive>
+	</instrument>
+	<instrument name="B Chime" color="0xD1232A">
+		<note>66</note>
+		<channel>0</channel>
+		<percussive>true</percussive>
+	</instrument>
+	<instrument name="High C Chime" color="0xFBB017">
+		<note>78</note>
+		<channel>0</channel>
+		<percussive>true</percussive>
+	</instrument>
+	<instrument name="Wood Block" color="0x6DCAD0">
+		<note>68</note>
+		<channel>0</channel>
+		<percussive>true</percussive>
+	</instrument>
+	<instrument name="Cabasa" color="0xE5E00F">
+		<note>69</note>
+		<channel>0</channel>
+	</instrument>
+	<instrument name="Rainstick" color="0xD1232A">
+		<note>75</note>
+		<channel>0</channel>
+	</instrument>
+	<instrument name="Clicker" color="0xFBB017">
+		<note>76</note>
+		<channel>0</channel>
+	</instrument>
+	<instrument name="Cymbals" color="0x6DCAD0">
+		<note>77</note>
+		<channel>0</channel>
+	</instrument>
+	
+</band>

@@ -10,7 +10,7 @@
 #pragma once
 
 #include "timeline.h"
-#include "band.h"
+#include "../band.h"
 
 class midiSequencer : public midiConductor, public ofInterObj{
 	int divsPerMeasure;

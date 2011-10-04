@@ -11,7 +11,7 @@
 
 #define F_YEAH_WOOD 0
 
-#include "soundBlocks.h"
+#include "../soundBlocks/soundBlocks.h"
 
 enum instRet {
   NO_CLICK,BASE_CLICK,DRAG_CLICK,KB_CLICK
@@ -27,6 +27,7 @@ protected:
   ofPoint scroll;
   int lastBlock;
 	bool bDefault;
+  bool bNewBlock;
 public:
   string title;
 	rhythmBlock base;
@@ -65,11 +66,12 @@ public:
   virtual void draw(int _x, int _y){}
 	virtual void draw(){}
 	virtual void drawBackground(){}
-  virtual bool clickDown(int _x, int _y){}
-	virtual bool clickUp(){}
+  virtual void drawForeground(){}
+  virtual bool clickDown(int _x, int _y){return false;}
+	virtual bool clickUp(){return false;}
 	virtual void mouseMotion(int _x, int _y){}
   virtual void update(){}
-  virtual bool active(double pos){}
+  virtual bool active(double pos){return false;}
 };
 
 class instrument : public inst{

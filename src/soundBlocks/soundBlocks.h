@@ -11,6 +11,7 @@
 
 #include "ofMain.h"
 #include "ofExtended.h"
+
 #include "ofxMidiIn.h"
 #include "ofxMidiOut.h"
 
@@ -75,10 +76,12 @@ protected:
 	bool bActive;
 	bool bJustActive;
 	double aPos;
+  bool bNewBlock;
 public:
   unsigned char note;
   dragBlock(int x, int w, rhythmBlock & t);
-	dragBlock(const rhythmBlock & t);
+	dragBlock(rhythmBlock & t);
+  void setup(rhythmBlock & t);
 	void draw(int _y);
 	void draw();
 	void mouseMotion(int _x, int _y);
@@ -86,5 +89,7 @@ public:
 	bool clickUp();
 	bool active(double xPos);
 	bool justChanged(double xPos);
-	friend class instrument;
+  bool isNew(){ return bNewBlock; }
+  void makeOld() { bNewBlock=false; }
+	friend class inst;
 };
