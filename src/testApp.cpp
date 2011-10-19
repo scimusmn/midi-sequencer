@@ -3,6 +3,10 @@
 #define MSG_START "MSGSTRT"
 #define MSG_END   "MSGEND"
 
+#include "ofNewShapes.h"
+
+int roundH=300;
+int roundR=50;
 
 //--------------------------------------------------------------
 void testApp::setup(){
@@ -17,7 +21,7 @@ void testApp::setup(){
 	report.loadFont("fonts/DinC.ttf");
 	band.setup(xml);
 	//keyboard.openPort("keyboard");
-	rolandSynth.openPort(1);
+	rolandSynth.openPort("decoder");
 	background.loadImage("images/background.jpg");
 	kb.setup(800, 4);
 	conductor.setup(10, 1, 50, ofGetWidth()-band.w); //10 seconds at 100 pixels per second
@@ -31,7 +35,7 @@ void testApp::update(){
 	//band.update(-conductor.getBarPosition(),OF_HOR);
 //	if(conductor.isPlaying())
 //		band.checkActives(conductor.cursor()+band.w);
-	band.setHeight(ofGetHeight()-75, 30,120);
+	band.setHeight();
 	band.update();
 	conductor.update();
 	
@@ -71,11 +75,13 @@ void testApp::draw(){
 #else
 	ofSetColor(0x555555);
 #endif
-	ofRoundBox(-30, 0, ofGetWidth()+60, 75, 15, .2);
+  ofRaised(.2);
+	ofRoundedRect(-30, 0, ofGetWidth()+60, 75, 15);
+  ofFlat();
 	ofSetColor(0xe5e00f);
 	report.setMode(OF_FONT_CENTER);
 	report.setSize(40);
-	report.drawString("COMPOSE A RHYTHM", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
+	report.drawString("LAY A PHAT BEAT", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
   ofShade(0, 75, 10, ofGetWidth(), OF_DOWN, .5);
   
   ofPopMatrix();

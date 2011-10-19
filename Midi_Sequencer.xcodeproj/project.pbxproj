@@ -15,6 +15,7 @@
 		AA43713F13587E7F008C4F1D /* ofxTCPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713213587E7F008C4F1D /* ofxTCPServer.cpp */; };
 		AA43714013587E7F008C4F1D /* ofxUDPManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713413587E7F008C4F1D /* ofxUDPManager.cpp */; };
 		AA43714113587E7F008C4F1D /* ofxThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713B13587E7F008C4F1D /* ofxThread.cpp */; };
+		AA868420144F112300E3C9C7 /* groupInstrument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA86841F144F112300E3C9C7 /* groupInstrument.cpp */; };
 		AA9C353E133A68C800CB0F81 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA9C353B133A68C800CB0F81 /* main.cpp */; };
 		AA9C353F133A68C800CB0F81 /* testApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA9C353C133A68C800CB0F81 /* testApp.cpp */; };
 		AA9C3618133A966100CB0F81 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9C3617133A966100CB0F81 /* CoreMIDI.framework */; };
@@ -117,6 +118,8 @@
 		AA43713913587E7F008C4F1D /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		AA43713B13587E7F008C4F1D /* ofxThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxThread.cpp; sourceTree = "<group>"; };
 		AA43713C13587E7F008C4F1D /* ofxThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxThread.h; sourceTree = "<group>"; };
+		AA86841E144F112300E3C9C7 /* groupInstrument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = groupInstrument.h; path = instruments/groupInstrument.h; sourceTree = "<group>"; };
+		AA86841F144F112300E3C9C7 /* groupInstrument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = groupInstrument.cpp; path = instruments/groupInstrument.cpp; sourceTree = "<group>"; };
 		AA9C353B133A68C800CB0F81 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		AA9C353C133A68C800CB0F81 /* testApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testApp.cpp; sourceTree = "<group>"; };
 		AA9C353D133A68C800CB0F81 /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testApp.h; sourceTree = "<group>"; };
@@ -334,6 +337,8 @@
 				AAA27A171342457D008FD322 /* instrument.cpp */,
 				AA3FB529141FF8F60000CE74 /* synthInst.h */,
 				AA3FB52A141FF8F60000CE74 /* synthInst.cpp */,
+				AA86841E144F112300E3C9C7 /* groupInstrument.h */,
+				AA86841F144F112300E3C9C7 /* groupInstrument.cpp */,
 			);
 			name = instruments;
 			sourceTree = "<group>";
@@ -746,6 +751,7 @@
 				AA3FB52B141FF8F60000CE74 /* synthInst.cpp in Sources */,
 				AA3FBADB142796BE0000CE74 /* soundBlocks.cpp in Sources */,
 				AA3FBADE142796CF0000CE74 /* conductor.cpp in Sources */,
+				AA868420144F112300E3C9C7 /* groupInstrument.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

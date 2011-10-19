@@ -1,0 +1,38 @@
+<band tempo="1.0">
+	<instrument name="synth 1" type="synth" prog="15">
+		<strike beat="0" length="3" note="48"/>
+		<strike beat="4" length="3" note="52"/>
+		<strike beat="12" length="4" note="53"/>
+	</instrument>
+	<instrument name="synth 2" type="synth" prog="0">
+		<strike beat="0" length="4" note="41"/>
+		<strike beat="7" length="5" note="43"/>
+	</instrument>
+	<instrument name="synth 3" type="synth" prog="0"/>
+	<instrument name="Low C Chime" type="default"/>
+	<instrument name="D Chime" type="default"/>
+	<instrument name="E Chime" type="default">
+		<strike beat="0" length="1"/>
+	</instrument>
+	<instrument name="F Chime" type="default">
+		<strike beat="7" length="1"/>
+	</instrument>
+	<instrument name="G Chime" type="default">
+		<strike beat="14" length="1"/>
+	</instrument>
+	<instrument name="A Chime" type="default"/>
+	<instrument name="B Chime" type="default"/>
+	<instrument name="High C Chime" type="default"/>
+	<instrument name="Wood Block" type="default"/>
+	<instrument name="Cabasa" type="default">
+		<strike beat="1" length="1"/>
+		<strike beat="3" length="1"/>
+		<strike beat="8" length="1"/>
+		<strike beat="10" length="1"/>
+		<strike beat="6" length="1"/>
+		<strike beat="14" length="2"/>
+	</instrument>
+	<instrument name="Rainstick" type="default"/>
+	<instrument name="Clicker" type="default"/>
+	<instrument name="Cymbals" type="default"/>
+</band>

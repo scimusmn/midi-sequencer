@@ -9,7 +9,13 @@
 
 #include "synthInst.h"
 
-vector<string> instNames;
+struct instProg {
+  int number;
+  string name;
+  instProg(int i, string n):number(i),name(n){}
+};
+
+vector<instProg> instNames;
 
 void loadInstruments(string filename)
 {
@@ -17,12 +23,9 @@ void loadInstruments(string filename)
 	while (file.peek()!=EOF) {
 		string nextLine;
 		getline(file, nextLine);
-		vector<string> token=ofSplitString(nextLine, "\t");
+		vector<string> token=ofSplitString(nextLine, "=");
 		if(token.size()>1){
-			//if(!token[0].compare("ROOT_DIR")){
-			//	ret = token[1];
-			//}
-      instNames.push_back(token[1]);
+      instNames.push_back(instProg(ofToInt(token[0]),token[1]));
 		}
 		
 	}
@@ -44,8 +47,9 @@ synthInstrument::synthInstrument(string title, unsigned char chan, unsigned char
   kb.setup(800, 4);
   drop.setUnopenImage("images/dropdown.png");
   for (unsigned int i=0; i<instNames.size(); i++) {
-    drop.setValue(instNames[i]);
+    drop.setValue(instNames[i].name);
   }
+  type=INST_SYNTH;
   bNewBlock=false;
   band=bnd;
   bNoteSelect=false;
@@ -53,9 +57,10 @@ synthInstrument::synthInstrument(string title, unsigned char chan, unsigned char
 
 void synthInstrument::changeProgram(int progNum)
 {
+  base.changeTitle(instNames[progNum].name);
   vector<unsigned char> message;
   message.push_back(MIDI_PROGRAM_CHANGE+base.channel);
-  message.push_back(progNum);
+  message.push_back(instNames[progNum].number);
   base.sendMidiMessage(message);
 }
 
@@ -63,7 +68,7 @@ void synthInstrument::update()
 {
   if(hold.justExpired()){
     bNoteSelect=true;
-    kb.getKey().select(false);
+    kb.clear();
     kb.pressKey(lastDrop().note-MIDI_KEYBOARD_START);
     if(band) band->setActive(this);
   }
@@ -83,7 +88,7 @@ void synthInstrument::draw()
     double k=hold.getPercent();
     ofSetColor(255*k, 255-255*k*k, 255-255*sqrt(k),((k>.5)?255:255*k*k*4));
     dragBlock &t=lastDrop();
-    ofRingSegment(t.x+t.w/2, t.y+t.h/2, 40, 60, 90, 90+360*k);
+    ofRingSegment(t.x+t.relPos.x+t.w/2, t.y+t.h/2, 40, 60, 90, 90+360*k);
   }
 }
 
@@ -93,7 +98,9 @@ void synthInstrument::drawForeground()
     ofSetColor(0,0,0,128);
     ofRect(0,0,ofGetWidth(),ofGetHeight());
     ofSetColor(0x333333);
-    ofRoundBox((ofGetWidth()-(kb.w+100))/2, (ofGetHeight()-(kb.h+200))/2, kb.w+100, kb.h+200, 4, .5);
+    ofRaised(.5);
+    ofRoundedRect((ofGetWidth()-(kb.w+100))/2, (ofGetHeight()-(kb.h+200))/2, kb.w+100, kb.h+200, 4);
+    ofFlat();
     ofSetColor(229, 224, 15);
     label.drawString("SELECT A NOTE FOR THIS BLOCK", ofGetWidth()/2, (ofGetHeight()-kb.h)/2-50);
     
@@ -109,7 +116,9 @@ void synthInstrument::drawBackground()
   if(bNoteSelect&&(ofGetElapsedTimeMillis()/250)%2){
     dragBlock &t=lastDrop();
     ofSetColor(251, 176, 23);
-    ofRoundShape(t.x-5, t.y-5, t.w+10, t.h+10, (t.h+10)/4, true);
+    ofNoFill();
+    ofRoundedRect(t.x+t.relPos.x-5, t.y-5, t.w+10, t.h+10, (t.h+10)/4);
+    ofFill();
   }
   
   for (unsigned int i=0; i<blocks.size(); i++) {
@@ -133,7 +142,7 @@ bool synthInstrument::clickDown(int _x, int _y)
     }
     for (unsigned int i=0; i<blocks.size(); i++) {
       if(!bHolding&&blocks[i].clickDown(_x,_y)){
-        play();
+        base.note=blocks[i].note,play();
         lastBlock=i;
         bHolding=true;
         if(!bNewBlock) hold.reset(),hold.run(),xOrig=blocks[i].x;
@@ -142,7 +151,7 @@ bool synthInstrument::clickDown(int _x, int _y)
   }
   else if(drop.open){
     drop.clickDown(_x, _y);
-    if(drop.justSelected()) base.changeTitle(drop.getString()),changeProgram(drop.getChoiceNumber());
+    if(drop.justSelected()) changeProgram(drop.getChoiceNumber());
     if(band&&!drop.open) band->setActive(0);
   }
   else if(bNoteSelect){
@@ -199,7 +208,7 @@ void synthInstrument::mouseMotion(int _x, int _y)
   if(!bNoteSelect){
     for (unsigned int i=0; i<blocks.size(); i++) {
       if(blocks[i].pressed()){
-        if(abs((_x-blocks[i].relMouse.x)-xOrig)>5) hold.reset(),hold.pause();
+        if(abs((_x-blocks[i].relMouse.x)-xOrig)>10) hold.reset(),hold.pause();
       }  
         blocks[i].mouseMotion(_x,_y);
       

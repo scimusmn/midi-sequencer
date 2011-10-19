@@ -1,4 +1,16 @@
 <band tempo="1.0">
+    <instrument name="synth 1" type="synth" prog="7">
+		<strike beat="0" length="2" note="57"/>
+		<strike beat="2" length="2" note="52"/>
+		<strike beat="4" length="2" note="57"/>
+		<strike beat="6" length="2" note="52"/>
+		<strike beat="8" length="2" note="57"/>
+		<strike beat="10" length="2" note="52"/>
+		<strike beat="12" length="1" note="57"/>
+		<strike beat="13" length="1" note="52"/>
+		<strike beat="14" length="1" note="54"/>
+		<strike beat="15" length="1" note="56"/>
+	</instrument>
 	<instrument name="Low C Chime"></instrument>
 	<instrument name="D Chime"></instrument>
 	<instrument name="E Chime"></instrument>
@@ -27,6 +39,7 @@
 		<strike beat="8" length="1"></strike>
 		<strike beat="10" length="1"></strike>
 		<strike beat="12" length="1"></strike>
+        <strike beat="14" length="1"></strike>
 	</instrument>
 	<instrument name="High C Chime">
 		<strike beat="4" length="1"></strike>
@@ -34,24 +47,25 @@
 		<strike beat="7" length="1"></strike>
 		<strike beat="10" length="1"></strike>
 		<strike beat="13" length="1"></strike>
+        <strike beat="15" length="1"></strike>
 	</instrument>
 	<instrument name="Wood Block"></instrument>
 	<instrument name="Cabasa">
-		<strike beat="1" length="13"></strike>
+		<strike beat="1" length="1"></strike>
+        <strike beat="5" length="1"></strike>
+        <strike beat="9" length="1"></strike>
+        <strike beat="14" length="1"></strike>
 	</instrument>
 	<instrument name="Rainstick">
 		<strike beat="2" length="4"></strike>
 		<strike beat="8" length="4"></strike>
-		<strike beat="14" length="4"></strike>
 	</instrument>
 	<instrument name="Clicker">
 		<strike beat="0" length="4"></strike>
 		<strike beat="7" length="4"></strike>
-		<strike beat="14" length="4"></strike>
 	</instrument>
 	<instrument name="Cymbals">
-		<strike beat="1" length="4"></strike>
-		<strike beat="9" length="4"></strike>
-		<strike beat="17" length="4"></strike>
+		<strike beat="4" length="4"></strike>
+		<strike beat="12" length="4"></strike>
 	</instrument>
 </band>

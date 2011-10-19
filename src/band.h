@@ -25,7 +25,7 @@ protected:
 	double binHeight;
 	double yBlockSpace;
 	double xBlockSpace;
-	double xGap,yGap;
+	double barW,yGap;
 	int numBlocksPerBin;
 	int numBins;
   inst * activeInst;
@@ -43,7 +43,7 @@ public:
 	void setup();
 	void setup(xmlParse * config);
   void setup(ofXML & xml);
-	void addInstrument(string title, unsigned char channel, unsigned char nt, bool synth);
+	void addInstrument(string title, unsigned char channel, unsigned char nt, instType t);
 	void drawInstruments();
 	void drawBackground();
 	void clear();
@@ -55,11 +55,12 @@ public:
 	void mouseMotion(int _x, int _y);
 	void drag(int _x, int _y);
 	void checkActives(double xPos);
-	void setHeight(double height=0, double top=0, double bot=95);
+	void setHeight();
+  double verticleBlockSpace(){ return yBlockSpace;}
   
   void setActive(inst * currentInst);
 	double getBottomPos();
-	double farthestPoint();
+	int farthestPoint();
 	void stopAll();
 	dragBlock & lastBlock();
   void scaleToTempo(double time);

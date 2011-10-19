@@ -24,6 +24,7 @@ public:
 	void setPlaybackTime(double seconds);
 	void setPlaybackSpeed(double times_normal);
 	void pixelsPerSecond(double numPixels);
+  void setCursorPercent(double percent);
 	void setCursorPosition(double pos);
 	double getElapsed();
 	bool isPlaying();

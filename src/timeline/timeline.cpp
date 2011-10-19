@@ -40,6 +40,11 @@ void midiConductor::pixelsPerSecond(double numPixels)
 	pps=numPixels;
 }
 
+void midiConductor::setCursorPercent(double perc)
+{
+	metronome.setPercent(perc);
+}
+
 void midiConductor::setCursorPosition(double pos)
 {
 	int totPix=playTime*pps;

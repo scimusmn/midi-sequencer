@@ -9,6 +9,7 @@
 
 #include "band.h"
 #include "instruments/synthInst.h"
+#include "instruments/groupInstrument.h"
 
 bandBar::~bandBar()
 {
@@ -36,31 +37,32 @@ int bandBar::size()
   return instruments.size();
 }
 
-void bandBar::setHeight(double hgt,double top, double bot)
+void bandBar::setHeight()
 {
-	h=(hgt)?hgt:ofGetHeight();
+	h=ofGetHeight()-75;
   int barWid=30;
-	yoff=top;
-	yBot=bot;
-  xoff=barWid+10;
-	xGap=barWid+2;
+	yoff=0;
+	yBot=120;
+	barW=barWid;
 	yGap=20;
 	xBlockSpace=10;
 	yBlockSpace=10;
 	numBins=1;
   binWidth=0;
+  int fullHeight=0;
 	for (unsigned int i=0; i<instruments.size(); i++) {
+    fullHeight+=instruments[i]->h+yBlockSpace*2;
 		binWidth=max(binWidth,instruments[i]->w+xBlockSpace*2);
-		binHeight=max(binHeight, instruments[i]->h+yBlockSpace*2);
+		binHeight=max(binHeight, instruments[i]->base.h+yBlockSpace*2);
 	}
-	w=(xGap+binWidth)*numBins+xGap;
+	w=(barW+binWidth)*numBins+barW;
   binWidth+=(barWid-xBlockSpace*2);
 	double fullSize=binHeight*instruments.size();
   
   scrollUp.setup(w,OF_HOR, "images/mInstUp.jpg");
   scrollDown.setup(w,OF_HOR,"images/mInstDown.jpg");
   
-  yoff=top+scrollUp.h;
+  yoff=scrollUp.h;
   
   viewSize=h-(yoff+yBot)-scrollDown.h;
   
@@ -96,8 +98,8 @@ void bandBar::setup(ofXML & xml)
 			int curInst=instruments.size();
 			unsigned char note, channel;
 			bool percussive=false;
-      bool synth=false;
 			double delay=0;
+      instType type=INST_DEFAULT;
 			map<string,int> list;
 			list["note"]=0;
 			list["channel"]=1;
@@ -105,6 +107,7 @@ void bandBar::setup(ofXML & xml)
 			list["delay"]=3;
 			list["dropdown"]=4;
 			list["percussive"]=5;
+      list["group"]=6;
 			for(int j=0;j<tag[i].size();j++){
 				string node[2]={tag[i][j].getLabel(),tag[i][j].getValue()};;
 				switch (list.find(node[0])->second) {
@@ -115,7 +118,7 @@ void bandBar::setup(ofXML & xml)
 						channel=ofToInt(node[1]);
 						break;
           case 2:
-            synth=true;
+            type=INST_SYNTH;
             break;
 
 					case 3:
@@ -127,11 +130,15 @@ void bandBar::setup(ofXML & xml)
 					case 5:
 						percussive=true;
 						break;
+          case 6:
+            type=INST_GROUP;
+            break;
+
 					default:
 						break;
 				}
 			}
-			addInstrument(title,channel,note, synth);
+			addInstrument(title,channel,note, type);
 			instruments[curInst]->setPercussive(percussive);
 			instruments[curInst]->setColor(color);
       //maxWid=max(maxWid,instruments[curInst]->w);
@@ -140,10 +147,11 @@ void bandBar::setup(ofXML & xml)
 	setHeight();
 }
 
-void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt, bool synth)
+void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt, instType t)
 {
-	if(!synth) instruments.push_back( new instrument(title,channel,nt));
-  else instruments.push_back( new synthInstrument(title,channel,nt,this));
+	if(t==INST_DEFAULT) instruments.push_back( new instrument(title,channel,nt));
+  else if(t==INST_SYNTH) instruments.push_back( new synthInstrument(title,channel,nt,this));
+  else if(t==INST_GROUP) instruments.push_back( new groupInst(title,channel,nt,this));
 	setHeight();
 }
 
@@ -173,56 +181,85 @@ void bandBar::drawInstruments()
 void bandBar::draw(int _x, int _y)
 {
 	x=_x,y=_y;
-	
+  
+  int binEdge=x+binWidth+bar.w;
+  
 	//sidebar background
 	ofSetColor(255, 255, 255);
 	//sideBarBack.draw(x+w-(sideBarBack.height/h)*sideBarBack.width, y,(sideBarBack.height/h)*sideBarBack.width,h);
   ofSetColor(0x333333);
   ofRect(x, y, w, h);
-  ofSetColor(229, 224, 15,128);
-  double s=10;
-  for (int i=0; i<w/s; i++) {
+  ofSetColor(229, 224, 15,64);
+  int s=10;
+  for (int i=0; i<bar.w/s; i++) {
     ofLine(x+w-i*s, y, x+w-i*s, y+h);
   }
   for (int i=0; i<h/s; i++) {
-    ofLine(x, y+i*s, x+w, y+i*s);
+    ofLine(binEdge, y+i*s, x+w, y+i*s);
   }
-  ofShade(x+w, y+yoff, 10, viewSize+scrollDown.h, OF_RIGHT, .3);
+  
+  ofSetColor(229, 224, 15,128);
+  s=5;
+  for (int i=0; i<(w-bar.w)/s; i++) {
+    ofLine(binEdge-i*s, y, binEdge-i*s, y+h);
+  }
+  for (int i=0; i<h/s; i++) {
+    ofLine(x, y+i*s-int(bar.getScrollPosition())%s, x+w-bar.w, y+i*s-int(bar.getScrollPosition())%s);
+  }
+  
+  //Shade to the right of the sidebar
+  ofSetShadowDarkness(.5);
+  ofShade(x+w, y+yoff, 15, viewSize, OF_RIGHT);
 	
 	//ofSetColor(0x80633B);
+  
+  //Semi-transparent rectangle below the instrument bases
   ofSetColor(0x33, 0x33, 0x33,223);
-	ofRect(x+xGap, y+yoff, w-xoff-10, viewSize);
+	ofRect(x+barW, y+yoff, binWidth, viewSize);
 	ofShade(x+w, y+yoff, 10, viewSize, OF_LEFT, .3);
 	
+  //_-_-_-_-_ draw the instruments and box around each
+  double yOff=0;
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i]->draw(x+xGap+xBlockSpace,y+yoff+yBlockSpace +binHeight*(i));
-		double tmpY=instruments[i]->y+binHeight+instruments[i]->vertScrollPos()-yBlockSpace;
-		ofShade(x+xGap, tmpY, 3,binWidth, OF_UP, .3);
-		ofShade(x+xGap, tmpY, 3, binWidth, OF_DOWN, .3,false);
-    //ofSetColor(0, 0, 0,128);
-    //ofRect(x+xGap, tmpY-5, w-xGap, 10);
+    inst & Inst=*instruments[i];
+		Inst.draw(x+barW+xBlockSpace,y+yoff+yBlockSpace +yOff);
+    yOff+=((Inst.h<binHeight)?binHeight:Inst.h+yBlockSpace*2);
+		double tmpY=Inst.y+((Inst.h<binHeight)?binHeight:Inst.h+yBlockSpace*2)+Inst.vertScrollPos()-yBlockSpace;
+    
+    ofSetShadowDarkness(.2);
+		ofShade(x+barW, tmpY, 3,binWidth, OF_UP);
+		ofShade(x+barW, tmpY, 3, binWidth, OF_DOWN,false);
 	}
   
-	ofShade(x+w-20, y+yoff, 10, viewSize, OF_LEFT, .3);
-  ofShade(x+w,getBottomPos(), 10, ofGetHeight()-y, OF_RIGHT, .4);
-  //shade to right of scrollbar
-	ofShade(x+xGap, y+yoff, 5, viewSize, OF_RIGHT, .3);
+  //shade over the ledge on the right side of the sidebar
+	ofShade(binEdge, y+yoff, 10, viewSize, OF_LEFT, .4);
+  ofShade(x+w, y+yoff, 10, viewSize, OF_LEFT, .4);
+  ofShade(binEdge, y+yoff, 10, viewSize, OF_RIGHT, .3);
+  ofShade(x+w,getBottomPos(), 10, ofGetHeight()-getBottomPos(), OF_RIGHT, .4);
   
   if(activeInst) activeInst->draw();
 	
 	//Box at top of sidebar
 	ofSetColor(230, 230, 230);
-	ofShadeBox(x, y, w, yoff, OF_DOWN, .4);
-	ofShade(x, y+yoff, 10, w, OF_DOWN, .3);
+  ofSetShadowDarkness(.4);
+	ofRect(x, y, w, yoff);
+  ofShade(x, y, yoff,w, OF_DOWN);
+  ofSetShadowDarkness(.3);
+	ofShade(x, y+yoff, 10, w, OF_DOWN);
   
   //Box at bottom of sidebar
 	ofSetColor(230, 230, 230);
-	ofShadeBox(x, y+yoff+viewSize, w, yoff, OF_DOWN, .4);
+	ofRect(x, y+yoff+viewSize, w, yoff);
+  ofSetShadowDarkness(.4);
+  ofShade(x, y+yoff+viewSize, yoff,w, OF_DOWN);
 	
 	//box at bottom of sidebar
-	ofRoundBox(x-10, getBottomPos()+scrollDown.h, w+10, yBot, 2, .4);
-	ofShade(x, getBottomPos(), 10, w, OF_UP, .3);
-	ofShade(x, getBottomPos()+scrollDown.h, 15, w, OF_DOWN, .2);
+	ofRect(x, getBottomPos()+scrollDown.h, w, yBot);
+  ofSetShadowDarkness(.3);
+	ofShade(x, getBottomPos(), 10, w, OF_UP);
+  ofShade(x, getBottomPos(), 10, w, OF_DOWN);
+  ofSetShadowDarkness(.2);
+	ofShade(x, getBottomPos()+scrollDown.h, 15, w, OF_DOWN);
 	
 	if(bar.available()){
     scrollUp.draw(x,y+yoff-scrollUp.h);
@@ -231,8 +268,9 @@ void bandBar::draw(int _x, int _y)
   }
 	
 	//Shades over ends of the scroll bar
-	ofShade(x, y+yoff, 5, bar.w+4, OF_DOWN, .3);
-	ofShade(x, y+yoff+viewSize, 5, bar.w+4, OF_UP, .3);
+  ofSetShadowDarkness(.3);
+	ofShade(x, y+yoff, 5, bar.w+4, OF_DOWN);
+	ofShade(x, y+yoff+viewSize, 5, bar.w+4, OF_UP);
 	
 	
 	clearBut.draw((w-clearBut.w)/2, getBottomPos()+scrollDown.h+((yBot)-clearBut.h)/2);
@@ -332,13 +370,11 @@ void bandBar::setActive(inst * currentInst)
   activeInst=currentInst;
 }
 
-double bandBar::farthestPoint()
+int bandBar::farthestPoint()
 {
-	double ret=0;
+	int ret=0;
 	for (unsigned int i=0; i<instruments.size(); i++) {
-		for (unsigned int j=0; j<instruments[i]->size(); j++) {
-			ret=max(ret,(*instruments[i])[j].x+(*instruments[i])[j].w+(*instruments[i])[j].relPos.x);
-		}
+    ret=max(ret,instruments[i]->farthestPoint());
 	}
 	return ret;
 }
@@ -360,6 +396,14 @@ void bandBar::stopAll()
 	for (unsigned int i=0; i<instruments.size(); i++) {
 		instruments[i]->stop();
 	}
+  vector<unsigned char> msg;
+  for (unsigned int i=0; i<4; i++) {
+    msg.push_back( MIDI_CONTROL_CHANGE + i );
+    msg.push_back( MIDI_CTL_ALL_NOTES_OFF );
+    msg.push_back( 0x0 );
+    ofGetAppPtr()->midiToSend(msg);
+  }
+  
 }
 
 void bandBar::checkActives(double xPos)

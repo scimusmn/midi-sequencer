@@ -17,6 +17,10 @@ enum instRet {
   NO_CLICK,BASE_CLICK,DRAG_CLICK,KB_CLICK
 };
 
+enum instType {
+  INST_DEFAULT,INST_SYNTH,INST_GROUP
+};
+
 class inst : public ofInterObj{
 protected:
   bool bHolding;
@@ -28,35 +32,32 @@ protected:
   int lastBlock;
 	bool bDefault;
   bool bNewBlock;
+  instType type;
 public:
   string title;
 	rhythmBlock base;
   vector<dragBlock> blocks;
   int size(){ return blocks.size();}
 	void clear(){ blocks.clear();}
-  bool isPlaying(){ return base.isPlaying(); }
+  
 	bool isHeld(){ return bHolding; }
   bool isDefault(){ return bDefault; }
 	void setDefault(bool holder){ bDefault=holder; } 
-  void setBandWidth(double wid){ fullWidth=wid;}
-  dragBlock & lastDrop(){ 
-    if(lastBlock>=0&&lastBlock<blocks.size()) return blocks[lastBlock];
-    return blocks[blocks.size()-1];
-  }
+  
   double vertScrollPos(){ return scroll.y;}
+  instType getType(){ return type; }
+  ofColor getColor(){ return base.color; }
   
   //---.cpp defined functions
   void setPercussive(bool perc);
   dragBlock & operator[](int i);
-  void update(int disp,ofDirection dir);
   void setMidi(unsigned char chan, unsigned char nt);
   void setColor(unsigned long hex);
-  ofColor getColor(){ return base.color; }
   void setup(string objName, unsigned char chan, unsigned char nt);
 	void sendMidiMessage(vector<unsigned char> newMessage);
 	void play();
 	void stop();
-  void scaleToTempo(double time);
+  
   bool releaseDraggedBlock();
   
   //--- should be moved to a class for the keyboard insts
@@ -72,6 +73,18 @@ public:
 	virtual void mouseMotion(int _x, int _y){}
   virtual void update(){}
   virtual bool active(double pos){return false;}
+  
+  
+  //_-_-_-_-_ virtual functions which are also defined
+  virtual bool isPlaying(){ return base.isPlaying(); }
+  virtual void setBandWidth(double wid){ fullWidth=wid;}
+  virtual dragBlock & lastDrop(){ 
+    if(lastBlock>=0&&lastBlock<blocks.size()) return blocks[lastBlock];
+    return blocks[blocks.size()-1];
+  }
+  virtual void scaleToTempo(double time);
+  virtual int farthestPoint();
+  virtual void update(int disp,ofDirection dir);
 };
 
 class instrument : public inst{

@@ -1,8 +1,8 @@
 /*
- *  synthInst.h
- *  Miditron
+ *  groupInstrument.h
+ *  Midi_Sequencer
  *
- *  Created by Exhibits on 9/13/11.
+ *  Created by Exhibits on 10/19/11.
  *  Copyright 2011 Science Museum of Minnesota. All rights reserved.
  *
  */
@@ -11,33 +11,32 @@
 
 #include "../band.h"
 #include "instrument.h"
-#include "../keyboard/keyboard.h"
+#include "synthInst.h"
 
-#define as_synth(x) static_cast<synthInstrument *>(x)
+#define as_groupInst(x) static_cast<synthInstrument *>(x)
 
-void loadInstruments(string filename);
-
-class synthInstrument : public inst{
+class groupInst : public inst{
 protected:
   bandBar * band;
+  vector<instrument> notes;
   bool bNoteSelect;
-  pianoKeyboard kb;
   ofDropDown drop;
-  ofTimer hold;
-  double xOrig;
+  int lastInst;
+  
+  bool bOpen;
+  ofButton openBut;
   
   ofFont label;
   ofFont subhead;
 public:
-  synthInstrument():inst(){
-    hold.set(1.0);
-    hold.pause();
+  groupInst():inst(){
   }
-	synthInstrument(string title, unsigned char chan, unsigned char nt, bandBar * bnd=0);
+	groupInst(string title, unsigned char chan, unsigned char nt, bandBar * bnd=0);
   
   string getProgramName(){ return drop.getString(); }
   int getProgramNumber(){ return drop.getChoiceNumber(); }
   void changeProgram(int progNum);
+
   void update();
   
   void draw(int x, int y);
@@ -48,4 +47,12 @@ public:
   bool clickUp();
   void mouseMotion(int _x, int _y);
   bool active(double pos);
+  
+  void changeNoteHeight(instrument & b, double h);
+  
+  bool isPlaying();
+  dragBlock & lastDrop();
+  void scaleToTempo(double time);
+  void setBandWidth(double wid);
+  int farthestPoint();
 };

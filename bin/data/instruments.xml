@@ -1,19 +1,25 @@
 <band font="ArialNarrow.ttf" xmlns:blck="http://www.smm.org/">
-	<instrument name="synth" color="0xA07000">
+	<instrument name="synth 1" color="0xA07000">
 		<note>60</note>
 		<channel>1</channel>
     <synth />
 	</instrument>
-  <instrument name="synth" color="0x00A070">
+  <instrument name="synth 2" color="0x00A070">
 		<note>60</note>
 		<channel>2</channel>
     <synth />
 	</instrument>
-  <instrument name="synth" color="0xA00070">
+  <instrument name="synth 3" color="0xA00070">
 		<note>60</note>
 		<channel>3</channel>
     <synth />
 	</instrument>
+  <instrument name="Chimes" color="0x700000">
+    <note>60</note>
+    <channel>0</channel>
+    <group />
+    <percussive />
+  </instrument>
   <instrument name="Low C Chime" color="0x700000">
 		<note>60</note>
 		<channel>0</channel>

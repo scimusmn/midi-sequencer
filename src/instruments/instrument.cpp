@@ -53,6 +53,7 @@ void inst::setup(string objName, unsigned char chan, unsigned char nt)
   bPercussive=false;
   tempo=1;
 }
+
 void inst::sendMidiMessage(vector<unsigned char> newMessage)
 {
 	base.sendMidiMessage(newMessage);
@@ -115,6 +116,15 @@ bool inst::releaseDraggedBlock(){
   return ret;
 }
 
+int inst::farthestPoint()
+{
+  int ret=0;
+  for (unsigned int i=0; i<blocks.size(); i++) {
+    ret=max(ret,int(blocks[i].x+blocks[i].w+blocks[i].relPos.x));
+  }
+  return ret;
+}
+
 //**************************************************//
 
 instrument & instrument::operator=(const instrument & t)
@@ -127,12 +137,14 @@ instrument & instrument::operator=(const instrument & t)
 	scroll.x=t.scroll.x,scroll.y=t.scroll.y;
 	lastBlock=t.lastBlock;
 	point=t.point;
+  type=t.type;
 	return (*this);
 }
 
 instrument::instrument(string objName, unsigned char chan, unsigned char nt):inst()
 {
 	setup(objName, chan, nt);
+  type=INST_DEFAULT;
 }
 
 void instrument::resizeByFont(int fontSize)
@@ -178,7 +190,7 @@ bool instrument::clickDown(int _x, int _y)
 	for (unsigned int i=0; i<blocks.size(); i++) {
 		if(!bHolding&&blocks[i].clickDown(_x,_y)){
 			play();
-			bHolding=true;
+			ret=bHolding=true;
 		}
 	}
 	return ret;
@@ -208,7 +220,7 @@ bool instrument::active(double xPos)
       if (blocks[i].active(xPos)) play();
       else stop();
     }
-    else if(bPercussive&&base.isPlaying()&&ofGetElapsedTimeMillis()>=20+startPlay) stop();
+    else if(bPercussive&&base.isPlaying()&&ofGetElapsedTimeMillis()>=50+startPlay) stop();
   }
 	return ret;
 }

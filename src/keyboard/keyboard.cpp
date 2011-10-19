@@ -78,7 +78,8 @@ void pianoKey::draw(double _x, double _y)
 {
 	x=_x, y=_y;
 	ofSetColor(0, 0, 0);
-	ofRoundBox(x, y, w, h, w/8., .02);
+  ofRaised(.02);
+	ofRoundedRect(x, y, w, h, w/8.);
 	if(bPressed) ofSetColor(50, 150, 255);
 	else if(buttons.getChoice()){
 		if(notes.size()){
@@ -91,8 +92,10 @@ void pianoKey::draw(double _x, double _y)
 		if(bSharp) ofSetColor(0, 0, 0);
 		else ofSetColor(255, 255, 255);
 	}
-	ofRoundBox(x+1, y+1, w-2, h-2, w/8., .3);
-	ofShade(x+1, y+1, 6, h-2, OF_RIGHT, .3, false);
+  ofRaised(.1);
+	ofRoundedRect(x+1, y+1, w-2, h-2, w/8.);
+  ofSetShadowDarkness(.2);
+	ofShade(x+1, y+1, 6, h-2, OF_RIGHT, false);
 }
 
 void pianoKey::resetInstruments()
@@ -267,15 +270,17 @@ void pianoKeyboard::draw(int _x, int _y)
 	x=_x, y=_y;
 	double xpos=x+xDis/2.;
 	ofSetColor(175,112,75);
-	ofRoundBox(_x, _y, w, h, xDis/4., .2);
-	ofRoundShadow(_x+xDis/8., _y+xDis/8., w-xDis/4., h, xDis/2., .4);
+  ofRaised(.2);
+	ofRoundedRect(_x, _y, w, h, xDis/4.);
+  ofSetShadowDarkness(.4);
+	ofShadowRounded(_x+xDis/8., _y+xDis/8., w-xDis/4., h, xDis/2.);
 	for (unsigned int i=0; i<octaves.size(); i++) {
 		octaves[i].draw(xpos,_y+xDis/2.);
 		xpos+=octaves[i].w;
 	}
 	ofSetColor(0, 0, 0);
 	ofRect(_x+xDis/2., _y+xDis/2-xDis*.02, w-xDis, xDis/4.);
-	ofShade(_x+xDis/2., _y+3*xDis/4.-xDis*.02, 10, w-xDis, OF_DOWN, .3);
+	ofShade(_x+xDis/2., _y+3*xDis/4.-xDis*.02, 10, w-xDis, OF_DOWN);
 }
 
 bool pianoKeyboard::clickDown(int _x, int _y)
@@ -307,6 +312,13 @@ bool pianoKeyboard::clickUp()
 		ret|=octaves[i/12][i%12].clickUp();
 	}
   return ret;
+}
+
+void pianoKeyboard::clear()
+{
+	for (unsigned int i=0; i<octaves.size(); i++) {
+		octaves[i].clear();
+	}
 }
 
 void pianoKeyboard::update()

@@ -85,6 +85,7 @@ public:
 	void draw(int _x, int _y);
 	bool clickDown(int _x, int _y);
 	bool clickUp();
+  void clear();
 	void update();
 	int size();
 	int activeKey();

@@ -27,7 +27,7 @@ void soundBlock::operator=(const soundBlock & t)
 {
 	title=t.title;
 	cSetup(t.x, t.y, t.w, t.h);
-	header.loadFont("Arial.ttf"); 
+	header.loadFont("fonts/Arial.ttf"); 
   header.setMode(OF_FONT_TOP);
   header.setMode(OF_FONT_CENTER);
 	int pt=t.header.point;
@@ -42,7 +42,7 @@ void soundBlock::operator=(const soundBlock & t)
 void soundBlock::setup(string objName)
 {
 	title=objName;
-	header.loadFont("Arial.ttf");
+	header.loadFont("fonts/Arial.ttf");
   header.setMode(OF_FONT_TOP);
   header.setMode(OF_FONT_CENTER);
 	header.setSize(24);
@@ -64,13 +64,16 @@ void soundBlock::draw(int _x, int _y)
 void soundBlock::draw()
 {
 	ofSetColor((bPressed)?color+.2*255:color);
-	ofRoundBox(x+relPos.x, y+relPos.y, w, h, h/8., .2);
+  ofRaised(.2);
+	ofRoundedRect(x+relPos.x, y+relPos.y, w, h, h/8.);
 	ofSetColor(0, 0, 0);
 	ofEnableSmoothing();
-	ofRoundShape(x+relPos.x, y+relPos.y, w, h, h/8., false);
+  ofNoFill();
+	ofRoundedRect(x+relPos.x, y+relPos.y, w, h, h/8.);
+  ofFill();
 	ofDisableSmoothing();
 	ofSetColor(255, 255, 255);
-	if(header.stringWidth(title)<=w-20){
+	if(header.stringWidth(title)<=w-20&&h>20){
 		double scale=header.stringHeight(title);
 		header.drawString(title, x+relPos.x+w/2, y+relPos.y+(h-header.stringHeight("Kjg"))/2);
 	}
@@ -191,11 +194,13 @@ bool rhythmBlock::clickUp()
 
 dragBlock::dragBlock(rhythmBlock & t):soundBlock(t)
 {
+  note=t.note;
   setup(t);
 }
 
 dragBlock::dragBlock(int _x, int _w, rhythmBlock & t):soundBlock(t)
 {
+  note=t.note;
   setup(t);
   x=_x;
   w=_w;
@@ -203,8 +208,8 @@ dragBlock::dragBlock(int _x, int _w, rhythmBlock & t):soundBlock(t)
 
 void dragBlock::setup(rhythmBlock & t)
 {
-  rightAdj.setup(16, 32, "images/rightArrow.png");
-  leftAdj.setup(16, 32, "images/leftArrow.png");
+  rightAdj.setup(h, OF_VERT, "images/rightArrow.png");
+  leftAdj.setup(h, OF_VERT, "images/leftArrow.png");
   if(bPercussive) w=80;
   bPressed=true;
   relMouse.x=0;
@@ -219,29 +224,30 @@ void dragBlock::draw(int _y)
   header.setSize(10);
 	soundBlock::draw();
 	if(bActive){
-		ofShade(x+relPos.x+aPos, y, aPos, h, OF_LEFT, .5, false);
-		ofShade(x+relPos.x+aPos, y, w-aPos, h, OF_RIGHT, .5, false);
+    ofSetShadowDarkness(.5);
+		ofShade(x+relPos.x+aPos, y, aPos, h, OF_LEFT, false);
+		ofShade(x+relPos.x+aPos, y, w-aPos, h, OF_RIGHT, false);
 	}
   if(!bPercussive){
-    rightAdj.draw(x+relPos.x+w-rightAdj.w-5, y+relPos.y+(h-rightAdj.h)/2);
-    if(w>30) leftAdj.draw(x+relPos.x+5, y+relPos.y+(h-leftAdj.h)/2);
+    rightAdj.draw(x+relPos.x+w-rightAdj.w, y+relPos.y+(h-rightAdj.h)/2);
+    if(w>30) leftAdj.draw(x+relPos.x, y+relPos.y+(h-leftAdj.h)/2);
   }
 }
 
 bool dragBlock::clickDown(int _x, int _y)
 {
 	int ret=0;
-	if (rightAdj.clickDown(_x, _y)) {
+	if (!bPercussive&&rightAdj.clickDown(_x, _y)) {
     relMouse.x=x+w-_x;
 		bResizing=true;
 	}
-  else if (leftAdj.clickDown(_x, _y)) {
+  else if (!bPercussive&&leftAdj.clickDown(_x, _y)) {
     relMouse.x=_x-x;
 		bLResize=true;
 	}
 	else if(soundBlock::clickDown(_x,_y)){
     ret=1;
-    relMouse.x=_x-x;
+    relMouse.x=_x-relPos.x-x;
   }
 	return ret;
 }
@@ -267,7 +273,7 @@ void dragBlock::mouseMotion(int _x, int _y)
 		w=(wid>30)?wid:30;
     x=_x-relMouse.x;
 	}
-	else if(bPressed) move(_x-relMouse.x, _y-relPos.y);
+	else if(bPressed) move(_x-relMouse.x-relPos.x, _y-relPos.y);
 }
 
 bool dragBlock::active(double xPos){
