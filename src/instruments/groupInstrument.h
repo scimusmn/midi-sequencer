@@ -55,4 +55,5 @@ public:
   void scaleToTempo(double time);
   void setBandWidth(double wid);
   int farthestPoint();
+  void update(int disp, ofDirection dir);
 };

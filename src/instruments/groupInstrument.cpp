@@ -28,6 +28,23 @@ groupInst::groupInst(string title, unsigned char chan, unsigned char nt, bandBar
   lastInst=0;
 }
 
+void groupInst::update(int disp, ofDirection dir)
+{
+	bool vert=(dir==OF_VERT);
+	base.update();
+	if(!vert) scroll.x=disp;
+	else scroll.y=disp;
+	if(vert){
+    base.soundBlock::update(0.,int(scroll.y));
+  }
+	else for (unsigned int i=0; i< blocks.size(); i++) {
+    blocks[i].update(scroll.x,0);
+  }
+  for (unsigned int i=0; i<notes.size(); i++) {
+    notes[i].update(disp,dir);
+  }
+}
+
 void groupInst::update()
 {
   
@@ -42,23 +59,18 @@ void groupInst::draw(int _x, int _y)
 
 void groupInst::draw()
 {
-  openBut.cSetup(x, y+scroll.y, base.w, base.h);
+  openBut.cSetup(x, y+scroll.y, ofGetWidth(), base.h);
   base.draw(x,y);
   if(bOpen){
     int ySpace=band->verticleBlockSpace();
     int yOff=base.h+2*ySpace;
     for (unsigned int i=0; i<notes.size(); i++) {
-      notes[i].draw(x+20,y+yOff+scroll.y);
+      notes[i].draw(x+20,y+yOff);
       yOff+=notes[i].h+2*ySpace;
     }
     h=yOff-2*ySpace;
   }
   else {
-    int yOff=0;
-    for (unsigned int i=0; i<notes.size(); i++) {
-      notes[i].base.y=y+yOff+scroll.y;
-      yOff+=notes[i].h;
-    }
     h=base.h;
   }
 
@@ -66,15 +78,8 @@ void groupInst::draw()
 
 void groupInst::drawBackground()
 {
-  if(bOpen){
-    for (unsigned int i=0; i<notes.size(); i++) {
-      notes[i].drawBackground();
-    }
-  }
-  else {
-    for (unsigned int i=0; i<notes.size(); i++) {
-      notes[i].drawBackground();
-    }
+  for (unsigned int i=0; i<notes.size(); i++) {
+    notes[i].drawBackground();
   }
 
 }
@@ -110,7 +115,7 @@ bool groupInst::clickDown(int _x, int _y)
       int yOff=0;
       for (unsigned int i=0; i<notes.size(); i++) {
         changeNoteHeight(notes[i],base.h/float(notes.size()));
-        notes[i].y=y+yOff+scroll.y;
+        notes[i].base.y=y+yOff+scroll.y;
         yOff+=notes[i].h;
       }
       h=base.h;

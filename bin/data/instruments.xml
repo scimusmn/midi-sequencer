@@ -17,50 +17,35 @@
   <instrument name="Chimes" color="0x700000">
     <note>60</note>
     <channel>0</channel>
-    <group />
+    <group>
+      <instrument name="Low C" color="0x700000">
+        <note>60</note>
+      </instrument>
+      <instrument name="D" color="0x007000">
+        <note>61</note>
+      </instrument>
+      <instrument name="E" color="0x2080F0">
+        <note>62</note>
+      </instrument>
+      <instrument name="F" color="0x007070">
+        <note>63</note>
+      </instrument>
+      <instrument name="G" color="0x707000">
+        <note>64</note>
+      </instrument>
+      <instrument name="A" color="0x700070">
+        <note>65</note>
+      </instrument>
+      <instrument name="B" color="0xA00000">
+        <note>66</note>
+      </instrument>
+      <instrument name="High C" color="0x00A000">
+        <note>78</note>
+      </instrument>
+    </group>
     <percussive />
   </instrument>
-  <instrument name="Low C Chime" color="0x700000">
-		<note>60</note>
-		<channel>0</channel>
-		<percussive>true</percussive>
-	</instrument>
-	<instrument name="D Chime" color="0x007000">
-		<note>61</note>
-		<channel>0</channel>
-    <percussive>true</percussive>
-	</instrument>
-	<instrument name="E Chime" color="0x2080F0">
-		<note>62</note>
-		<channel>0</channel>
-		<percussive>true</percussive>
-	</instrument>
-	<instrument name="F Chime" color="0x007070">
-		<note>63</note>
-		<channel>0</channel>
-		<percussive>true</percussive>
-	</instrument>
-	<instrument name="G Chime" color="0x707000">
-		<note>64</note>
-		<channel>0</channel>
-		<percussive>true</percussive>
-	</instrument>
-	<instrument name="A Chime" color="0x700070">
-		<note>65</note>
-		<channel>0</channel>
-		<percussive>true</percussive>
-	</instrument>
-	<instrument name="B Chime" color="0xA00000">
-		<note>66</note>
-		<channel>0</channel>
-		<percussive>true</percussive>
-	</instrument>
-	<instrument name="High C Chime" color="0x00A000">
-		<note>78</note>
-		<channel>0</channel>
-		<percussive>true</percussive>
-	</instrument>
-	<instrument name="Wood Block" color="0x0060D0">
+  <instrument name="Wood Block" color="0x0060D0">
 		<note>68</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
@@ -83,3 +68,5 @@
 	</instrument>
 	
 </band>
+
+

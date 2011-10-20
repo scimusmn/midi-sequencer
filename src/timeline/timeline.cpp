@@ -54,7 +54,7 @@ void midiConductor::setCursorPosition(double pos)
 
 void midiConductor::update()
 {
-	if(bPlaying)
+	//if(bPlaying)
 		cursorPos=speed*pps*(metronome.getElapsedf());
 }
 

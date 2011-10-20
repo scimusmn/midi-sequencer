@@ -30,7 +30,7 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
   waltz.setup(64,OF_VERT, "images/slow.png");
   blues.setup(64,OF_VERT, "images/slow.png");
 	display.setup(300, 8);
-  tempoSlide.setup(30, 30);
+  tempoSlide.setup(40,40);
   
   loopBut.setPressed(true);
 }
@@ -243,7 +243,7 @@ void midiSequencer::draw(int _x, int _y)
   //_-_-_-_-_ rewind button _-_-_-_-_
   ofShadowCircle(rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h/2, rewindBut.w/2, indent);
 	rewindBut.draw(x+w/2-playBut.w/2-50, botY+(botH-rewindBut.h)/2);
-	label.drawString("reset", rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h+15);
+	label.drawString("rewind", rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h+15);
 	
   //_-_-_-_-_ loop button drawing _-_-_-_-_
   ofShadowCircle(loopBut.x+loopBut.w/2, loopBut.y+loopBut.h/2, loopBut.w/2, indent);

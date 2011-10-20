@@ -26,6 +26,7 @@ protected:
 	double yBlockSpace;
 	double xBlockSpace;
 	double barW,yGap;
+  double rightBorder;
 	int numBlocksPerBin;
 	int numBins;
   inst * activeInst;
