@@ -28,6 +28,8 @@ class midiSequencer : public midiConductor, public ofInterObj{
   ofButton blues;
 	digitDisplay display;
   ofSlider tempoSlide;
+  
+  ofRectangle topBar;
 public:
 	midiSequencer():midiConductor(),ofInterObj(){
 	}
@@ -35,10 +37,15 @@ public:
 	void setup(double nMeasures, double secondsPerMeasure, double pixPerSec, double vSize);
   void setTimeSignature(int beatsPerMeasure);
   void setTempo(double secondsPerMeasure);
+  
+  void addStrike(inst & Inst, ofTag & tag, double tempo);
   void loadSong(string filename);
+  void addInstrumentTag(inst * Inst, ofXML & xml, string root);
   void saveSong(string filename);
+  
 	void drawMark();
 	void draw(int _x, int _y);
+  void drawControlBar(int _x, int _y, int _w, int _h);
 	void drawDivs(bool full); 
 	void update();
 	bool clickDown(int _x, int _y);

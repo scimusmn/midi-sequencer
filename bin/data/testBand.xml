@@ -1,0 +1,110 @@
+<band tempo="1.0">
+	<instrument name="Chimes" type="group" prog="0">
+		<instrument name="Low C" type="default">
+			<strike beat="2" length="1"/>
+		</instrument>
+		<instrument name="D" type="default">
+			<strike beat="6" length="1"/>
+		</instrument>
+		<instrument name="E" type="default">
+			<strike beat="1" length="1"/>
+		</instrument>
+		<instrument name="F" type="default">
+			<strike beat="4" length="1"/>
+		</instrument>
+		<instrument name="G" type="default">
+			<strike beat="2" length="1"/>
+		</instrument>
+		<instrument name="A" type="default"/>
+		<instrument name="B" type="default">
+			<strike beat="6" length="1"/>
+		</instrument>
+		<instrument name="High C" type="default">
+			<strike beat="3" length="1"/>
+		</instrument>
+	</instrument>
+	<instrument name="Wood Block" type="default"/>
+	<instrument name="Cabasa" type="default">
+		<strike beat="3" length="1"/>
+	</instrument>
+	<instrument name="Rainstick" type="default">
+		<strike beat="2" length="2"/>
+	</instrument>
+	<instrument name="Clicker" type="default">
+		<strike beat="7" length="2"/>
+	</instrument>
+	<instrument name="Cymbals" type="default">
+		<strike beat="1" length="3"/>
+	</instrument>
+	<instrument name="synthesizer 1" type="group" prog="0">
+		<instrument name="Low C" type="default">
+			<strike beat="4" length="2"/>
+		</instrument>
+		<instrument name="C#" type="default">
+			<strike beat="3" length="2"/>
+		</instrument>
+		<instrument name="D" type="default">
+			<strike beat="7" length="2"/>
+		</instrument>
+		<instrument name="D#" type="default">
+			<strike beat="0" length="2"/>
+		</instrument>
+		<instrument name="E" type="default">
+			<strike beat="2" length="2"/>
+		</instrument>
+		<instrument name="F" type="default"/>
+		<instrument name="F#" type="default">
+			<strike beat="5" length="2"/>
+		</instrument>
+		<instrument name="G" type="default"/>
+		<instrument name="G#" type="default">
+			<strike beat="2" length="2"/>
+		</instrument>
+		<instrument name="A" type="default"/>
+		<instrument name="A#" type="default">
+			<strike beat="7" length="2"/>
+		</instrument>
+		<instrument name="B" type="default"/>
+		<instrument name="High C" type="default"/>
+	</instrument>
+	<instrument name="synthesizer 2" type="group" prog="0">
+		<instrument name="Low C" type="default"/>
+		<instrument name="C#" type="default">
+			<strike beat="2" length="2"/>
+		</instrument>
+		<instrument name="D" type="default"/>
+		<instrument name="D#" type="default">
+			<strike beat="5" length="2"/>
+		</instrument>
+		<instrument name="E" type="default">
+			<strike beat="1" length="2"/>
+		</instrument>
+		<instrument name="F" type="default">
+			<strike beat="7" length="2"/>
+		</instrument>
+		<instrument name="F#" type="default">
+			<strike beat="2" length="2"/>
+		</instrument>
+		<instrument name="G" type="default"/>
+		<instrument name="G#" type="default"/>
+		<instrument name="A" type="default"/>
+		<instrument name="A#" type="default"/>
+		<instrument name="B" type="default"/>
+		<instrument name="High C" type="default"/>
+	</instrument>
+	<instrument name="synthesizer 3" type="group" prog="0">
+		<instrument name="Low C" type="default"/>
+		<instrument name="C#" type="default"/>
+		<instrument name="D" type="default"/>
+		<instrument name="D#" type="default"/>
+		<instrument name="E" type="default"/>
+		<instrument name="F" type="default"/>
+		<instrument name="F#" type="default"/>
+		<instrument name="G" type="default"/>
+		<instrument name="G#" type="default"/>
+		<instrument name="A" type="default"/>
+		<instrument name="A#" type="default"/>
+		<instrument name="B" type="default"/>
+		<instrument name="High C" type="default"/>
+	</instrument>
+</band>

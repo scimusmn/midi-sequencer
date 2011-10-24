@@ -9,7 +9,7 @@
 
 #include "synthInst.h"
 
-struct instProg {
+/*struct instProg {
   int number;
   string name;
   instProg(int i, string n):number(i),name(n){}
@@ -138,33 +138,35 @@ bool synthInstrument::clickDown(int _x, int _y)
       ret=1;
     }
     else if(drop.clickDown(_x, _y)){
-      if(band) band->setActive(this);
+      if(band) ret=1,band->setActive(this);
     }
     for (unsigned int i=0; i<blocks.size(); i++) {
       if(!bHolding&&blocks[i].clickDown(_x,_y)){
         base.note=blocks[i].note,play();
         lastBlock=i;
         bHolding=true;
+        ret=1;
         if(!bNewBlock) hold.reset(),hold.run(),xOrig=blocks[i].x;
       }
     }
   }
   else if(drop.open){
+    ret=1;
     drop.clickDown(_x, _y);
     if(drop.justSelected()) changeProgram(drop.getChoiceNumber());
-    if(band&&!drop.open) band->setActive(0);
+    if(!drop.open) ret=0;
   }
   else if(bNoteSelect){
     bool sel=false;
     if(kb.clickDown(_x, _y)){
-      sel=true;
+      ret=sel=true;
       lastDrop().note=kb.getKey().getNote()+MIDI_KEYBOARD_START,bNewBlock=false;
       base.note=lastDrop().note,play();
     }
     if(!sel){
       for (unsigned int i=0; i<blocks.size(); i++) {
         if(!bHolding&&blocks[i].over(_x,_y)){
-          sel=true;
+          ret=sel=true;
           lastBlock=i;
           kb.getKey().select(false);
           kb.pressKey(blocks[i].note-MIDI_KEYBOARD_START);
@@ -173,7 +175,7 @@ bool synthInstrument::clickDown(int _x, int _y)
     }
     if(!bNewBlock&&!sel){
       bNoteSelect=false;
-      if(band) band->setActive(0);
+      if(band) ret=0;
     }
   }
 
@@ -237,3 +239,4 @@ bool synthInstrument::active(double pos)
   }
 	return ret;
 }
+*/

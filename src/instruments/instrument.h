@@ -38,7 +38,6 @@ public:
 	rhythmBlock base;
   vector<dragBlock> blocks;
   int size(){ return blocks.size();}
-	void clear(){ blocks.clear();}
   
 	bool isHeld(){ return bHolding; }
   bool isDefault(){ return bDefault; }
@@ -73,6 +72,7 @@ public:
 	virtual void mouseMotion(int _x, int _y){}
   virtual void update(){}
   virtual bool active(double pos){return false;}
+  virtual void loseFocus(){}
   
   
   //_-_-_-_-_ virtual functions which are also defined
@@ -85,6 +85,7 @@ public:
   virtual void scaleToTempo(double time);
   virtual int farthestPoint();
   virtual void update(int disp,ofDirection dir);
+  virtual void clear(){ blocks.clear();}
 };
 
 class instrument : public inst{

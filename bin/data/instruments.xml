@@ -1,19 +1,4 @@
 <band font="ArialNarrow.ttf" xmlns:blck="http://www.smm.org/">
-	<instrument name="synth 1" color="0xA07000">
-		<note>60</note>
-		<channel>1</channel>
-    <synth />
-	</instrument>
-  <instrument name="synth 2" color="0x00A070">
-		<note>60</note>
-		<channel>2</channel>
-    <synth />
-	</instrument>
-  <instrument name="synth 3" color="0xA00070">
-		<note>60</note>
-		<channel>3</channel>
-    <synth />
-	</instrument>
   <instrument name="Chimes" color="0x700000">
     <note>60</note>
     <channel>0</channel>
@@ -53,6 +38,7 @@
 	<instrument name="Cabasa" color="0xA0A000">
 		<note>69</note>
 		<channel>0</channel>
+    <percussive />
 	</instrument>
 	<instrument name="Rainstick" color="0x00A0A0">
 		<note>75</note>
@@ -66,7 +52,141 @@
 		<note>77</note>
 		<channel>0</channel>
 	</instrument>
-	
+	<instrument name="synthesizer 1" color="0xA07000">
+		<note>60</note>
+		<channel>1</channel>
+    <synth>
+      <instrument name="Low C" color="0x330000">
+        <note>60</note>
+      </instrument>
+      <instrument name="C#" color="0x773300">
+        <note>61</note>
+      </instrument>
+      <instrument name="D" color="0x777700">
+        <note>62</note>
+      </instrument>
+      <instrument name="D#" color="0x337700">
+        <note>63</note>
+      </instrument>
+      <instrument name="E" color="0x007700">
+        <note>64</note>
+      </instrument>
+      <instrument name="F" color="0x007733">
+        <note>65</note>
+      </instrument>
+      <instrument name="F#" color="0x007777">
+        <note>66</note>
+      </instrument>
+      <instrument name="G" color="0x003377">
+        <note>67</note>
+      </instrument>
+      <instrument name="G#" color="0x000077">
+        <note>68</note>
+      </instrument>
+      <instrument name="A" color="0x330077">
+        <note>69</note>
+      </instrument>
+      <instrument name="A#" color="0x770077">
+        <note>70</note>
+      </instrument>
+      <instrument name="B" color="0x770033">
+        <note>71</note>
+      </instrument>
+      <instrument name="High C" color="0xaa0000">
+        <note>73</note>
+      </instrument>
+    </synth>
+	</instrument>
+  <instrument name="synthesizer 2" color="0x00A070">
+		<note>60</note>
+		<channel>2</channel>
+    <synth>
+       <instrument name="Low C" color="0x700000">
+        <note>60</note>
+      </instrument>
+      <instrument name="C#" color="0x400000">
+        <note>61</note>
+      </instrument>
+      <instrument name="D" color="0x007000">
+        <note>62</note>
+      </instrument>
+      <instrument name="D#" color="0x004000">
+        <note>63</note>
+      </instrument>
+      <instrument name="E" color="0x2080F0">
+        <note>64</note>
+      </instrument>
+      <instrument name="F" color="0x007070">
+        <note>65</note>
+      </instrument>
+      <instrument name="F#" color="0x004040">
+        <note>66</note>
+      </instrument>
+      <instrument name="G" color="0x707000">
+        <note>67</note>
+      </instrument>
+      <instrument name="G#" color="0x404000">
+        <note>68</note>
+      </instrument>
+      <instrument name="A" color="0x700070">
+        <note>69</note>
+      </instrument>
+      <instrument name="A#" color="0x400040">
+        <note>70</note>
+      </instrument>
+      <instrument name="B" color="0xA00000">
+        <note>71</note>
+      </instrument>
+      <instrument name="High C" color="0x00A000">
+        <note>73</note>
+      </instrument>
+    </synth>
+	</instrument>
+  <instrument name="synthesizer 3" color="0xA00070">
+		<note>60</note>
+		<channel>3</channel>
+    <synth>
+       <instrument name="Low C" color="0x700000">
+        <note>60</note>
+      </instrument>
+      <instrument name="C#" color="0x400000">
+        <note>61</note>
+      </instrument>
+      <instrument name="D" color="0x007000">
+        <note>62</note>
+      </instrument>
+      <instrument name="D#" color="0x004000">
+        <note>63</note>
+      </instrument>
+      <instrument name="E" color="0x2080F0">
+        <note>64</note>
+      </instrument>
+      <instrument name="F" color="0x007070">
+        <note>65</note>
+      </instrument>
+      <instrument name="F#" color="0x004040">
+        <note>66</note>
+      </instrument>
+      <instrument name="G" color="0x707000">
+        <note>67</note>
+      </instrument>
+      <instrument name="G#" color="0x404000">
+        <note>68</note>
+      </instrument>
+      <instrument name="A" color="0x700070">
+        <note>69</note>
+      </instrument>
+      <instrument name="A#" color="0x400040">
+        <note>70</note>
+      </instrument>
+      <instrument name="B" color="0xA00000">
+        <note>71</note>
+      </instrument>
+      <instrument name="High C" color="0x00A000">
+        <note>73</note>
+      </instrument>
+    </synth>
+	</instrument>
 </band>
 
 

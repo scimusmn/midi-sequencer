@@ -13,14 +13,14 @@
 #include "instrument.h"
 #include "synthInst.h"
 
-#define as_groupInst(x) static_cast<synthInstrument *>(x)
+#define as_groupInst(x) static_cast<groupInst *>(x)
+
+void loadInstruments(string filename);
 
 class groupInst : public inst{
 protected:
   bandBar * band;
   vector<instrument> notes;
-  bool bNoteSelect;
-  ofDropDown drop;
   int lastInst;
   
   bool bOpen;
@@ -28,14 +28,22 @@ protected:
   
   ofFont label;
   ofFont subhead;
+  
+  bool bSynth;
+  ofDropDown synthDD;
 public:
   groupInst():inst(){
   }
 	groupInst(string title, unsigned char chan, unsigned char nt, bandBar * bnd=0);
   
-  string getProgramName(){ return drop.getString(); }
-  int getProgramNumber(){ return drop.getChoiceNumber(); }
+  void addInstruments(ofTag & tag);
+  
+  string getProgramName(){ return synthDD.getString(); }
+  int getProgramNumber(){ return synthDD.getChoiceNumber(); }
   void changeProgram(int progNum);
+  
+  int noteSize(){ return notes.size(); }
+  instrument & operator()(int i);
 
   void update();
   
@@ -56,4 +64,8 @@ public:
   void setBandWidth(double wid);
   int farthestPoint();
   void update(int disp, ofDirection dir);
+  void clear();
+  void loseFocus();
+  
+  void loadInstruments(string filename);
 };

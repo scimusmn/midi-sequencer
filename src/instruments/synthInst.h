@@ -15,8 +15,6 @@
 
 #define as_synth(x) static_cast<synthInstrument *>(x)
 
-void loadInstruments(string filename);
-
 class synthInstrument : public inst{
 protected:
   bandBar * band;
@@ -48,4 +46,5 @@ public:
   bool clickUp();
   void mouseMotion(int _x, int _y);
   bool active(double pos);
+  void loseFocus(){ band->setActive(0); }
 };

@@ -24,7 +24,12 @@ void bandBar::setup()
 double bandBar::getBottomPos()
 {
 	//return y+h-yBot;
-  return y+yoff+viewSize;
+  return bin.y+bin.height;
+}
+
+ofRectangle bandBar::getControlBox()
+{
+  return controls;
 }
 
 inst * bandBar::operator[](int i)
@@ -37,59 +42,48 @@ int bandBar::size()
   return instruments.size();
 }
 
-void bandBar::setHeight()
+void bandBar::adjustSize()
 {
-	h=ofGetHeight()-75;
-  int barWid=rightBorder=20;
-	yoff=0;
-	yBot=120;
-	barW=barWid;
-	yGap=20;
-	xBlockSpace=10;
-	yBlockSpace=10;
-	numBins=1;
-  binWidth=0;
+  bool bot=controlsAtBottom;
+  h=ofGetHeight()-y;
+  bar.w=rightBorder=20;
+  controls.height=170;
+  bin.y=y+((bot)?scrollUp.h:controls.height);
+  blockMargin.x=10;
+  blockMargin.y=10;
+  cell.y=cell.x=0;
   int fullHeight=0;
-	for (unsigned int i=0; i<instruments.size(); i++) {
-    fullHeight+=instruments[i]->h+yBlockSpace*2;
-		binWidth=max(binWidth,instruments[i]->w+xBlockSpace*2);
-		binHeight=max(binHeight, instruments[i]->base.h+yBlockSpace*2);
+  for (unsigned int i=0; i<instruments.size(); i++) {
+    inst & t=*instruments[i];
+    fullHeight+=t.h+blockMargin.y*2;
+		cell.x=max(double(cell.x),t.w+blockMargin.x*2+((t.getType()==INST_GROUP)?t.base.h+10:0));
+		cell.y=max(double(cell.y), t.base.h+blockMargin.y*2);
 	}
-  binWidth+=(barWid-xBlockSpace*2);
-	double fullSize=binHeight*instruments.size();
+  //cell.x+=(bar.w-blockMargin.x*2);
+  
+  bin.width=bar.w+cell.x;
+  w=bin.width+rightBorder;
+  controls.width=w;
   
   scrollUp.setup(w,OF_HOR, "images/mInstUp.jpg");
   scrollDown.setup(w,OF_HOR,"images/mInstDown.jpg");
   
-  yoff=scrollUp.h;
+  bin.height=h-(controls.height+((bot)?scrollUp.h:scrollDown.h));
   
-  viewSize=h-(yoff+yBot)-((fullHeight>viewSize)?scrollDown.h:0);
-  
-	bar.setup(barWid, viewSize, OF_VERT);
-	bar.registerArea(viewSize,fullHeight);
-  
-  if(!bar.available()){
-    //barW=bar.w=0;
-    for (unsigned int i=0; i<instruments.size(); i++) {
-			instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
-		}
-  }
-  
-  w=(barW+binWidth)*numBins+rightBorder;
+  bar.setup(bar.w, bin.height, OF_VERT);
+	bar.registerArea(bin.height,fullHeight);
   
   for (unsigned int i=0; i<instruments.size(); i++) {
-    instruments[i]->setBandWidth(w);
-  }
-  
-  if(!bar.available()) {
-    scrollUp.setup(0,OF_HOR, "images/mInstUp.jpg");
-    scrollDown.setup(0,OF_HOR,"images/mInstDown.jpg");
+    instruments[i]->setBandWidth(bin.width);
+    if(!bar.available()) instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
   }
   
 }
 
 void bandBar::setup(ofXML & xml)
 {
+  controlsAtBottom=0;
+  activeInst=0;
   loadInstruments("midiPrograms.ini");
 	clearBut.setup("clear screen","fonts/Arial.ttf",24);
 	clearBut.setAvailable(true);
@@ -97,6 +91,7 @@ void bandBar::setup(ofXML & xml)
   xml.setCurrentTag(";band");
 	string font=xml.getCurrentTag().getAttribute("font");
 	ofTag & tag=xml.getCurrentTag();
+  ofTag * supportTag=0;
   bHolding=false;
   double maxWid=0;
 	for (unsigned int i=0; i<tag.size(); i++) {
@@ -128,6 +123,7 @@ void bandBar::setup(ofXML & xml)
 						break;
           case 2:
             type=INST_SYNTH;
+            supportTag=&tag[i][j];
             break;
 
 					case 3:
@@ -141,6 +137,7 @@ void bandBar::setup(ofXML & xml)
 						break;
           case 6:
             type=INST_GROUP;
+            supportTag=&tag[i][j];
             break;
 
 					default:
@@ -150,18 +147,22 @@ void bandBar::setup(ofXML & xml)
 			addInstrument(title,channel,note, type);
 			instruments[curInst]->setPercussive(percussive);
 			instruments[curInst]->setColor(color);
+      if(type==INST_GROUP||type==INST_SYNTH) as_groupInst(instruments[curInst])->addInstruments(*supportTag);
+      if(type==INST_SYNTH) as_groupInst(instruments[curInst])->loadInstruments(supportTag->getAttribute("file"));
+    }
       //maxWid=max(maxWid,instruments[curInst]->w);
-		}
 	}
-	setHeight();
+	//setHeight();
+  adjustSize();
 }
 
 void bandBar::addInstrument(string title, unsigned char channel, unsigned char nt, instType t)
 {
 	if(t==INST_DEFAULT) instruments.push_back( new instrument(title,channel,nt));
-  else if(t==INST_SYNTH) instruments.push_back( new synthInstrument(title,channel,nt,this));
-  else if(t==INST_GROUP) instruments.push_back( new groupInst(title,channel,nt,this));
-	setHeight();
+  else if(t==INST_GROUP||t==INST_SYNTH) instruments.push_back( new groupInst(title,channel,nt,this));
+    
+	//setHeight();
+  adjustSize();
 }
 
 void bandBar::drawBackground()
@@ -187,105 +188,100 @@ void bandBar::drawInstruments()
 	}
 }
 
+void drawGrid(float x,float y,float w,float h,float s)
+{
+  for (int i=0; i<w/s; i++) {
+    ofLine(x+i*s, y, x+i*s, y+h);
+  }
+  for (int i=0; i<h/s; i++) {
+    ofLine(x, y+i*s, x+w, y+i*s);
+  }
+}
+
 void bandBar::draw(int _x, int _y)
 {
-	x=_x,y=_y;
+  bool bot=controlsAtBottom;
   
-  int binEdge=x+binWidth+bar.w;
+  controls.x=bin.x=x=_x,y=_y;
+  bin.y=y+scrollUp.h;
+  controls.y=bin.y+bin.height;
+  if(!bot){
+    bin.y=y+controls.height;
+    controls.y=y;
+  }
+  float binEdge=bin.x+bin.width;
   
-	//sidebar background
-	ofSetColor(255, 255, 255);
-	//sideBarBack.draw(x+w-(sideBarBack.height/h)*sideBarBack.width, y,(sideBarBack.height/h)*sideBarBack.width,h);
+  //_-_-_-_-_ sidebar background _-_-_-_-_
   ofSetColor(0x333333);
   ofRect(x, y, w, h);
   ofSetColor(229, 224, 15,64);
-  int s=10;
-  for (int i=0; i<rightBorder/s; i++) {
-    ofLine(x+w-i*s, y, x+w-i*s, y+h);
-  }
-  for (int i=0; i<h/s; i++) {
-    ofLine(binEdge, y+i*s, x+w, y+i*s);
-  }
+  drawGrid(x+w-rightBorder, bin.y, rightBorder, bin.height, rightBorder/2);
   
   ofSetColor(229, 224, 15,128);
-  s=5;
-  for (int i=0; i<(w-rightBorder)/s; i++) {
-    ofLine(binEdge-i*s, y, binEdge-i*s, y+h);
-  }
-  for (int i=0; i<h/s; i++) {
-    ofLine(x, y+i*s-int(bar.getScrollPosition())%s, x+w-rightBorder, y+i*s-int(bar.getScrollPosition())%s);
-  }
+  drawGrid(bin.x, bin.y, w-rightBorder, bin.height, rightBorder/4);
   
-  //Shade to the right of the sidebar
+  //_-_-_-_-_ shade to the right of the sidebar
   ofSetShadowDarkness(.5);
-  ofShade(x+w, y+yoff, 15, viewSize, OF_RIGHT);
-	
-	//ofSetColor(0x80633B);
+  ofShade(x+w, bin.y, 15, bin.height, OF_RIGHT);
   
-  //Semi-transparent rectangle below the instrument bases
+  //_-_-_-_-_ semi-transparent rectangle under the instrument base blocks
   ofSetColor(0x33, 0x33, 0x33,223);
-	ofRect(x, y+yoff, binWidth+barW, viewSize);
-	ofShade(x+w, y+yoff, 10, viewSize, OF_LEFT, .3);
-	
-  //_-_-_-_-_ draw the instruments and box around each
+	ofRect(bin);
+	ofShade(x+w, bin.y, 10, bin.height, OF_LEFT, .3);
+  
+  //_-_-_-_-_ draw each of the instruments
   double yOff=0;
 	for (unsigned int i=0; i<instruments.size(); i++) {
     inst & Inst=*instruments[i];
-		Inst.draw(x+barW+xBlockSpace,y+yoff+yBlockSpace +yOff);
-    yOff+=((Inst.h<binHeight)?binHeight:Inst.h+yBlockSpace*2);
-		double tmpY=Inst.y+((Inst.h<binHeight)?binHeight:Inst.h+yBlockSpace*2)+Inst.vertScrollPos()-yBlockSpace;
+		Inst.draw(x+bar.w+blockMargin.x,bin.y+blockMargin.y +yOff);
+    yOff+=((Inst.h<cell.y)?cell.y:Inst.h+blockMargin.y*2);
+		double tmpY=Inst.y+((Inst.h<cell.y)?cell.y:Inst.h+blockMargin.y*2)+Inst.vertScrollPos()-blockMargin.y;
     
     ofSetShadowDarkness(.2);
-		ofShade(x, tmpY, 3,binWidth+barW, OF_UP);
-		ofShade(x, tmpY, 3, binWidth+barW, OF_DOWN,false);
+		ofShade(x, tmpY, 3,bin.width, OF_UP);
+		ofShade(x, tmpY, 3, bin.width, OF_DOWN,false);
 	}
   
-  //shade over the ledge on the right side of the sidebar
-	ofShade(binEdge, y+yoff, 10, viewSize, OF_LEFT, .4);
-  ofShade(x+w, y+yoff, 10, viewSize, OF_LEFT, .4);
-  ofShade(binEdge, y+yoff, 10, viewSize, OF_RIGHT, .3);
-  ofShade(x+w,getBottomPos(), 10, ofGetHeight()-getBottomPos(), OF_RIGHT, .4);
+  //_-_-_-_-_ border shading
+  ofSetShadowDarkness(.3);
+  ofShade(binEdge, bin.y, 10, bin.height, OF_LEFT);
+  ofShade(x+w, y+yoff, 10, bin.height, OF_LEFT);
+  ofShade(binEdge, bin.y, 10, bin.height, OF_RIGHT);
   
+  //_-_-_-_-_ shade over conductor controls
+  ofSetShadowDarkness(.4);
+  ofShade(controls.x+controls.width,controls.y, 10, controls.height, OF_RIGHT);
+  ofShade(x+w,bin.y+bin.height, 10, ofGetHeight()-getBottomPos(), OF_RIGHT);
+  
+  //_-_-_-_-_ if there is an active instrument, draw it now
   if(activeInst) activeInst->draw();
-	
-	//Box at top of sidebar
-	ofSetColor(230, 230, 230);
-  ofSetShadowDarkness(.4);
-	ofRect(x, y, w, yoff);
-  ofShade(x, y, yoff,w, OF_DOWN);
-  ofSetShadowDarkness(.3);
-	ofShade(x, y+yoff, 10, w, OF_DOWN);
   
-  //Box at bottom of sidebar
+  //_-_-_-_-_ box at opposite end of scroll than controls
+  ofRectangle t(x,((!bot)?bin.y+bin.height:y),w,scrollUp.h);
 	ofSetColor(230, 230, 230);
-	ofRect(x, y+yoff+viewSize, w, yoff);
+	ofRect(t);
   ofSetShadowDarkness(.4);
-  ofShade(x, y+yoff+viewSize, yoff,w, OF_DOWN);
-	
-	//box at bottom of sidebar
-	ofRect(x, getBottomPos()+scrollDown.h, w, yBot);
-  ofSetShadowDarkness(.3);
-	ofShade(x, getBottomPos(), 10, w, OF_UP);
-  ofShade(x, getBottomPos(), 10, w, OF_DOWN);
-  ofSetShadowDarkness(.2);
-	ofShade(x, getBottomPos()+scrollDown.h, 15, w, OF_DOWN);
+  ofShade(t.x,t.y, t.height,t.width, OF_DOWN);
+  
+  //_-_-_-_-_ control box, to hold the clear button
+  ofRect(controls);
+  ofShade(controls.x, controls.y, controls.height, controls.width, OF_DOWN);
+  //if(!bot) ofShade(controls.x, controls.y+controls.height, 10, controls.width, OF_DOWN);
+  //else ofShade(controls.x, controls.y, 10, controls.width, OF_UP);
+  ofShade(bin.x, bin.y, 10, w, OF_DOWN);
+  ofShade(bin.x, bin.y+bin.height, 10, w, OF_UP);
 	
 	if(bar.available()){
-    scrollUp.draw(x,y+yoff-scrollUp.h);
-    if(bar.pressed()){
-      ofSetColor(255, 255, 255,128);
-      bar.draw(x,y+yoff);
-    }
-    scrollDown.draw(x,y+yoff+viewSize);
+    scrollUp.draw(x,bin.y-scrollUp.h);
+    //if(bar.pressed()){
+    ofSetColor(255, 255, 255,128);
+    bar.draw(x,bin.y);
+    //}
+    scrollDown.draw(x,bin.y+bin.height);
   }
-	
-	//Shades over ends of the scroll bar
-  ofSetShadowDarkness(.3);
-	ofShade(x, y+yoff, 5, bar.w+4, OF_DOWN);
-	ofShade(x, y+yoff+viewSize, 5, bar.w+4, OF_UP);
-	
-	
-	clearBut.draw((w-clearBut.w)/2, getBottomPos()+scrollDown.h+((yBot)-clearBut.h)/2);
+  
+  int butDisp=((bot)?scrollDown.h:-scrollUp.h);
+  clearBut.draw((w-clearBut.w)/2, controls.y+butDisp+((controls.height-butDisp)-clearBut.h)/2);
   
   for (unsigned int i=0; i<instruments.size(); i++) {
     instruments[i]->drawForeground();
@@ -297,39 +293,56 @@ int lastY=0;
 bool bandBar::clickDown(int _x, int _y)
 {
 	bool ret=0;
-  if(!activeInst){
-    for (unsigned int i=0; i<instruments.size(); i++) {
-      if(!bHolding&&_y>y+yoff&&_y<y+yoff+viewSize&&instruments[i]->clickDown(_x,_y)){
-        bHolding=true;
-        lastInst=i;
-      }
-    }
-  }
-  else {
-    activeInst->clickDown(_x, _y);
-  }
-
-	if(clearBut.clickDown(_x, _y))
-		clear();
-	if(bar.available())
-		bar.clickDown(_x, _y);
-  if(scrollUp.getAvailable()){
+  
+  //_-_-_-_-_ control clickdowns
+  if(clearBut.clickDown(_x, _y))
+		ret=1,clear();
+	if(bar.available()&&!ret);
+		//ret=bar.clickDown(_x, _y);
+  if(scrollUp.getAvailable()&&!ret){
     if(scrollUp.clickDown(_x, _y)){
+      ret=1;
       bar.setScrollPosition(bar.getScrollPosition()-binHeight);
       for (unsigned int i=0; i<instruments.size(); i++) {
         instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
       }
     }
   }
-  if(scrollDown.getAvailable()){
+  if(scrollDown.getAvailable()&&!ret){
     if(scrollDown.clickDown(_x, _y)){
+      ret=1;
       bar.setScrollPosition(bar.getScrollPosition()+binHeight);
       for (unsigned int i=0; i<instruments.size(); i++) {
         instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
       }
     }
   }
-  if(_x<x+w&&bar.available()) lastY=_y,bar.setPressed(true);
+  
+  //_-_-_-_-_instrument clickdowns
+  if(!ret){
+    for (unsigned int i=0; i<instruments.size(); i++) {
+      if(!bHolding&&_y>bin.y&&_y<bin.y+bin.height&&instruments[i]->clickDown(_x,_y)){
+        if(activeInst&&activeInst!=instruments[i]){
+          instruments[i]->clickUp();
+          activeInst->loseFocus();
+        }
+        else {
+          ret=1;
+          bHolding=true;
+          lastInst=i;
+        }
+
+      }
+    }
+  }
+  if(activeInst&&!ret) {
+    if(!ret&&(activeInst->clickDown(_x, _y))){
+      ret=1;
+    }
+  }
+  
+  if(!ret&&_y>bin.y&&_y<bin.y+bin.height&&bar.available()) lastY=_y,bar.setPressed(true);
+  
 	return ret;
 }
 
@@ -379,7 +392,7 @@ void bandBar::mouseMotion(int _x, int _y)
 //			instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
 //		}
 //	}
-  if(_x<x+w&&bar.available()){
+  if(bar.available()&&bar.pressed()){
     bar.setScrollPosition(bar.getScrollPosition()+(lastY-_y));
     for (unsigned int i=0; i<instruments.size(); i++) {
 			instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
@@ -391,6 +404,7 @@ void bandBar::mouseMotion(int _x, int _y)
 
 void bandBar::setActive(inst * currentInst)
 {
+  if(activeInst&&currentInst) activeInst->loseFocus();
   activeInst=currentInst;
 }
 
@@ -405,6 +419,7 @@ int bandBar::farthestPoint()
 
 void bandBar::clear()
 {
+  stopAll();
 	for (unsigned int i=0; i<instruments.size(); i++) {
 		instruments[i]->clear();
 	}
@@ -422,6 +437,7 @@ void bandBar::stopAll()
 	}
   vector<unsigned char> msg;
   for (unsigned int i=0; i<4; i++) {
+    msg.clear();
     msg.push_back( MIDI_CONTROL_CHANGE + i );
     msg.push_back( MIDI_CTL_ALL_NOTES_OFF );
     msg.push_back( 0x0 );

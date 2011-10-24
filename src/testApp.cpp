@@ -35,7 +35,7 @@ void testApp::update(){
 	//band.update(-conductor.getBarPosition(),OF_HOR);
 //	if(conductor.isPlaying())
 //		band.checkActives(conductor.cursor()+band.w);
-	band.setHeight();
+  band.adjustSize();
 	band.update();
 	conductor.update();
 	

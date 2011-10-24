@@ -9,6 +9,12 @@
 
 #include "conductor.h"
 #include "../instruments/synthInst.h"
+#include "../instruments/groupInstrument.h"
+
+extern ofColor white;
+extern ofColor black;
+extern ofColor gray;
+extern ofColor yellow;
 
 void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pixelsPerSec, double vSize)
 {
@@ -22,7 +28,7 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 	pps=pixelsPerSec;
 	numMeasures=nMeasures;
 	measureLength=secondsPerMeasure*pps;
-	bar.setup(20, vSize, OF_HOR);
+	bar.setup(30, vSize, OF_HOR);
 	bar.registerArea(vSize, playTime*pps);
 	playBut.setup(64, 64, "images/play.png","images/pause.png");
 	rewindBut.setup( 48, 48, "images/rewind.png");
@@ -37,7 +43,8 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 
 void midiSequencer::resize(){
   if(band) {
-    bar.setup(20, ofGetWidth()-band->w, OF_HOR);
+    cout << ofGetHeight()-band->getBottomPos()<<endl;
+    bar.setup(41, ofGetWidth()-band->w, OF_HOR);
     bar.registerArea(ofGetWidth()-band->w, playTime*pps);
     if(numMeasures*measureLength<2*(ofGetWidth()-band->w)){
       double secondsPerMeasure=measureLength/pps;
@@ -76,6 +83,27 @@ void midiSequencer::registerPlayback(bandBar * bnd)
 	setScrollPos(0);
 }
 
+void midiSequencer::addStrike(inst & Inst, ofTag & tag, double tempo)
+{
+  double currentTempo=1+tempoSlide.getPercent()*3;
+  for (unsigned int k=0; k<tag.size(); k++) {
+    if(tag[k].getLabel()=="strike"){
+      int beat=ofToInt(tag[k].getAttribute("beat"));
+      int length=ofToInt(tag[k].getAttribute("length"));
+      double divLength=measureLength/divsPerMeasure;
+      if(beat<numMeasures*divsPerMeasure){
+        Inst.blocks.push_back(dragBlock(beat*divLength*currentTempo/tempo+x,length*divLength*currentTempo/tempo,Inst.base));
+        dragBlock & db=Inst.blocks[Inst.blocks.size()-1];
+        /*if(isSynth){
+          db.note=ofToInt(tag[i][k].getAttribute("note"));
+          cout << int(db.note) << endl;
+        }*/
+        db.clickUp();
+      }
+    }
+  }
+}
+
 void midiSequencer::loadSong(string filename)
 {
   ofXML xml;
@@ -89,25 +117,27 @@ void midiSequencer::loadSong(string filename)
   for (unsigned int i=0; i<tag.size(); i++) {
     if(tag[i].getLabel()=="instrument"){
       string which=tag[i].getAttribute("name");
-      bool isSynth=(tag[i].getAttribute("type")=="synth");
+      bool isGroup=(tag[i].getAttribute("type")=="group"||tag[i].getAttribute("type")=="synth");
       for (unsigned int j=0; j<bnd.size(); j++) {
+        inst * cur=0;
         if(bnd[j]->title==which){
-          if(isSynth){
-            as_synth(bnd[j])->changeProgram(ofToInt(tag[i].getAttribute("prog")));
+          if(!isGroup){
+            cur=bnd[j];
+            addStrike(*cur, tag[i],tempo);
           }
-          for (unsigned int k=0; k<tag[i].size(); k++) {
-            if(tag[i][k].getLabel()=="strike"){
-              int beat=ofToInt(tag[i][k].getAttribute("beat"));
-              int length=ofToInt(tag[i][k].getAttribute("length"));
-              double divLength=measureLength/divsPerMeasure;
-              if(beat<numMeasures*divsPerMeasure){
-                bnd[j]->blocks.push_back(dragBlock(beat*divLength*currentTempo/tempo+x,length*divLength*currentTempo/tempo,bnd[j]->base));
-                dragBlock & db=bnd[j]->blocks[bnd[j]->blocks.size()-1];
-                if(isSynth){
-                  db.note=ofToInt(tag[i][k].getAttribute("note"));
-                  cout << int(db.note) << endl;
+          else{
+            groupInst &curGroup=*as_groupInst(bnd[j]);
+            int prog = ofToInt(tag[i].getAttribute("prog"));
+            if(tag[i].getAttribute("type")=="synth") curGroup.changeProgram(prog);
+            for (unsigned int k=0; k<tag[i].size(); k++) {
+              if(tag[i][k].getLabel()=="instrument"){
+                string whichSub=tag[i][k].getAttribute("name");
+                for (unsigned int l=0; l<curGroup.noteSize(); l++) {
+                  if(curGroup(l).title==whichSub){
+                    addStrike(curGroup(l), tag[i][k],tempo);
+                  }
                 }
-                db.clickUp();
+                curGroup.loseFocus();
               }
             }
           }
@@ -117,7 +147,33 @@ void midiSequencer::loadSong(string filename)
   }
 }
 
-
+void midiSequencer::addInstrumentTag(inst * Inst, ofXML & xml, string root)
+{
+  xml.newCurrentTag("instrument");
+  xml.addAttribute("name", Inst->title);
+  if(Inst->getType()==INST_GROUP||Inst->getType()==INST_SYNTH){
+    if(Inst->getType()==INST_GROUP) xml.addAttribute("type","group");
+    else if(Inst->getType()==INST_SYNTH) xml.addAttribute("type","synth");
+    xml.addAttribute("prog", ofToString(as_groupInst(Inst)->getProgramNumber()));
+    groupInst & curGroup=*as_groupInst(Inst);
+    for (unsigned int i=0; i<curGroup.noteSize(); i++) {
+      addInstrumentTag(&curGroup(i), xml,root);
+    }
+  }
+  else{ 
+    xml.addAttribute("type","default");
+    for (unsigned int j=0; j<Inst->size(); j++) {
+      xml.newCurrentTag("strike");
+      double divLength=measureLength/divsPerMeasure-1;
+      int bt=((*Inst)[j].x-x)/divLength;
+      int lng=(*Inst)[j].w/divLength;
+      xml.addAttribute("beat", ofToString(bt));
+      xml.addAttribute("length", ofToString(lng));
+      xml.popTag();
+    }
+  }
+  xml.popTag();
+}
 
 void midiSequencer::saveSong(string filename)
 {
@@ -126,27 +182,7 @@ void midiSequencer::saveSong(string filename)
   xml.newCurrentTag("band");
   xml.addAttribute("tempo", ofToString(1+tempoSlide.getPercent()*3,1));
   for (unsigned int i=0; i<bnd.size(); i++) {
-    xml.setCurrentTag(";band");
-    xml.newCurrentTag("instrument");
-    xml.addAttribute("name", bnd[i]->title);
-    if((*bnd[i]).getType()==INST_SYNTH){
-      xml.addAttribute("type","synth");
-      xml.addAttribute("prog", ofToString(as_synth(bnd[i])->getProgramNumber()));
-    }
-    else xml.addAttribute("type","default");
-    for (unsigned int j=0; j<bnd[i]->size(); j++) {
-      xml.newCurrentTag("strike");
-      double divLength=measureLength/divsPerMeasure-1;
-      int bt=((*bnd[i])[j].x-x)/divLength;
-      int lng=(*bnd[i])[j].w/divLength;
-      xml.addAttribute("beat", ofToString(bt));
-      xml.addAttribute("length", ofToString(lng));
-      if((*bnd[i]).getType()==INST_SYNTH){
-        xml.addAttribute("note", ofToString((*bnd[i])[j].note));
-      }
-
-      xml.popTag();
-    }
+    addInstrumentTag(bnd[i], xml, ";band");
   }
   xml.writeFile(filename);
 }
@@ -156,7 +192,7 @@ void midiSequencer::drawMark()
 	ofSetColor(255, 255, 0);
 	ofTriangle(mark.x-mark.w/2, mark.y, mark.x+mark.w/2, mark.y, mark.x, mark.y+mark.h);
 	ofSetColor(255, 255, 0,128);
-	ofLine(mark.x, y, mark.x, ofGetHeight());
+	ofLine(mark.x, topBar.y, mark.x, ofGetHeight());
 }
 
 void midiSequencer::drawDivs(bool full)
@@ -164,21 +200,20 @@ void midiSequencer::drawDivs(bool full)
 	for (int i=0; i<numMeasures; i++) {
 		if(!full){
 			ofSetColor(0xFFFFFF);
-			label.drawString(ofToString(i), x+measureLength*i+1-bar.getScrollPosition(), y+label.stringHeight(ofToString(i)));
+			label.drawString(ofToString(i), x+measureLength*i+1-bar.getScrollPosition(), topBar.y+label.stringHeight(ofToString(i)));
 		}
 		for (int j=0; j<divsPerMeasure; j++) {
-			if(j%2) ofSetColor(0x77,0x77,0,64);
-			else ofSetColor(0x66,0x66,0,128);
+			ofSetColor(yellow.opacity(.5-.25*(j%2)));
       if(j==0) ofSetColor(128,128,128,200);
 			ofLine(x+measureLength*i+measureLength*j/divsPerMeasure-bar.getScrollPosition(), \
-				   (full)?y:(abs(j-double(divsPerMeasure)/2)<=.5)?y+10:(j==0)?y+5:y+15,\
-				   x+measureLength*i+measureLength*j/divsPerMeasure-bar.getScrollPosition(), (!full)?y+h:ofGetHeight());
+				   (full)?topBar.y:(abs(j-double(divsPerMeasure)/2)<=.5)?topBar.y+10:(j==0)?topBar.y+5:topBar.y+15,\
+				   x+measureLength*i+measureLength*j/divsPerMeasure-bar.getScrollPosition(), (!full)?topBar.y+h:ofGetHeight());
 		}
 	}
 	ofSetColor(0xE0C39B);
-	label.drawString(ofToString(int(numMeasures)), x+measureLength*numMeasures+1-bar.getScrollPosition(), y+label.stringHeight(ofToString(numMeasures)));
+	label.drawString(ofToString(int(numMeasures)), x+measureLength*numMeasures+1-bar.getScrollPosition(), topBar.y+label.stringHeight(ofToString(numMeasures)));
 	ofSetColor(0x60,0x43,0x1B,128);
-	ofLine(x+measureLength*numMeasures-bar.getScrollPosition(),y+5, x+measureLength*numMeasures-bar.getScrollPosition(), (!full)?y+h:ofGetHeight());
+	ofLine(x+measureLength*numMeasures-bar.getScrollPosition(),topBar.y+5, x+measureLength*numMeasures-bar.getScrollPosition(), (!full)?topBar.y+h:ofGetHeight());
 }
 
 void midiSequencer::draw(int _x, int _y)
@@ -186,7 +221,18 @@ void midiSequencer::draw(int _x, int _y)
 	x=_x;
 	w=ofGetWidth()-x;
 	y=_y;
-	mark.y=y+10;
+	mark.y=topBar.y+10;
+  topBar.x=x;
+  topBar.y=y;
+  topBar.width=w;
+  topBar.height=h;
+  
+  bool bot=band->controlsAtBottom;
+  
+  
+  if(!bot){
+    topBar.y=y+band->getControlBox().height-h;
+  }
 	
 	band->drawBackground();
 	//Draw measure lines
@@ -195,68 +241,76 @@ void midiSequencer::draw(int _x, int _y)
 	
 	band->drawInstruments();
 	
-#if F_YEAH_WOOD
-	ofSetColor(0xA0835B);
-#else
-	ofSetColor(0x777777);
-#endif
-	ofRect(x, y, w, h);
-	ofShade(x, y+h, 15, w, OF_UP, .4);
-	ofShade(x, y+h, 5, w, OF_DOWN, .3);
+	if(bar.available()){
+    ofSetColor(white);
+		if(!bot) bar.draw(_x, band->getBottomPos());
+    else bar.draw(_x, band->getControlBox().y);
+	}
+	
+  if(bot) drawControlBar(x, band->getControlBox().y+bar.h, w, band->getControlBox().height-bar.h);
+  else drawControlBar(x, band->getControlBox().y, w, band->getControlBox().height-topBar.height);
+
+	ofSetColor(0x575757);
+	ofRect(x, topBar.y, w, h);
+  ofSetShadowDarkness(.4);
+	ofShade(x, topBar.y+topBar.height, 15, w, OF_UP);
+	ofShade(x, topBar.y+topBar.height, 5, w, OF_DOWN);
 	
 	drawDivs(false);
 	
 	drawMark();
+  
+  ofSetShadowDarkness(.3);
+  ofShade(x, topBar.y, 10, w, OF_UP);
+  ofSetShadowDarkness(.5);
+	ofShade(x, topBar.y, 10, w, OF_DOWN);
 	
 	// Bottom scroll bar
   ofSetShadowDarkness(.3);
 	ofShade(_x, band->getBottomPos(), 5, w, OF_UP);
 	
-	int botY=band->getBottomPos();
-	if(bar.available()){
-		bar.draw(_x, band->getBottomPos());
-		botY=bar.y+bar.h+2;
-	}
-	
-	int botH=ofGetHeight()-botY;
 	//Task bar on bottom
-	ofSetColor(0x777777);
+}
+
+void midiSequencer::drawControlBar(int _x, int _y, int _w, int _h)
+{
+  ofSetColor(0x777777);
   
   ofSetShadowDarkness(.3);
-	ofRect(x,botY, w, botH);
-  ofShade(x, botY, botH,w, OF_DOWN);
+	ofRect(x,_y, w, _h);
+  ofShade(x, _y, _h,w, OF_DOWN);
 	//ofShade(x, bar.y+bar.h+2, 5, w, OF_UP, .3);
-	ofShade(x,botY, 10, w, OF_DOWN, .3);
+	ofShade(x,_y, 10, w, OF_DOWN, .3);
 	
 	double indent=4;
 	label.setMode(OF_FONT_CENTER);
-	//ofShadowRounded(x+w/2-playBut.w/2-indent/2, botY+(botH/2-playBut.h/2)-indent/2, playBut.w+indent, playBut.h+indent, playBut.w/2+indent/2, 1);
+	//ofShadowRounded(x+w/2-playBut.w/2-indent/2, _y+(_h/2-playBut.h/2)-indent/2, playBut.w+indent, playBut.h+indent, playBut.w/2+indent/2, 1);
   ofSetShadowDarkness(.3);
   
   //_-_-_-_-_ play button drawing _-_-_-_-_
 	ofShadowCircle(playBut.x+playBut.w/2, playBut.y+playBut.h/2, playBut.w/2, indent);
-  playBut.draw(x+w/2-playBut.w/2, botY+(botH-playBut.h)/2);
+  playBut.draw(x+w/2-playBut.w/2, _y+(_h-playBut.h)/2);
   if(playBut.pressed())
     label.drawString("pause", playBut.x+playBut.w/2, playBut.y+playBut.h+15);
   else label.drawString("play", playBut.x+playBut.w/2, playBut.y+playBut.h+15);
   
   //_-_-_-_-_ rewind button _-_-_-_-_
   ofShadowCircle(rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h/2, rewindBut.w/2, indent);
-	rewindBut.draw(x+w/2-playBut.w/2-50, botY+(botH-rewindBut.h)/2);
+	rewindBut.draw(x+w/2-playBut.w/2-50, _y+(_h-rewindBut.h)/2);
 	label.drawString("rewind", rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h+15);
 	
   //_-_-_-_-_ loop button drawing _-_-_-_-_
   ofShadowCircle(loopBut.x+loopBut.w/2, loopBut.y+loopBut.h/2, loopBut.w/2, indent);
-	loopBut.draw(x+w/2-playBut.w/2-100, botY+(botH-loopBut.h)/2);
+	loopBut.draw(x+w/2-playBut.w/2-100, _y+(_h-loopBut.h)/2);
 	label.drawString("loop", loopBut.x+loopBut.w/2, loopBut.y+loopBut.h+15);
   
   //_-_-_-_-_ song1 draw
   ofShadowRounded(waltz.x, waltz.y, waltz.w, waltz.h, waltz.h/4, indent);
-	waltz.draw(x+w-waltz.w-blues.w-100, botY+(botH-waltz.h*.5)/2);
+	waltz.draw(x+w-waltz.w-blues.w-100, _y+(_h-waltz.h*.5)/2);
   
   //_-_-_-_-_song2 draw _-_-_-_-_
   ofShadowRounded(blues.x, blues.y, blues.w, blues.h, blues.h/4, indent);
-	blues.draw(x+w-blues.w-50, botY+(botH-blues.h*.5)/2);
+	blues.draw(x+w-blues.w-50, _y+(_h-blues.h*.5)/2);
 	
   label.setSize(20);
   ofSetColor(255, 255, 255);
@@ -266,23 +320,27 @@ void midiSequencer::draw(int _x, int _y)
   
   //_-_-_-_-_ tempo slider draw
   ofShadowRounded(tempoSlide.x, tempoSlide.y, tempoSlide.w, tempoSlide.h, tempoSlide.h/4, indent);
-  tempoSlide.draw(x+100, botY+(botH-tempoSlide.h)/2,300,10);
-  ofSetColor(255, 255, 255);
+  tempoSlide.draw(x+100, _y+(_h-tempoSlide.h)/2,300,10);
+  ofSetColor(white);
   label.drawString("tempo", tempoSlide.x+tempoSlide.w/2, tempoSlide.y+tempoSlide.h+35);
 	
+  label.setSize(12);
+  
   ofSetShadowDarkness(1);
   ofShadowRounded(display.x, display.y, display.w, display.h, display.h/4, indent);
   
-	ofSetColor(0, 0, 0);
+	ofSetColor(black);
   ofRaised(.2);
 	ofRoundedRect(display.x-10, display.y-10, display.w+20, display.h+20, 5);
   ofFlat();
 	ofSetColor(0, 128, 200);
-	label.setMode(OF_FONT_LEFT);
-	label.setSize(12);
 	
 	int secs=metronome.getElapsed();
-	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), x+w/2+playBut.w/2+40, botY+(botH-display.h)/2);
+	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), x+w/2+playBut.w/2+40, _y+(_h-display.h)/2);
+  ofSetColor(white);
+  label.drawString("time", display.x+display.w/2, display.y+display.h+25);
+  
+  label.setMode(OF_FONT_LEFT);
 }
 
 void midiSequencer::update()
@@ -294,6 +352,10 @@ void midiSequencer::update()
     if(!loopBut.pressed()&&cursor()+band->w>=numMeasures*measureLength+x)
       pause(),reset();
   }
+  else {
+    band->checkActives(-200);
+  }
+
 	if(loopBut.pressed()&&cursor()>band->farthestPoint()-x)
 		reset(),setScrollPos(0);
 	if(metronome.justExpired()){
@@ -310,7 +372,7 @@ bool midiSequencer::clickDown(int _x, int _y)
 {
 	bool ret=0;
 	if(mark.clickDown(_x, _y));
-	else if(_y<mark.y+mark.h&&_x>x){
+	else if(_y>topBar.y&&_y<mark.y+mark.h&&_x>x){
 		mark.setPressed(true);
 		setCursorPosition(_x-x+getBarPosition());
 		mark.x=cursorPos+x;
@@ -321,7 +383,7 @@ bool midiSequencer::clickDown(int _x, int _y)
 		if(isPlaying()) midiConductor::pause(),band->stopAll();
 		else midiConductor::play();
 	}
-	else if(rewindBut.clickDown(_x, _y)) reset(), setScrollPos(0);
+	else if(rewindBut.clickDown(_x, _y)) reset(), band->stopAll(), setScrollPos(0);
 	else if(loopBut.toggle(_x, _y));
 	else if(waltz.clickDown(_x, _y)){
     loopBut.setPressed(true);

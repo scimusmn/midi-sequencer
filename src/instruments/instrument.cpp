@@ -9,6 +9,11 @@
 
 #include "instrument.h"
 
+ofColor white(255,255,255);
+ofColor black(0,0,0);
+ofColor gray(0x333333);
+ofColor yellow(229,225,15);
+
 dragBlock & inst::operator[](int i)
 {
 	return blocks[i];

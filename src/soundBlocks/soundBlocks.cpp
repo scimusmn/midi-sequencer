@@ -228,7 +228,7 @@ void dragBlock::draw(int _y)
 		ofShade(x+relPos.x+aPos, y, aPos, h, OF_LEFT, false);
 		ofShade(x+relPos.x+aPos, y, w-aPos, h, OF_RIGHT, false);
 	}
-  if(!bPercussive){
+  if(!bPercussive&&h>20){
     rightAdj.draw(x+relPos.x+w-rightAdj.w, y+relPos.y+(h-rightAdj.h)/2);
     if(w>30) leftAdj.draw(x+relPos.x, y+relPos.y+(h-leftAdj.h)/2);
   }

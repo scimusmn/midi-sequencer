@@ -33,7 +33,14 @@ protected:
   
   ofButton scrollUp;
   ofButton scrollDown;
+  
+  ofRectangle controls;
+  ofRectangle bin;
+  ofPoint blockMargin;
+  ofPoint cell;
 public:
+  bool controlsAtBottom;
+  
 	bandBar():ofInterGroup(){
     activeInst=0;
 		lastInst=0;
@@ -56,11 +63,19 @@ public:
 	void mouseMotion(int _x, int _y);
 	void drag(int _x, int _y);
 	void checkActives(double xPos);
-	void setHeight();
-  double verticleBlockSpace(){ return yBlockSpace;}
+  
+  void adjustSize();
+	//void setHeight();
+  
+  double verticleBlockSpace(){ return blockMargin.y;}
+  double getBorderSize(){ return rightBorder; }
   
   void setActive(inst * currentInst);
+  inst * getActive() { return activeInst; }
 	double getBottomPos();
+  
+  ofRectangle getControlBox();
+  
 	int farthestPoint();
 	void stopAll();
 	dragBlock & lastBlock();
