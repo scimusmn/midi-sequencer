@@ -241,11 +241,6 @@ void midiSequencer::draw(int _x, int _y)
 	
 	band->drawInstruments();
 	
-	if(bar.available()){
-    ofSetColor(white);
-		if(!bot) bar.draw(_x, band->getBottomPos());
-    else bar.draw(_x, band->getControlBox().y);
-	}
 	
   if(bot) drawControlBar(x, band->getControlBox().y+bar.h, w, band->getControlBox().height-bar.h);
   else drawControlBar(x, band->getControlBox().y, w, band->getControlBox().height-topBar.height);
@@ -259,6 +254,12 @@ void midiSequencer::draw(int _x, int _y)
 	drawDivs(false);
 	
 	drawMark();
+  
+  if(bar.available()){
+    ofSetColor(white);
+		if(!bot) bar.draw(_x, band->getBottomPos());
+    else bar.draw(_x, band->getControlBox().y);
+	}
   
   ofSetShadowDarkness(.3);
   ofShade(x, topBar.y, 10, w, OF_UP);
@@ -364,7 +365,9 @@ void midiSequencer::update()
   }
 	midiConductor::update();
 	double temp=metronome.getElapsedf()*pps-w/2;
-	if (bPlaying&&cursorPos>=w/2+bar.getScrollPosition()&&bar.setScrollPosition(temp));
+	if (bPlaying&&cursorPos>=w/2+bar.getScrollPosition()){
+    bar.setScrollPosition(temp);
+  }
 	mark.x=cursor()+x;
 }
 

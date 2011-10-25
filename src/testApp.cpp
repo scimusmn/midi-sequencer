@@ -65,23 +65,15 @@ void testApp::draw(){
 	conductor.draw(band.x+band.w,75);
 	band.draw(0,75);
 	
-	//shade to left of sidebar
-	
-	ofShade(band.x+band.w, band.y, 5, conductor.h, OF_RIGHT, .4);
-	
-	//kb.draw(100, 500);
-#if F_YEAH_WOOD
-	ofSetColor(0x90734B);
-#else
+
 	ofSetColor(0x555555);
-#endif
   ofRaised(.2);
 	ofRoundedRect(-30, 0, ofGetWidth()+60, 75, 15);
   ofFlat();
 	ofSetColor(0xe5e00f);
 	report.setMode(OF_FONT_CENTER);
 	report.setSize(40);
-	report.drawString("LAY A PHAT BEAT", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
+	report.drawString("MIDI SEQUENCER", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
   ofShade(0, 75, 10, ofGetWidth(), OF_DOWN, .5);
   
   ofPopMatrix();
@@ -104,6 +96,10 @@ void testApp::keyPressed(int key){
 		msg.push_back(0);
 		rolandSynth.sendMessage(msg);
 	}
+  if(key=='t'){
+    band.controlsAtBottom=!band.controlsAtBottom;
+    band.adjustSize();
+  }
 		
 }
 

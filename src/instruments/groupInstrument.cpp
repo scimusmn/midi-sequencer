@@ -141,10 +141,15 @@ void groupInst::draw()
   if(bOpen){
     int ySpace=band->verticleBlockSpace();
     int yOff=base.h+2*ySpace;
+    //ofSetColor(white.opacity(.15));
+    //ofRect(band->getBorderSize(),y+ yOff-ySpace+scroll.y, fullWidth-band->getBorderSize(), h-yOff+2*ySpace);
     for (unsigned int i=0; i<notes.size(); i++) {
+      if(i%2) ofSetColor(white.opacity(.05));
+      else ofSetColor(black.opacity(.05));
+      ofRect(band->getBorderSize(),y+yOff-ySpace+scroll.y, fullWidth-band->getBorderSize(), notes[i].h+ySpace*2);
       ofSetShadowDarkness(.1);
-      ofShade(0, y+yOff-ySpace+scroll.y,3, fullWidth-band->getBorderSize(), OF_UP);
-      ofShade(0, y+yOff-ySpace+scroll.y,3, fullWidth-band->getBorderSize(), OF_DOWN,false);
+      ofShade(band->getBorderSize(), y+yOff-ySpace+scroll.y,3, fullWidth-band->getBorderSize(), OF_UP);
+      ofShade(band->getBorderSize(), y+yOff-ySpace+scroll.y,3, fullWidth-band->getBorderSize(), OF_DOWN,false);
       notes[i].draw(x+50,y+yOff);
       yOff+=notes[i].h+2*ySpace;
     }
@@ -164,8 +169,9 @@ void groupInst::drawBackground()
 {
   for (unsigned int i=0; i<notes.size(); i++) {
     if(bOpen){
-      //ofShade(fullWidth, notes[i].y-band->verticleBlockSpace(),3, ofGetWidth(), OF_UP);
-      //ofShade(fullWidth, notes[i].y-band->verticleBlockSpace(),3, ofGetWidth(), OF_DOWN);
+      if(i%2) ofSetColor(white.opacity(.05));
+      else ofSetColor(black.opacity(.05));
+      ofRect(fullWidth,notes[i].y-band->verticleBlockSpace()+scroll.y, ofGetWidth()-fullWidth, notes[i].h+band->verticleBlockSpace()*2);
       ofSetColor(0, 0, 0);
       ofRect(fullWidth, notes[i].y-band->verticleBlockSpace()+scroll.y, ofGetWidth(), 1);
     }

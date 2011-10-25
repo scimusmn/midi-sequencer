@@ -254,7 +254,7 @@ void bandBar::draw(int _x, int _y)
   ofShade(x+w,bin.y+bin.height, 10, ofGetHeight()-getBottomPos(), OF_RIGHT);
   
   //_-_-_-_-_ if there is an active instrument, draw it now
-  if(activeInst) activeInst->draw();
+  //if(activeInst) activeInst->draw();
   
   //_-_-_-_-_ box at opposite end of scroll than controls
   ofRectangle t(x,((!bot)?bin.y+bin.height:y),w,scrollUp.h);
@@ -266,10 +266,14 @@ void bandBar::draw(int _x, int _y)
   //_-_-_-_-_ control box, to hold the clear button
   ofRect(controls);
   ofShade(controls.x, controls.y, controls.height, controls.width, OF_DOWN);
+  ofShade(controls.x+controls.width, controls.y, 10, controls.height, OF_LEFT);
+  ofShade(controls.x, controls.y+controls.height, 10, controls.width, OF_UP);
+  if(!bot) ofShade(bin.x, scrollUp.y, 10, w, OF_UP);
   //if(!bot) ofShade(controls.x, controls.y+controls.height, 10, controls.width, OF_DOWN);
   //else ofShade(controls.x, controls.y, 10, controls.width, OF_UP);
   ofShade(bin.x, bin.y, 10, w, OF_DOWN);
   ofShade(bin.x, bin.y+bin.height, 10, w, OF_UP);
+  
 	
 	if(bar.available()){
     scrollUp.draw(x,bin.y-scrollUp.h);
@@ -281,6 +285,8 @@ void bandBar::draw(int _x, int _y)
   }
   
   int butDisp=((bot)?scrollDown.h:-scrollUp.h);
+  ofSetShadowDarkness(.5); 
+  ofShadowRounded(clearBut.x, clearBut.y, clearBut.w, clearBut.h, clearBut.h/2, 3);
   clearBut.draw((w-clearBut.w)/2, controls.y+butDisp+((controls.height-butDisp)-clearBut.h)/2);
   
   for (unsigned int i=0; i<instruments.size(); i++) {
@@ -297,24 +303,19 @@ bool bandBar::clickDown(int _x, int _y)
   //_-_-_-_-_ control clickdowns
   if(clearBut.clickDown(_x, _y))
 		ret=1,clear();
-	if(bar.available()&&!ret);
+	//if(bar.available()&&!ret);
 		//ret=bar.clickDown(_x, _y);
-  if(scrollUp.getAvailable()&&!ret){
+  if((scrollUp.getAvailable()||scrollDown.getAvailable())&&!ret){
     if(scrollUp.clickDown(_x, _y)){
-      ret=1;
-      bar.setScrollPosition(bar.getScrollPosition()-binHeight);
-      for (unsigned int i=0; i<instruments.size(); i++) {
-        instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
-      }
+      cout << bar.getScrollPosition()-cell.y << " should be the new pos\n";
+      ret=1,bar.setScrollPosition(bar.getScrollPosition()-cell.y);
+      cout << bar.getScrollPosition() << " is the new pos\n";
     }
-  }
-  if(scrollDown.getAvailable()&&!ret){
-    if(scrollDown.clickDown(_x, _y)){
-      ret=1;
-      bar.setScrollPosition(bar.getScrollPosition()+binHeight);
-      for (unsigned int i=0; i<instruments.size(); i++) {
-        instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
-      }
+    else if(scrollDown.clickDown(_x, _y))
+      ret=1,bar.setScrollPosition(bar.getScrollPosition()+cell.y);
+    
+    if(ret) for (unsigned int i=0; i<instruments.size(); i++) {
+      instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
     }
   }
   
@@ -366,8 +367,8 @@ bool bandBar::clickUp()
 void bandBar::update()
 {
 	bar.update();
-  scrollUp.setAvailable((bar.getScrollPosition()>binHeight/4)&&bar.available());
-  scrollDown.setAvailable((bar.getScrollPosition()<(bar.getFullSize()-viewSize)-binHeight/4)&&bar.available());
+  scrollUp.setAvailable((bar.getScrollPosition()>cell.y/4)&&bar.available());
+  scrollDown.setAvailable((bar.getScrollPosition()<(bar.getFullSize()-bin.height)-cell.y/4)&&bar.available());
   for (unsigned int i=0; i<instruments.size(); i++) {
 		instruments[i]->update();
 	}
