@@ -9,6 +9,33 @@
 
 #include "soundBlocks.h"
 
+void drawHatching(double x, double y, double w, double h, double hatchSpace, double hatchWidth)
+{
+  float full=(hatchSpace+hatchWidth);
+  ofPoint l1,l2,r1,r2;
+  for (int i=1; i<(w+h)/full; i++) {
+    
+    if(i*full<=h) l1.x=x,l1.y=y+i*full;
+    else l1.y=y+h, l1.x=x+i*full-h;
+    
+    if(i*(full)-hatchWidth<=h) l2.x=x,l2.y=y+i*(full)-hatchWidth;
+    else l2.y=y+h, l2.x=x+(i*full-hatchWidth)-h;
+    
+    if(i*full<=w) r1.y=y,r1.x=x+i*full;
+    else r1.x=x+w, r1.y=y+i*full-w;
+    
+    if(i*(full)-hatchWidth<=w) r2.y=y,r2.x=x+i*full-hatchWidth;
+    else r2.x=x+w, r2.y=y+i*full-hatchWidth-w;
+    glBegin(GL_QUADS);{
+      glVertex2d(l1.x, l1.y);
+      glVertex2d(r1.x, r1.y);
+      glVertex2d(r2.x, r2.y);
+      glVertex2d(l2.x, l2.y);
+    }
+    glEnd();
+  }
+}
+
 soundBlock::soundBlock(string objName):ofInterObj()
 {
 	setup(objName);

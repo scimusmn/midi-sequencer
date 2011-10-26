@@ -8,6 +8,11 @@
 int roundH=300;
 int roundR=50;
 
+extern ofColor white;
+extern ofColor black;
+extern ofColor gray;
+extern ofColor yellow;
+
 //--------------------------------------------------------------
 void testApp::setup(){
 	
@@ -53,6 +58,9 @@ void testApp::draw(){
 	ofBackground(0x22, 0x22, 0x22);	
 #endif
 	
+  ofSetColor(black.opacity(.25));
+  drawHatching(0,0,ofGetWidth(),ofGetHeight(),5,5);
+  
 	/*ofSetColor(0x444400);
 	for (int i=0; i*10<ofGetHeight(); i++) {
 		ofRect(0, i*10, ofGetWidth(), 1);

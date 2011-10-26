@@ -8,6 +8,7 @@
 
 
 #include "band.h"
+#include "soundBlocks.h"
 #include "keyboard/keyboard.h"
 #include "timeline/conductor.h"
 

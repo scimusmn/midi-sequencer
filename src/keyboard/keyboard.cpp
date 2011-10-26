@@ -9,6 +9,12 @@
 
 #include "keyboard.h"
 
+extern ofColor white;
+extern ofColor black;
+extern ofColor gray;
+extern ofColor yellow;
+extern ofColor blue;
+
 static vector<string> programNames;
 
 int loadProgramNames(string filename){
@@ -80,14 +86,14 @@ void pianoKey::draw(double _x, double _y)
 	ofSetColor(0, 0, 0);
   ofRaised(.02);
 	ofRoundedRect(x, y, w, h, w/8.);
-	if(bPressed) ofSetColor(50, 150, 255);
+	if(bPressed) ofSetColor(blue);
 	else if(buttons.getChoice()){
 		if(notes.size()){
 			if(bSharp) ofSetColor(notes[0].base.color-.2*255.);
 			else ofSetColor(notes[0].base.color);
 		}
 	}
-	else if(bSelected) ofSetColor(25, 75, 190);
+	else if(bSelected) ofSetColor(blue*.8);
 	else {
 		if(bSharp) ofSetColor(0, 0, 0);
 		else ofSetColor(255, 255, 255);

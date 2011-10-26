@@ -11,6 +11,11 @@
 #include "instruments/synthInst.h"
 #include "instruments/groupInstrument.h"
 
+extern ofColor white;
+extern ofColor black;
+extern ofColor gray;
+extern ofColor yellow;
+
 bandBar::~bandBar()
 {
 	stopAll();
@@ -190,12 +195,14 @@ void bandBar::drawInstruments()
 
 void drawGrid(float x,float y,float w,float h,float s)
 {
-  for (int i=0; i<w/s; i++) {
+  /*for (int i=0; i<w/s; i++) {
     ofLine(x+i*s, y, x+i*s, y+h);
   }
   for (int i=0; i<h/s; i++) {
     ofLine(x, y+i*s, x+w, y+i*s);
-  }
+  }*/
+  ofSetColor(black.opacity(.25));
+  drawHatching(x,y,w,h,s,s);
 }
 
 void bandBar::draw(int _x, int _y)
@@ -218,7 +225,7 @@ void bandBar::draw(int _x, int _y)
   drawGrid(x+w-rightBorder, bin.y, rightBorder, bin.height, rightBorder/2);
   
   ofSetColor(229, 224, 15,128);
-  drawGrid(bin.x, bin.y, w-rightBorder, bin.height, rightBorder/4);
+  drawGrid(bin.x, bin.y, w-rightBorder, bin.height+10, rightBorder/4);
   
   //_-_-_-_-_ shade to the right of the sidebar
   ofSetShadowDarkness(.5);
@@ -268,7 +275,7 @@ void bandBar::draw(int _x, int _y)
   ofShade(controls.x, controls.y, controls.height, controls.width, OF_DOWN);
   ofShade(controls.x+controls.width, controls.y, 10, controls.height, OF_LEFT);
   ofShade(controls.x, controls.y+controls.height, 10, controls.width, OF_UP);
-  if(!bot) ofShade(bin.x, scrollUp.y, 10, w, OF_UP);
+  if(!bot&&bar.available()) ofShade(bin.x, scrollUp.y, 10, w, OF_UP);
   //if(!bot) ofShade(controls.x, controls.y+controls.height, 10, controls.width, OF_DOWN);
   //else ofShade(controls.x, controls.y, 10, controls.width, OF_UP);
   ofShade(bin.x, bin.y, 10, w, OF_DOWN);

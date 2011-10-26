@@ -328,6 +328,7 @@ void groupInst::loadInstruments(string filename)
   for (unsigned int i=0; i<instNames.size(); i++) {
     synthDD.setValue(instNames[i].name);
   }
+  synthDD.setMode(false);
 }
 
 void groupInst::changeProgram(int progNum)

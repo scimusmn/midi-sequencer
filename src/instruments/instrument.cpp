@@ -13,6 +13,9 @@ ofColor white(255,255,255);
 ofColor black(0,0,0);
 ofColor gray(0x333333);
 ofColor yellow(229,225,15);
+ofColor red(209,35,42);
+ofColor orange(251,176,23);
+ofColor blue(109,202,208);
 
 dragBlock & inst::operator[](int i)
 {

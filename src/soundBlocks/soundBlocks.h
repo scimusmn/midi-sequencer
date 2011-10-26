@@ -15,6 +15,8 @@
 #include "ofxMidiIn.h"
 #include "ofxMidiOut.h"
 
+void drawHatching(double x, double y, double w, double h, double hatchSpace, double hatchWidth);
+
 class soundBlock : public ofInterObj{
 protected:
   bool bPercussive;
