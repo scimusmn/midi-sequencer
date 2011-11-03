@@ -15,6 +15,7 @@
 		AA43713F13587E7F008C4F1D /* ofxTCPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713213587E7F008C4F1D /* ofxTCPServer.cpp */; };
 		AA43714013587E7F008C4F1D /* ofxUDPManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713413587E7F008C4F1D /* ofxUDPManager.cpp */; };
 		AA43714113587E7F008C4F1D /* ofxThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA43713B13587E7F008C4F1D /* ofxThread.cpp */; };
+		AA6B075914630DE90076D90E /* dallasEng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA6B075714630DE90076D90E /* dallasEng.cpp */; };
 		AA868420144F112300E3C9C7 /* groupInstrument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA86841F144F112300E3C9C7 /* groupInstrument.cpp */; };
 		AA9C353E133A68C800CB0F81 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA9C353B133A68C800CB0F81 /* main.cpp */; };
 		AA9C353F133A68C800CB0F81 /* testApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA9C353C133A68C800CB0F81 /* testApp.cpp */; };
@@ -37,7 +38,7 @@
 		E45BE9810E8CC7DD009D7055 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9770E8CC7DD009D7055 /* CoreServices.framework */; };
 		E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9790E8CC7DD009D7055 /* OpenGL.framework */; };
 		E45BE9840E8CC7DD009D7055 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */; };
-		E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */; };
+		E4C2422B10CC554B004149E2 /* openFrameworks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2421E10CC549C004149E2 /* openFrameworks.a */; };
 		E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424410CC5A17004149E2 /* AppKit.framework */; };
 		E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424510CC5A17004149E2 /* Cocoa.framework */; };
 		E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424610CC5A17004149E2 /* IOKit.framework */; };
@@ -118,6 +119,8 @@
 		AA43713913587E7F008C4F1D /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		AA43713B13587E7F008C4F1D /* ofxThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxThread.cpp; sourceTree = "<group>"; };
 		AA43713C13587E7F008C4F1D /* ofxThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxThread.h; sourceTree = "<group>"; };
+		AA6B075714630DE90076D90E /* dallasEng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dallasEng.cpp; path = ../dallasEng/dallasEng.cpp; sourceTree = SOURCE_ROOT; };
+		AA6B075814630DE90076D90E /* dallasEng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dallasEng.h; path = ../dallasEng/dallasEng.h; sourceTree = SOURCE_ROOT; };
 		AA86841E144F112300E3C9C7 /* groupInstrument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = groupInstrument.h; path = instruments/groupInstrument.h; sourceTree = "<group>"; };
 		AA86841F144F112300E3C9C7 /* groupInstrument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = groupInstrument.cpp; path = instruments/groupInstrument.cpp; sourceTree = "<group>"; };
 		AA9C353B133A68C800CB0F81 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -185,7 +188,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4C2422B10CC554B004149E2 /* openFrameworksDebug.a in Frameworks */,
+				E4C2422B10CC554B004149E2 /* openFrameworks.a in Frameworks */,
 				E45BE0AA0E8CC67C009D7055 /* GLee.a in Frameworks */,
 				E45BE2E40E8CC69C009D7055 /* rtAudio.a in Frameworks */,
 				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
@@ -287,6 +290,15 @@
 				AA43713C13587E7F008C4F1D /* ofxThread.h */,
 			);
 			path = src;
+			sourceTree = "<group>";
+		};
+		AA6B074D14630C800076D90E /* dallasEng */ = {
+			isa = PBXGroup;
+			children = (
+				AA6B075714630DE90076D90E /* dallasEng.cpp */,
+				AA6B075814630DE90076D90E /* dallasEng.h */,
+			);
+			name = dallasEng;
 			sourceTree = "<group>";
 		};
 		AA9C361D133A968200CB0F81 /* ofxMidi */ = {
@@ -560,6 +572,7 @@
 		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				AA6B074D14630C800076D90E /* dallasEng */,
 				AAA27C6E1343ADE2008FD322 /* band.h */,
 				AAA27C6F1343ADE2008FD322 /* band.cpp */,
 				AA3FBAD8142796BE0000CE74 /* soundBlocks */,
@@ -576,7 +589,7 @@
 		E4C2421710CC549C004149E2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */,
+				E4C2421E10CC549C004149E2 /* openFrameworks.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -704,10 +717,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		E4C2421E10CC549C004149E2 /* openFrameworksDebug.a */ = {
+		E4C2421E10CC549C004149E2 /* openFrameworks.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = openFrameworksDebug.a;
+			path = openFrameworks.a;
 			remoteRef = E4C2421D10CC549C004149E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -752,6 +765,7 @@
 				AA3FBADB142796BE0000CE74 /* soundBlocks.cpp in Sources */,
 				AA3FBADE142796CF0000CE74 /* conductor.cpp in Sources */,
 				AA868420144F112300E3C9C7 /* groupInstrument.cpp in Sources */,
+				AA6B075914630DE90076D90E /* dallasEng.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

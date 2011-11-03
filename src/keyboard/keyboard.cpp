@@ -13,6 +13,7 @@ extern ofColor white;
 extern ofColor black;
 extern ofColor gray;
 extern ofColor yellow;
+extern ofColor orange;
 extern ofColor blue;
 
 static vector<string> programNames;
@@ -86,14 +87,17 @@ void pianoKey::draw(double _x, double _y)
 	ofSetColor(0, 0, 0);
   ofRaised(.02);
 	ofRoundedRect(x, y, w, h, w/8.);
-	if(bPressed) ofSetColor(blue);
+	if(bPressed) ofSetColor(white*.8);
 	else if(buttons.getChoice()){
 		if(notes.size()){
 			if(bSharp) ofSetColor(notes[0].base.color-.2*255.);
 			else ofSetColor(notes[0].base.color);
 		}
 	}
-	else if(bSelected) ofSetColor(blue*.8);
+	else if(bSelected){
+    if(!bSharp) ofSetColor(white);
+    else ofSetColor(black);
+  }
 	else {
 		if(bSharp) ofSetColor(0, 0, 0);
 		else ofSetColor(255, 255, 255);
@@ -178,6 +182,7 @@ pianoKey & pianoOctave::operator[](int i)
 
 void pianoOctave::draw(int _x, int _y)
 {
+  x=_x,y=_y;
 	double xpos=_x;
 	if(keys.size()) keys[0].draw(_x,_y),xpos+=keys[0].w;
 	for (unsigned int i=1; i<keys.size(); i++) {
@@ -261,9 +266,10 @@ void pianoKeyboard::setup(double wid,double nOctaves)
 	for (int i=0; i<nOctaves; i++) {
 		octaves.push_back(pianoOctave(wid/nOctaves,i*12));
 	}
-	xDis=wid/16.;
-	w=w+xDis;
-	h=octaves[0].h+xDis/2.;
+  framePad.y=wid/16.;
+	framePad.x=wid/32.;
+	w=w+framePad.x;
+	h=octaves[0].h+framePad.y;
 }
 
 pianoKey & pianoKeyboard::operator[](int i)
@@ -274,19 +280,19 @@ pianoKey & pianoKeyboard::operator[](int i)
 void pianoKeyboard::draw(int _x, int _y)
 {
 	x=_x, y=_y;
-	double xpos=x+xDis/2.;
-	ofSetColor(175,112,75);
+	double keyboardStartX=x+framePad.x;
+	ofSetColor(orange);
   ofRaised(.2);
-	ofRoundedRect(_x, _y, w, h, xDis/4.);
+	ofRoundedRect(_x, _y, w, h, framePad.x/2.);
   ofSetShadowDarkness(.4);
-	ofShadowRounded(_x+xDis/8., _y+xDis/8., w-xDis/4., h, xDis/2.);
+  ofShadowRounded(octaves[0].x, octaves[0].y, octaves[0].w*octaves.size(), octaves[0].h-20, 0, 20);
 	for (unsigned int i=0; i<octaves.size(); i++) {
-		octaves[i].draw(xpos,_y+xDis/2.);
-		xpos+=octaves[i].w;
+		octaves[i].draw(keyboardStartX,_y+framePad.y);
+		keyboardStartX+=octaves[i].w;
 	}
 	ofSetColor(0, 0, 0);
-	ofRect(_x+xDis/2., _y+xDis/2-xDis*.02, w-xDis, xDis/4.);
-	ofShade(_x+xDis/2., _y+3*xDis/4.-xDis*.02, 10, w-xDis, OF_DOWN);
+	ofRect(octaves[0].x, _y+framePad.y*.9, w-framePad.x*2, framePad.y/2.);
+	//ofShade(octaves[0].x, _y+framePad.y*.9, 10, w-framePad.x*2, OF_UP);
 }
 
 bool pianoKeyboard::clickDown(int _x, int _y)

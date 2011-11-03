@@ -52,14 +52,20 @@ void testApp::draw(){
   //ofScale(ofGetWidth()/1920., ofGetHeight()/1200., 1);
 	ofSetColor(255, 255, 255);
 	
-#if F_YEAH_WOOD
-	background.draw(0, 75,ofGetWidth(),ofGetHeight());	
-#else
-	ofBackground(0x22, 0x22, 0x22);	
-#endif
+
+	ofBackground(0x33,0x33,0x33);	
 	
   ofSetColor(black.opacity(.25));
   drawHatching(0,0,ofGetWidth(),ofGetHeight(),5,5);
+  
+  if(band.empty()){
+    ofSetColor(black);
+    report.setMode(OF_FONT_MID);
+    report.setMode(OF_FONT_CENTER);
+    report.setSize(160);
+    report.drawString("TIMELINE",conductor.x+conductor.w/2, 200+(ofGetHeight()-200)/2);
+  }
+  
   
 	/*ofSetColor(0x444400);
 	for (int i=0; i*10<ofGetHeight(); i++) {
@@ -79,10 +85,11 @@ void testApp::draw(){
 	ofRoundedRect(-30, 0, ofGetWidth()+60, 75, 15);
   ofFlat();
 	ofSetColor(0xe5e00f);
-	report.setMode(OF_FONT_CENTER);
+	report.setMode(OF_FONT_TOP);
 	report.setSize(40);
-	report.drawString("MIDI SEQUENCER", ofGetWidth()/2, 75-20); //"Drag blocks and press play to make a rhythm"
-  ofShade(0, 75, 10, ofGetWidth(), OF_DOWN, .5);
+	report.drawString("CREATE A MUSICAL SEQUENCE", ofGetWidth()/2, (75-report.stringHeight("C"))/2); //"Drag blocks and press play to make a rhythm"
+  ofSetShadowDarkness(.4);
+  //ofShade(0, 75, ofGetWidth(),10, OF_DOWN);
   
   ofPopMatrix();
 }

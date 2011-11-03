@@ -12,10 +12,10 @@
 #include "ofMain.h"
 #include "ofExtended.h"
 
+#include "../../../dallasEng/dallasEng.h"
+
 #include "ofxMidiIn.h"
 #include "ofxMidiOut.h"
-
-void drawHatching(double x, double y, double w, double h, double hatchSpace, double hatchWidth);
 
 class soundBlock : public ofInterObj{
 protected:

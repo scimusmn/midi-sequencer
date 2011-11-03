@@ -28,7 +28,7 @@ protected:
 	bool bSharp,bSelected;
 public:
 	vector<instrument> notes;
-	ofButton clearNotes;
+	dallasButton clearNotes;
 	ofRadioButtons buttons;
 	pianoKey():ofInterObj(){}
 	pianoKey(double _x, double _y, char note);
@@ -74,6 +74,7 @@ protected:
 	double xDis,yDis;
 	unsigned char channel;
 public:
+  ofPoint framePad;
 	pianoKeyboard(){};
 	pianoKeyboard(double wid,double nOctaves);
 	~pianoKeyboard();

@@ -49,13 +49,11 @@ int bandBar::size()
 
 void bandBar::adjustSize()
 {
+  //_-_-_-_-_ margin and bar wid and right border defined in setup
   bool bot=controlsAtBottom;
   h=ofGetHeight()-y;
-  bar.w=rightBorder=20;
   controls.height=170;
   bin.y=y+((bot)?scrollUp.h:controls.height);
-  blockMargin.x=10;
-  blockMargin.y=10;
   cell.y=cell.x=0;
   int fullHeight=0;
   for (unsigned int i=0; i<instruments.size(); i++) {
@@ -87,10 +85,17 @@ void bandBar::adjustSize()
 
 void bandBar::setup(ofXML & xml)
 {
+  dinc.loadFont("fonts/DinC.ttf");
+  dinc.setSize(18);
+  dinc.setMode(OF_FONT_MID);
+  dinc.setMode(OF_FONT_CENTER);
+  bar.w=rightBorder=20;
+  blockMargin.x=10;
+  blockMargin.y=10;
   controlsAtBottom=0;
   activeInst=0;
   loadInstruments("midiPrograms.ini");
-	clearBut.setup("clear screen","fonts/Arial.ttf",24);
+	clearBut.setup("Clear all instruments","fonts/DinC.ttf",20);
 	clearBut.setAvailable(true);
 	sideBarBack.loadImage("images/sidebar.jpg");
   xml.setCurrentTag(";band");
@@ -168,6 +173,23 @@ void bandBar::addInstrument(string title, unsigned char channel, unsigned char n
     
 	//setHeight();
   adjustSize();
+}
+
+bool bandBar::empty()
+{
+  for (unsigned int i=0; i<instruments.size(); i++) {
+    if(instruments[i]->getType()==INST_DEFAULT){
+      if(instruments[i]->size()) return false;
+    }
+    else if(instruments[i]->getType()==INST_GROUP||instruments[i]->getType()==INST_SYNTH){
+      groupInst & ins=*as_groupInst(instruments[i]);
+      for (unsigned int j=0; j<ins.noteSize(); j++) {
+        if(ins(j).size()) return false;
+      }
+    }
+    
+  }
+  return true;
 }
 
 void bandBar::drawBackground()
@@ -271,13 +293,29 @@ void bandBar::draw(int _x, int _y)
   ofShade(t.x,t.y, t.height,t.width, OF_DOWN);
   
   //_-_-_-_-_ control box, to hold the clear button
+  int butDisp=((!bar.available())?0:((bot)?scrollDown.h:-scrollUp.h));
+  int midRect=butDisp+(controls.height-butDisp)/2;
+  
   ofRect(controls);
+  //Shade over the whole box.
   ofShade(controls.x, controls.y, controls.height, controls.width, OF_DOWN);
-  ofShade(controls.x+controls.width, controls.y, 10, controls.height, OF_LEFT);
-  ofShade(controls.x, controls.y+controls.height, 10, controls.width, OF_UP);
+  
+  ofSetShadowDarkness(.5);
+  ofShade(controls.x,controls.y+ midRect, 3, controls.width, OF_UP);
+  ofShade(controls.x,controls.y+ midRect, 3, controls.width, OF_DOWN,false);
+  drawShadowsAroundRect(controls, 10);
+  
   if(!bot&&bar.available()) ofShade(bin.x, scrollUp.y, 10, w, OF_UP);
-  //if(!bot) ofShade(controls.x, controls.y+controls.height, 10, controls.width, OF_DOWN);
-  //else ofShade(controls.x, controls.y, 10, controls.width, OF_UP);
+  
+  clearBut.draw((controls.width-clearBut.w)/2, controls.y+(midRect-clearBut.h)/2);
+  ofSetColor(gray);
+  dinc.setSize(15);
+  string bandStr="Drag instruments to the timeline";
+  dinc.drawString(bandStr,controls.x+ w/2, controls.y+midRect*1.5);
+  
+  
+  //_-_-_-_-_shade ove the ends of the bin
+  
   ofShade(bin.x, bin.y, 10, w, OF_DOWN);
   ofShade(bin.x, bin.y+bin.height, 10, w, OF_UP);
   
@@ -290,11 +328,6 @@ void bandBar::draw(int _x, int _y)
     //}
     scrollDown.draw(x,bin.y+bin.height);
   }
-  
-  int butDisp=((bot)?scrollDown.h:-scrollUp.h);
-  ofSetShadowDarkness(.5); 
-  ofShadowRounded(clearBut.x, clearBut.y, clearBut.w, clearBut.h, clearBut.h/2, 3);
-  clearBut.draw((w-clearBut.w)/2, controls.y+butDisp+((controls.height-butDisp)-clearBut.h)/2);
   
   for (unsigned int i=0; i<instruments.size(); i++) {
     instruments[i]->drawForeground();

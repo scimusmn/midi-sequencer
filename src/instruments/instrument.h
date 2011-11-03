@@ -38,6 +38,18 @@ public:
 	rhythmBlock base;
   vector<dragBlock> blocks;
   int size(){ return blocks.size();}
+  /*inst & operator=(inst & t)
+   {
+   bHolding=t.bHolding;
+   bPercussive=t.bPercussive;
+   fullWidth=t.fullWidth;
+   base=t.base;
+   title=t.title;
+   startPlay=t.startPlay;
+   tempo=t.tempo;
+   bDefault=t.bDefault;
+   type=t.type;
+   }*/
   
 	bool isHeld(){ return bHolding; }
   bool isDefault(){ return bDefault; }
@@ -63,8 +75,8 @@ public:
   void play(unsigned char vel);
   
   //----- virtual functions
-  virtual void draw(int _x, int _y){}
-	virtual void draw(){}
+  virtual void draw(int _x, int _y);
+	virtual void draw();
 	virtual void drawBackground(){}
   virtual void drawForeground(){}
   virtual bool clickDown(int _x, int _y){return false;}

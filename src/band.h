@@ -20,12 +20,7 @@ protected:
 	double xoff,yoff,yBot;
 	ofImage sideBarBack;
 	int lastInst;
-	ofButton clearBut;
-	double binWidth;
-	double binHeight;
-	double yBlockSpace;
-	double xBlockSpace;
-	double barW,yGap;
+	dallasButton clearBut;
   double rightBorder;
 	int numBlocksPerBin;
 	int numBins;
@@ -38,6 +33,8 @@ protected:
   ofRectangle bin;
   ofPoint blockMargin;
   ofPoint cell;
+  
+  ofFont dinc;
 public:
   bool controlsAtBottom;
   
@@ -63,6 +60,8 @@ public:
 	void mouseMotion(int _x, int _y);
 	void drag(int _x, int _y);
 	void checkActives(double xPos);
+  
+  bool empty();
   
   void adjustSize();
 	//void setHeight();

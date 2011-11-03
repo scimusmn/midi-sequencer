@@ -9,13 +9,11 @@
 
 #include "instrument.h"
 
-ofColor white(255,255,255);
-ofColor black(0,0,0);
-ofColor gray(0x333333);
-ofColor yellow(229,225,15);
-ofColor red(209,35,42);
-ofColor orange(251,176,23);
-ofColor blue(109,202,208);
+extern ofColor white;
+extern ofColor black;
+extern ofColor yellow;
+extern ofColor gray;
+extern ofColor blue;
 
 dragBlock & inst::operator[](int i)
 {
@@ -37,6 +35,17 @@ void inst::update(int disp, ofDirection dir)
 	else for (unsigned int i=0; i< blocks.size(); i++) {
 		blocks[i].update(scroll.x,0);
 	}
+}
+
+void inst::draw(int _x, int _y)
+{
+  x=_x,y=_y;
+  inst::draw();
+}
+
+void inst::draw()
+{
+  base.draw(x,y);
 }
 
 void inst::setMidi(unsigned char chan, unsigned char nt)

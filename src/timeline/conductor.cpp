@@ -13,6 +13,7 @@
 
 extern ofColor white;
 extern ofColor black;
+extern ofColor blue;
 extern ofColor gray;
 extern ofColor yellow;
 
@@ -22,7 +23,7 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 	h=30;
 	divsPerMeasure=3;
 	w=vSize;
-	label.loadFont("Arial.ttf");
+	label.loadFont("DinC.ttf");
 	label.setSize(12);
 	midiConductor::setup(nMeasures*secondsPerMeasure,pixelsPerSec);
 	pps=pixelsPerSec;
@@ -276,72 +277,90 @@ void midiSequencer::draw(int _x, int _y)
 void midiSequencer::drawControlBar(int _x, int _y, int _w, int _h)
 {
   ofSetColor(0x777777);
+  double boxPad=(ofGetWidth()-x-(waltz.w+blues.w+50+playBut.w+rewindBut.w+display.w+35+tempoSlide.w))/3;
+  ofRectangle loadSeq(x,_y,waltz.w+blues.w+50+boxPad,_h);
+  ofRectangle buttons(loadSeq.x+loadSeq.width,_y,playBut.w+rewindBut.w+display.w+35+boxPad,_h);
+  ofRectangle tempBox(buttons.x+buttons.width,_y,tempoSlide.w+boxPad,_h);
   
   ofSetShadowDarkness(.3);
 	ofRect(x,_y, w, _h);
   ofShade(x, _y, _h,w, OF_DOWN);
 	//ofShade(x, bar.y+bar.h+2, 5, w, OF_UP, .3);
 	ofShade(x,_y, 10, w, OF_DOWN, .3);
+  
+  drawShadowsAroundRect(loadSeq, 10);
+  drawShadowsAroundRect(buttons, 10);
+  drawShadowsAroundRect(tempBox, 10);
 	
-	double indent=4;
+	
+  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
+  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_  buttons draw  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
+  double indent=4;
 	label.setMode(OF_FONT_CENTER);
-	//ofShadowRounded(x+w/2-playBut.w/2-indent/2, _y+(_h/2-playBut.h/2)-indent/2, playBut.w+indent, playBut.h+indent, playBut.w/2+indent/2, 1);
+  
+  //_-_-_-_-_ rewind button _-_-_-_-_
   ofSetShadowDarkness(.3);
+  ofShadowCircle(rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h/2, rewindBut.w/2, indent);
+	rewindBut.draw(buttons.x+boxPad/2, buttons.y+(buttons.height-rewindBut.h)/2);
+	label.drawString("rewind", rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h+15);
   
   //_-_-_-_-_ play button drawing _-_-_-_-_
 	ofShadowCircle(playBut.x+playBut.w/2, playBut.y+playBut.h/2, playBut.w/2, indent);
-  playBut.draw(x+w/2-playBut.w/2, _y+(_h-playBut.h)/2);
+  playBut.draw(rewindBut.x+rewindBut.w+5, _y+(_h-playBut.h)/2);
+  ofSetColor(white);
   if(playBut.pressed())
     label.drawString("pause", playBut.x+playBut.w/2, playBut.y+playBut.h+15);
   else label.drawString("play", playBut.x+playBut.w/2, playBut.y+playBut.h+15);
-  
-  //_-_-_-_-_ rewind button _-_-_-_-_
-  ofShadowCircle(rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h/2, rewindBut.w/2, indent);
-	rewindBut.draw(x+w/2-playBut.w/2-50, _y+(_h-rewindBut.h)/2);
-	label.drawString("rewind", rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h+15);
 	
-  //_-_-_-_-_ loop button drawing _-_-_-_-_
+  /*//_-_-_-_-_ loop button drawing _-_-_-_-_
   ofShadowCircle(loopBut.x+loopBut.w/2, loopBut.y+loopBut.h/2, loopBut.w/2, indent);
 	loopBut.draw(x+w/2-playBut.w/2-100, _y+(_h-loopBut.h)/2);
-	label.drawString("loop", loopBut.x+loopBut.w/2, loopBut.y+loopBut.h+15);
+	label.drawString("loop", loopBut.x+loopBut.w/2, loopBut.y+loopBut.h+15);*/
+  
+  ofSetShadowDarkness(1);
+  ofShadowRounded(display.x-10, display.y-10, display.w+20, display.h+20, (display.h+20)/4,1);
+  ofSetColor(black);
+  ofRoundedRect(display.x-10, display.y-10, display.w+20, display.h+20, (display.h+20)/8);
+	ofSetColor(blue);
+	
+	int secs=metronome.getElapsed();
+	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), playBut.x+playBut.w+30, _y+(_h-display.h)/2);
+  ofSetColor(white);
+  label.drawString("Time in seconds", display.x+display.w/2, display.y+display.h+25);
+  
+  label.setMode(OF_FONT_LEFT);
+  
+  
+  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
+  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_  load sequence draw  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
+  
   
   //_-_-_-_-_ song1 draw
+  ofSetShadowDarkness(.3);
   ofShadowRounded(waltz.x, waltz.y, waltz.w, waltz.h, waltz.h/4, indent);
-	waltz.draw(x+w-waltz.w-blues.w-100, _y+(_h-waltz.h*.5)/2);
+	waltz.draw(loadSeq.x+boxPad/2, blues.y);
   
   //_-_-_-_-_song2 draw _-_-_-_-_
   ofShadowRounded(blues.x, blues.y, blues.w, blues.h, blues.h/4, indent);
-	blues.draw(x+w-blues.w-50, _y+(_h-blues.h*.5)/2);
+	blues.draw(waltz.x+waltz.w+50, loadSeq.y+(loadSeq.height-blues.h*.5)/2);
 	
   label.setSize(20);
   ofSetColor(255, 255, 255);
-  label.drawString("load song", (waltz.x+(blues.x+blues.w))/2, loopBut.y-5);
+  label.setMode(OF_FONT_CENTER);
+  label.drawString("Load example sequence", (waltz.x+(blues.x+blues.w))/2, rewindBut.y-5);
   
   ofSetColor(220,220,220);
   
-  //_-_-_-_-_ tempo slider draw
+  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
+  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_   Tempo slider draw  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
+  
   ofShadowRounded(tempoSlide.x, tempoSlide.y, tempoSlide.w, tempoSlide.h, tempoSlide.h/4, indent);
-  tempoSlide.draw(x+100, _y+(_h-tempoSlide.h)/2,300,10);
+  tempoSlide.draw(tempBox.x+boxPad/2, tempBox.y+(tempBox.height-tempoSlide.h)/2,300,10);
   ofSetColor(white);
-  label.drawString("tempo", tempoSlide.x+tempoSlide.w/2, tempoSlide.y+tempoSlide.h+35);
-	
+  label.setMode(OF_FONT_BOT);
+  label.drawString("Slide to change tempo", tempoSlide.x+tempoSlide.w/2, tempoSlide.y-20);
   label.setSize(12);
   
-  ofSetShadowDarkness(1);
-  ofShadowRounded(display.x, display.y, display.w, display.h, display.h/4, indent);
-  
-	ofSetColor(black);
-  ofRaised(.2);
-	ofRoundedRect(display.x-10, display.y-10, display.w+20, display.h+20, 5);
-  ofFlat();
-	ofSetColor(0, 128, 200);
-	
-	int secs=metronome.getElapsed();
-	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), x+w/2+playBut.w/2+40, _y+(_h-display.h)/2);
-  ofSetColor(white);
-  label.drawString("time", display.x+display.w/2, display.y+display.h+25);
-  
-  label.setMode(OF_FONT_LEFT);
 }
 
 void midiSequencer::update()
