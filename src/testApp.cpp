@@ -33,6 +33,7 @@ void testApp::setup(){
 	conductor.registerPlayback(&band);
   conductor.setTimeSignature(4);
 	test.setup(200, 6);
+  title.loadFont("fonts/DinC.ttf",40);
 }
 
 //--------------------------------------------------------------
@@ -40,7 +41,6 @@ void testApp::update(){
 	//band.update(-conductor.getBarPosition(),OF_HOR);
 //	if(conductor.isPlaying())
 //		band.checkActives(conductor.cursor()+band.w);
-  band.adjustSize();
 	band.update();
 	conductor.update();
 	
@@ -53,43 +53,23 @@ void testApp::draw(){
 	ofSetColor(255, 255, 255);
 	
 
-	ofBackground(0x33,0x33,0x33);	
+	//ofBackground(0x33,0x33,0x33);	
+  ofBackground(0,0,0);	
 	
-  ofSetColor(black.opacity(.25));
-  drawHatching(0,0,ofGetWidth(),ofGetHeight(),5,5);
+  //ofSetColor(black.opacity(.25));
+  //drawHatching(0,0,ofGetWidth(),ofGetHeight(),5,5);
   
   if(band.empty()){
-    ofSetColor(black);
+    ofSetColor(gray);
     report.setMode(OF_FONT_MID);
     report.setMode(OF_FONT_CENTER);
     report.setSize(160);
     report.drawString("TIMELINE",conductor.x+conductor.w/2, 200+(ofGetHeight()-200)/2);
   }
-  
-  
-	/*ofSetColor(0x444400);
-	for (int i=0; i*10<ofGetHeight(); i++) {
-		ofRect(0, i*10, ofGetWidth(), 1);
-	}
-	for (int i=0; i*10<ofGetWidth(); i++) {
-		ofRect(i*10, 0, 1, ofGetHeight());
-	}*/
 	
-	//band.drawBackground();
-	conductor.draw(band.x+band.w,75);
-	band.draw(0,75);
-	
-
-	ofSetColor(0x555555);
-  ofRaised(.2);
-	ofRoundedRect(-30, 0, ofGetWidth()+60, 75, 15);
-  ofFlat();
-	ofSetColor(0xe5e00f);
-	report.setMode(OF_FONT_TOP);
-	report.setSize(40);
-	report.drawString("CREATE A MUSICAL SEQUENCE", ofGetWidth()/2, (75-report.stringHeight("C"))/2); //"Drag blocks and press play to make a rhythm"
-  ofSetShadowDarkness(.4);
-  //ofShade(0, 75, ofGetWidth(),10, OF_DOWN);
+	conductor.draw(band.x+band.w,title.h);
+	band.draw(0,title.h);
+  title.draw("CREATE A MUSICAL SEQUENCE", 0, 0);
   
   ofPopMatrix();
 }
@@ -154,15 +134,16 @@ void testApp::mouseReleased(int x, int y, int button){
 //--------------------------------------------------------------
 void testApp::windowResized(int w, int h){
   conductor.resize();
+  band.adjustSize();
 }
 
 void testApp::midiToSend(vector< unsigned char > message){
 	rolandSynth.sendMessage(message);
-  cout << "Message Begin::";
-  for (unsigned int i=0; i<message.size(); i++) {
-    cout << int(message[i]) << "::";
-  }
-  cout << "Message end\n";
+  //cout << "Message Begin::";
+//  for (unsigned int i=0; i<message.size(); i++) {
+//    cout << int(message[i]) << "::";
+//  }
+//  cout << "Message end\n";
 }
 
 void testApp::midiReceived(double deltatime, std::vector< unsigned char > *message, int port){

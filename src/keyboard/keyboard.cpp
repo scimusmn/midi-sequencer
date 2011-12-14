@@ -85,10 +85,9 @@ void pianoKey::draw(double _x, double _y)
 {
 	x=_x, y=_y;
 	ofSetColor(0, 0, 0);
-  ofRaised(.02);
+  ofFlat();
 	ofRoundedRect(x, y, w, h, w/8.);
-	if(bPressed) ofSetColor(white*.8);
-	else if(buttons.getChoice()){
+	if(buttons.getChoice()){
 		if(notes.size()){
 			if(bSharp) ofSetColor(notes[0].base.color-.2*255.);
 			else ofSetColor(notes[0].base.color);
@@ -102,10 +101,11 @@ void pianoKey::draw(double _x, double _y)
 		if(bSharp) ofSetColor(0, 0, 0);
 		else ofSetColor(255, 255, 255);
 	}
-  ofRaised(.1);
+  if(bPressed) ofSetColor(ofGetStyle().color*.8);
+  ofFlat();
 	ofRoundedRect(x+1, y+1, w-2, h-2, w/8.);
-  ofSetShadowDarkness(.2);
-	ofShade(x+1, y+1, 6, h-2, OF_RIGHT, false);
+  //ofSetShadowDarkness(.2);
+	//ofShade(x+1, y+1, 6, h-2, OF_RIGHT, false);
 }
 
 void pianoKey::resetInstruments()
@@ -266,7 +266,7 @@ void pianoKeyboard::setup(double wid,double nOctaves)
 	for (int i=0; i<nOctaves; i++) {
 		octaves.push_back(pianoOctave(wid/nOctaves,i*12));
 	}
-  framePad.y=wid/16.;
+  framePad.y=wid/32.;
 	framePad.x=wid/32.;
 	w=w+framePad.x;
 	h=octaves[0].h+framePad.y;
@@ -281,11 +281,11 @@ void pianoKeyboard::draw(int _x, int _y)
 {
 	x=_x, y=_y;
 	double keyboardStartX=x+framePad.x;
-	ofSetColor(orange);
-  ofRaised(.2);
-	ofRoundedRect(_x, _y, w, h, framePad.x/2.);
-  ofSetShadowDarkness(.4);
-  ofShadowRounded(octaves[0].x, octaves[0].y, octaves[0].w*octaves.size(), octaves[0].h-20, 0, 20);
+	ofSetColor(black);
+  ofFlat();
+	ofRect(_x, _y, w, h*63/64);
+  //ofSetShadowDarkness(.4);
+  //ofShadowRounded(octaves[0].x, octaves[0].y, octaves[0].w*octaves.size(), octaves[0].h-20, 0, 20);
 	for (unsigned int i=0; i<octaves.size(); i++) {
 		octaves[i].draw(keyboardStartX,_y+framePad.y);
 		keyboardStartX+=octaves[i].w;

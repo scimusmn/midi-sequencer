@@ -15,6 +15,7 @@ extern ofColor blue;
 extern ofColor yellow;
 extern ofColor orange;
 
+double divLength;
 
 soundBlock::soundBlock(string objName):ofInterObj()
 {
@@ -34,31 +35,31 @@ void soundBlock::operator=(const soundBlock & t)
 {
 	title=t.title;
 	cSetup(t.x, t.y, t.w, t.h);
-	header.loadFont("fonts/Arial.ttf"); 
-  header.setMode(OF_FONT_TOP);
+	header.loadFont("fonts/HelveticaCond.otf"); 
+  header.setMode(OF_FONT_MID);
   header.setMode(OF_FONT_CENTER);
 	int pt=t.header.point;
 	header.setSize(pt);
 	bPressed=t.bPressed;
 	color=t.color;
-	relPos.x=0;
-	relPos.y=0;
+	relPos=t.relPos;
   bPercussive=t.bPercussive;
 }
 
 void soundBlock::setup(string objName)
 {
 	title=objName;
-	header.loadFont("fonts/Arial.ttf");
-  header.setMode(OF_FONT_TOP);
+	header.loadFont("fonts/HelveticaCond.otf");
+  header.setMode(OF_FONT_MID);
   header.setMode(OF_FONT_CENTER);
-	header.setSize(24);
+	header.setSize(22);
 	color.set(0, 112, 187);
-	w=max(float(150), header.stringWidth(title)+20);
+	w=max(float(250), header.stringWidth(title)+20);
 	h=max(float(20), header.stringHeight("Kjg")+10);
 	relPos.x=0;
 	relPos.y=0;
   bPercussive=false;
+  bPressed=false;
 }
 
 void soundBlock::draw(int _x, int _y)
@@ -71,18 +72,15 @@ void soundBlock::draw(int _x, int _y)
 void soundBlock::draw()
 {
 	ofSetColor((bPressed)?color+.2*255:color);
-  ofRaised(.2);
-	ofRoundedRect(x+relPos.x, y+relPos.y, w, h, h/8.);
-	ofSetColor(0, 0, 0);
-	ofEnableSmoothing();
+  trimmedRect(x+relPos.x, y+relPos.y, w, h);
   ofNoFill();
-	ofRoundedRect(x+relPos.x, y+relPos.y, w, h, h/8.);
+  ofSetColor(black);
+  trimmedRect(x+relPos.x, y+relPos.y, w, h);
   ofFill();
-	ofDisableSmoothing();
-	ofSetColor(255, 255, 255);
+	ofSetColor(black);
 	if(header.stringWidth(title)<=w-20&&h>20){
 		double scale=header.stringHeight(title);
-		header.drawString(title, x+relPos.x+w/2, y+relPos.y+(h-header.stringHeight("Kjg"))/2);
+		header.drawString(title, x+relPos.x+w/2, y+relPos.y+h/2);
 	}
 }
 
@@ -217,7 +215,8 @@ void dragBlock::setup(rhythmBlock & t)
 {
   rightAdj.setup(h, OF_VERT, "images/rightArrow.png");
   leftAdj.setup(h, OF_VERT, "images/leftArrow.png");
-  if(bPercussive) w=80;
+  if(bPercussive) w=divLength;
+  else w=2*divLength;
   bPressed=true;
   relMouse.x=0;
   bNewBlock=true;

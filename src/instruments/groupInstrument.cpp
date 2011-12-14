@@ -41,14 +41,6 @@ groupInst::groupInst(string title, unsigned char chan, unsigned char nt, bandBar
   band=bnd;
   setup(title, chan, nt);
   type=INST_GROUP;
-  /*for (int i=0; i<8; i++) {
-    char nam[]="A";
-    nam[0]+=(i+2)%7;
-    string t=nam;
-    cout << t << endl;
-    notes.push_back(instrument(t,chan,nt+i));
-    notes[i].setPercussive(true);
-  }*/
   openBut.setAvailable(true);
   bOpen=bSynth=false;
   label.loadFont("fonts/DinC.ttf");
@@ -56,7 +48,7 @@ groupInst::groupInst(string title, unsigned char chan, unsigned char nt, bandBar
   label.setMode(OF_FONT_TOP);
   subhead.loadFont("fonts/Arial.ttf");
   lastInst=0;
-  openBut.setup(base.h, OF_VERT, "images/dropdown.png");
+  openBut.setup(base.h, OF_VERT, "images/dropdown2.png");
 }
 
 void groupInst::addInstruments(ofTag & tag)
@@ -141,11 +133,11 @@ void groupInst::draw()
   if(bOpen){
     int ySpace=band->verticleBlockSpace();
     int yOff=base.h+2*ySpace;
-    //ofSetColor(white.opacity(.15));
-    //ofRect(band->getBorderSize(),y+ yOff-ySpace+scroll.y, fullWidth-band->getBorderSize(), h-yOff+2*ySpace);
+    ofSetColor((base.color*.5).opacity(.3));
+    ofRect(band->getBorderSize(),y+scroll.y-ySpace, fullWidth-band->getBorderSize(), base.h+ySpace*2);
     for (unsigned int i=0; i<notes.size(); i++) {
-      if(i%2) ofSetColor(white.opacity(.05));
-      else ofSetColor(black.opacity(.05));
+      if(i%2) ofSetColor((base.color*.5).opacity(.1));
+      else ofSetColor((base.color*.7).opacity(.1));
       ofRect(band->getBorderSize(),y+yOff-ySpace+scroll.y, fullWidth-band->getBorderSize(), notes[i].h+ySpace*2);
       ofSetShadowDarkness(.1);
       ofShade(band->getBorderSize(), y+yOff-ySpace+scroll.y,3, fullWidth-band->getBorderSize(), OF_UP);
@@ -169,8 +161,8 @@ void groupInst::drawBackground()
 {
   for (unsigned int i=0; i<notes.size(); i++) {
     if(bOpen){
-      if(i%2) ofSetColor(white.opacity(.05));
-      else ofSetColor(black.opacity(.05));
+      if(i%2) ofSetColor((base.color*.5).opacity(.1));
+      else ofSetColor((base.color*.7).opacity(.1));
       ofRect(fullWidth,notes[i].y-band->verticleBlockSpace()+scroll.y, ofGetWidth()-fullWidth, notes[i].h+band->verticleBlockSpace()*2);
       ofSetColor(0, 0, 0);
       ofRect(fullWidth, notes[i].y-band->verticleBlockSpace()+scroll.y, ofGetWidth(), 1);
@@ -257,6 +249,7 @@ void groupInst::loseFocus()
   }
   bOpen=false;
   band->setActive(0);
+  band->adjustSize();
 }
 
 bool groupInst::clickUp()
@@ -324,11 +317,13 @@ int groupInst::farthestPoint()
 void groupInst::loadInstruments(string filename)
 {
   bSynth=true;
-  synthDD.setTextSize(20);
+  //synthDD.setTextSize(20);
+  synthDD.dallasStyle();
   for (unsigned int i=0; i<instNames.size(); i++) {
     synthDD.setValue(instNames[i].name);
   }
   synthDD.setMode(false);
+  synthDD.dallasStyle();
 }
 
 void groupInst::changeProgram(int progNum)

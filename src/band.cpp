@@ -29,7 +29,7 @@ void bandBar::setup()
 double bandBar::getBottomPos()
 {
 	//return y+h-yBot;
-  return bin.y+bin.height;
+  return ofGetHeight()-scrollDown.h;
 }
 
 ofRectangle bandBar::getControlBox()
@@ -62,10 +62,10 @@ void bandBar::adjustSize()
 		cell.x=max(double(cell.x),t.w+blockMargin.x*2+((t.getType()==INST_GROUP)?t.base.h+10:0));
 		cell.y=max(double(cell.y), t.base.h+blockMargin.y*2);
 	}
-  //cell.x+=(bar.w-blockMargin.x*2);
   
   bin.width=bar.w+cell.x;
-  w=bin.width+rightBorder;
+  //w=bin.width+rightBorder;
+  w=bin.width;
   controls.width=w;
   
   scrollUp.setup(w,OF_HOR, "images/mInstUp.jpg");
@@ -75,6 +75,7 @@ void bandBar::adjustSize()
   
   bar.setup(bar.w, bin.height, OF_VERT);
 	bar.registerArea(bin.height,fullHeight);
+  bar.changePadding();
   
   for (unsigned int i=0; i<instruments.size(); i++) {
     instruments[i]->setBandWidth(bin.width);
@@ -94,8 +95,10 @@ void bandBar::setup(ofXML & xml)
   blockMargin.y=10;
   controlsAtBottom=0;
   activeInst=0;
+  lastY=0;
+  bChangeSize=true;
   loadInstruments("midiPrograms.ini");
-	clearBut.setup("Clear all instruments","fonts/DinC.ttf",20);
+	clearBut.setup("Clear all instruments",20);
 	clearBut.setAvailable(true);
 	sideBarBack.loadImage("images/sidebar.jpg");
   xml.setCurrentTag(";band");
@@ -163,6 +166,8 @@ void bandBar::setup(ofXML & xml)
       //maxWid=max(maxWid,instruments[curInst]->w);
 	}
 	//setHeight();
+  adjustSize();
+  bar.startup();
   adjustSize();
 }
 
@@ -233,6 +238,10 @@ void bandBar::draw(int _x, int _y)
   
   controls.x=bin.x=x=_x,y=_y;
   bin.y=y+scrollUp.h;
+  if(bChangeSize){
+    bChangeSize=false;
+    adjustSize();
+  }
   controls.y=bin.y+bin.height;
   if(!bot){
     bin.y=y+controls.height;
@@ -241,23 +250,13 @@ void bandBar::draw(int _x, int _y)
   float binEdge=bin.x+bin.width;
   
   //_-_-_-_-_ sidebar background _-_-_-_-_
-  ofSetColor(0x333333);
-  ofRect(x, y, w, h);
-  ofSetColor(229, 224, 15,64);
-  drawGrid(x+w-rightBorder, bin.y, rightBorder, bin.height, rightBorder/2);
   
-  ofSetColor(229, 224, 15,128);
-  drawGrid(bin.x, bin.y, w-rightBorder, bin.height+10, rightBorder/4);
-  
-  //_-_-_-_-_ shade to the right of the sidebar
-  ofSetShadowDarkness(.5);
-  ofShade(x+w, bin.y, 15, bin.height, OF_RIGHT);
-  
-  //_-_-_-_-_ semi-transparent rectangle under the instrument base blocks
-  ofSetColor(0x33, 0x33, 0x33,223);
+  ofSetColor(black);
 	ofRect(bin);
-	ofShade(x+w, bin.y, 10, bin.height, OF_LEFT, .3);
   
+  ofSetColor(gray);
+  drawHatching(bin.x, bin.y, bin.width, bin.height, 75, 75);
+  drawBorder(bin);
   //_-_-_-_-_ draw each of the instruments
   double yOff=0;
 	for (unsigned int i=0; i<instruments.size(); i++) {
@@ -266,49 +265,40 @@ void bandBar::draw(int _x, int _y)
     yOff+=((Inst.h<cell.y)?cell.y:Inst.h+blockMargin.y*2);
 		double tmpY=Inst.y+((Inst.h<cell.y)?cell.y:Inst.h+blockMargin.y*2)+Inst.vertScrollPos()-blockMargin.y;
     
-    ofSetShadowDarkness(.2);
-		ofShade(x, tmpY, 3,bin.width, OF_UP);
-		ofShade(x, tmpY, 3, bin.width, OF_DOWN,false);
+    ofSetColor(yellow);
+    //ofRect(x, tmpY,bin.width, 1);
 	}
-  
-  //_-_-_-_-_ border shading
-  ofSetShadowDarkness(.3);
-  ofShade(binEdge, bin.y, 10, bin.height, OF_LEFT);
-  ofShade(x+w, y+yoff, 10, bin.height, OF_LEFT);
-  ofShade(binEdge, bin.y, 10, bin.height, OF_RIGHT);
-  
-  //_-_-_-_-_ shade over conductor controls
-  ofSetShadowDarkness(.4);
-  ofShade(controls.x+controls.width,controls.y, 10, controls.height, OF_RIGHT);
-  ofShade(x+w,bin.y+bin.height, 10, ofGetHeight()-getBottomPos(), OF_RIGHT);
   
   //_-_-_-_-_ if there is an active instrument, draw it now
   //if(activeInst) activeInst->draw();
   
   //_-_-_-_-_ box at opposite end of scroll than controls
   ofRectangle t(x,((!bot)?bin.y+bin.height:y),w,scrollUp.h);
-	ofSetColor(230, 230, 230);
+	ofSetColor(gray);
 	ofRect(t);
-  ofSetShadowDarkness(.4);
-  ofShade(t.x,t.y, t.height,t.width, OF_DOWN);
   
-  //_-_-_-_-_ control box, to hold the clear button
+  ofSetColor(black);
+  drawHatching(t.x, t.y, t.width, t.height, 10,1);
+  drawBorder(t);
+  
+  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
+  //_-_-_-_-_ control box, to hold the clear button//_-_-_-_-_
+  
   int butDisp=((!bar.available())?0:((bot)?scrollDown.h:-scrollUp.h));
   int midRect=butDisp+(controls.height-butDisp)/2;
   
-  ofRect(controls);
-  //Shade over the whole box.
-  ofShade(controls.x, controls.y, controls.height, controls.width, OF_DOWN);
-  
-  ofSetShadowDarkness(.5);
-  ofShade(controls.x,controls.y+ midRect, 3, controls.width, OF_UP);
-  ofShade(controls.x,controls.y+ midRect, 3, controls.width, OF_DOWN,false);
-  drawShadowsAroundRect(controls, 10);
-  
-  if(!bot&&bar.available()) ofShade(bin.x, scrollUp.y, 10, w, OF_UP);
-  
-  clearBut.draw((controls.width-clearBut.w)/2, controls.y+(midRect-clearBut.h)/2);
   ofSetColor(gray);
+	ofRect(controls);
+  
+  ofSetColor(black);
+  drawHatching(controls.x, controls.y, controls.width, controls.height, 10, 1);
+  
+  drawBorder(controls);
+  ofSetColor(yellow);
+  ofRect(controls.x,controls.y+ midRect, controls.width, 1);
+  
+  clearBut.draw(controls.x+(controls.width-clearBut.w)/2, controls.y+(midRect-clearBut.h)/2);
+  ofSetColor(yellow);
   dinc.setSize(15);
   string bandStr="Drag instruments to the timeline";
   dinc.drawString(bandStr,controls.x+ w/2, controls.y+midRect*1.5);
@@ -334,8 +324,6 @@ void bandBar::draw(int _x, int _y)
   }
 }
 
-int lastY=0;
-
 bool bandBar::clickDown(int _x, int _y)
 {
 	bool ret=0;
@@ -343,13 +331,9 @@ bool bandBar::clickDown(int _x, int _y)
   //_-_-_-_-_ control clickdowns
   if(clearBut.clickDown(_x, _y))
 		ret=1,clear();
-	//if(bar.available()&&!ret);
-		//ret=bar.clickDown(_x, _y);
   if((scrollUp.getAvailable()||scrollDown.getAvailable())&&!ret){
     if(scrollUp.clickDown(_x, _y)){
-      cout << bar.getScrollPosition()-cell.y << " should be the new pos\n";
       ret=1,bar.setScrollPosition(bar.getScrollPosition()-cell.y);
-      cout << bar.getScrollPosition() << " is the new pos\n";
     }
     else if(scrollDown.clickDown(_x, _y))
       ret=1,bar.setScrollPosition(bar.getScrollPosition()+cell.y);
@@ -406,12 +390,9 @@ bool bandBar::clickUp()
 
 void bandBar::update()
 {
-	bar.update();
+	//bar.update();
   scrollUp.setAvailable((bar.getScrollPosition()>cell.y/4)&&bar.available());
   scrollDown.setAvailable((bar.getScrollPosition()<(bar.getFullSize()-bin.height)-cell.y/4)&&bar.available());
-  for (unsigned int i=0; i<instruments.size(); i++) {
-		instruments[i]->update();
-	}
 }
 
 void bandBar::update(int disp, ofDirection dir)
@@ -428,11 +409,6 @@ void bandBar::mouseMotion(int _x, int _y)
 		instruments[i]->mouseMotion(_x,_y);
 	}
   
-	//if(bar.mouseMotion(_x,_y)){
-//		for (unsigned int i=0; i<instruments.size(); i++) {
-//			instruments[i]->update(-bar.getScrollPosition(),OF_VERT);
-//		}
-//	}
   if(bar.available()&&bar.pressed()){
     bar.setScrollPosition(bar.getScrollPosition()+(lastY-_y));
     for (unsigned int i=0; i<instruments.size(); i++) {

@@ -38,6 +38,9 @@ class testApp : public ofBaseApp{
 	ofxMidiOut rolandSynth;
 	
 	ofFont report;
+  
+  titleBar title;
+  
 	string rep;
 	
 	pianoKeyboard kb;

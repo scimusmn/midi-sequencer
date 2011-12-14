@@ -15,7 +15,6 @@ class bandBar : public ofInterGroup{
 protected:
 	vector<inst *> instruments;
 	bool bHolding;
-	ofScrollBar bar;
 	int viewSize;
 	double xoff,yoff,yBot;
 	ofImage sideBarBack;
@@ -35,7 +34,12 @@ protected:
   ofPoint cell;
   
   ofFont dinc;
+  
+  
+  bool bChangeSize;
+  int lastY;
 public:
+  dallasScroll bar;
   bool controlsAtBottom;
   
 	bandBar():ofInterGroup(){

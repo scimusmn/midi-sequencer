@@ -14,7 +14,7 @@
 
 class midiSequencer : public midiConductor, public ofInterObj{
 	int divsPerMeasure;
-	ofScrollBar bar;
+	dallasScroll bar;
 	ofButton	mark;
 	ofFont		label;
 	bandBar * band;
@@ -24,10 +24,13 @@ class midiSequencer : public midiConductor, public ofInterObj{
 	ofButton playBut;
 	ofButton rewindBut;
 	ofButton loopBut;
-  ofButton waltz;
-  ofButton blues;
+  
+  dallasButton waltz;
+  dallasButton blues;
+  
+  
 	digitDisplay display;
-  ofSlider tempoSlide;
+  dallasSlider tempoSlide;
   
   ofRectangle topBar;
 public:

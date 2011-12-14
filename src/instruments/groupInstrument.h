@@ -30,7 +30,7 @@ protected:
   ofFont subhead;
   
   bool bSynth;
-  ofDropDown synthDD;
+  dallasDrop synthDD;
 public:
   groupInst():inst(){
   }

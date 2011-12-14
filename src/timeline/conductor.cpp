@@ -17,6 +17,8 @@ extern ofColor blue;
 extern ofColor gray;
 extern ofColor yellow;
 
+extern double divLength;
+
 void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pixelsPerSec, double vSize)
 {
 	mark.w=mark.h=20;
@@ -31,15 +33,18 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 	measureLength=secondsPerMeasure*pps;
 	bar.setup(30, vSize, OF_HOR);
 	bar.registerArea(vSize, playTime*pps);
-	playBut.setup(64, 64, "images/play.png","images/pause.png");
-	rewindBut.setup( 48, 48, "images/rewind.png");
+	playBut.setup(64, 64, "images/play2.png","images/pause2.png");
+	rewindBut.setup( 48, 48, "images/rewind2.png");
 	loopBut.setup(48, 48, "images/repeat.png");
-  waltz.setup(64,OF_VERT, "images/slow.png");
-  blues.setup(64,OF_VERT, "images/slow.png");
+  //waltz.setup(64,OF_VERT, "images/slow.png");
+  //blues.setup(64,OF_VERT, "images/slow.png");
+  waltz.setup("Song 1", 20);
+  blues.setup("Song 2", 20);
 	display.setup(300, 8);
   tempoSlide.setup(40,40);
   
   loopBut.setPressed(true);
+  divLength=measureLength/divsPerMeasure;
 }
 
 void midiSequencer::resize(){
@@ -47,6 +52,7 @@ void midiSequencer::resize(){
     cout << ofGetHeight()-band->getBottomPos()<<endl;
     bar.setup(41, ofGetWidth()-band->w, OF_HOR);
     bar.registerArea(ofGetWidth()-band->w, playTime*pps);
+    bar.changePadding();
     if(numMeasures*measureLength<2*(ofGetWidth()-band->w)){
       double secondsPerMeasure=measureLength/pps;
       measureLength=2*(ofGetWidth()-band->w)/numMeasures;
@@ -55,6 +61,7 @@ void midiSequencer::resize(){
     }
     setTempo(1);
   }
+  divLength=measureLength/divsPerMeasure;
 }
 
 void midiSequencer::setTimeSignature(int beatsPerMeasure)
@@ -81,6 +88,7 @@ void midiSequencer::registerPlayback(bandBar * bnd)
 {
 	band=bnd;
 	bar.x=band->w;
+  band->y=band->getControlBox().height-h;
 	setScrollPos(0);
 }
 
@@ -200,8 +208,9 @@ void midiSequencer::drawDivs(bool full)
 {
 	for (int i=0; i<numMeasures; i++) {
 		if(!full){
-			ofSetColor(0xFFFFFF);
-			label.drawString(ofToString(i), x+measureLength*i+1-bar.getScrollPosition(), topBar.y+label.stringHeight(ofToString(i)));
+			ofSetColor(yellow);
+      label.setMode(OF_FONT_RIGHT);
+			label.drawString(ofToString(i), x+measureLength*i-2-bar.getScrollPosition(), topBar.y+label.stringHeight(ofToString(i)));
 		}
 		for (int j=0; j<divsPerMeasure; j++) {
 			ofSetColor(yellow.opacity(.5-.25*(j%2)));
@@ -211,9 +220,9 @@ void midiSequencer::drawDivs(bool full)
 				   x+measureLength*i+measureLength*j/divsPerMeasure-bar.getScrollPosition(), (!full)?topBar.y+h:ofGetHeight());
 		}
 	}
-	ofSetColor(0xE0C39B);
+	ofSetColor(yellow);
 	label.drawString(ofToString(int(numMeasures)), x+measureLength*numMeasures+1-bar.getScrollPosition(), topBar.y+label.stringHeight(ofToString(numMeasures)));
-	ofSetColor(0x60,0x43,0x1B,128);
+	ofSetColor(yellow.opacity(.5));
 	ofLine(x+measureLength*numMeasures-bar.getScrollPosition(),topBar.y+5, x+measureLength*numMeasures-bar.getScrollPosition(), (!full)?topBar.y+h:ofGetHeight());
 }
 
@@ -246,11 +255,9 @@ void midiSequencer::draw(int _x, int _y)
   if(bot) drawControlBar(x, band->getControlBox().y+bar.h, w, band->getControlBox().height-bar.h);
   else drawControlBar(x, band->getControlBox().y, w, band->getControlBox().height-topBar.height);
 
-	ofSetColor(0x575757);
-	ofRect(x, topBar.y, w, h);
-  ofSetShadowDarkness(.4);
-	ofShade(x, topBar.y+topBar.height, 15, w, OF_UP);
-	ofShade(x, topBar.y+topBar.height, 5, w, OF_DOWN);
+	ofSetColor(gray);
+  ofRect(topBar);
+  drawBorder(topBar);
 	
 	drawDivs(false);
 	
@@ -258,18 +265,10 @@ void midiSequencer::draw(int _x, int _y)
   
   if(bar.available()){
     ofSetColor(white);
-		if(!bot) bar.draw(_x, band->getBottomPos());
+		if(!bot) bar.draw(_x, band->getBottomPos()+1);
     else bar.draw(_x, band->getControlBox().y);
 	}
   
-  ofSetShadowDarkness(.3);
-  ofShade(x, topBar.y, 10, w, OF_UP);
-  ofSetShadowDarkness(.5);
-	ofShade(x, topBar.y, 10, w, OF_DOWN);
-	
-	// Bottom scroll bar
-  ofSetShadowDarkness(.3);
-	ofShade(_x, band->getBottomPos(), 5, w, OF_UP);
 	
 	//Task bar on bottom
 }
@@ -282,15 +281,15 @@ void midiSequencer::drawControlBar(int _x, int _y, int _w, int _h)
   ofRectangle buttons(loadSeq.x+loadSeq.width,_y,playBut.w+rewindBut.w+display.w+35+boxPad,_h);
   ofRectangle tempBox(buttons.x+buttons.width,_y,tempoSlide.w+boxPad,_h);
   
-  ofSetShadowDarkness(.3);
+  ofSetColor(gray);
 	ofRect(x,_y, w, _h);
-  ofShade(x, _y, _h,w, OF_DOWN);
-	//ofShade(x, bar.y+bar.h+2, 5, w, OF_UP, .3);
-	ofShade(x,_y, 10, w, OF_DOWN, .3);
   
-  drawShadowsAroundRect(loadSeq, 10);
-  drawShadowsAroundRect(buttons, 10);
-  drawShadowsAroundRect(tempBox, 10);
+  ofSetColor(black);
+  drawHatching(x, _y, w, _h, 10, 1);
+  
+  drawBorder(loadSeq);
+  drawBorder(buttons);
+  drawBorder(tempBox);
 	
 	
   //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
@@ -299,33 +298,28 @@ void midiSequencer::drawControlBar(int _x, int _y, int _w, int _h)
 	label.setMode(OF_FONT_CENTER);
   
   //_-_-_-_-_ rewind button _-_-_-_-_
-  ofSetShadowDarkness(.3);
-  ofShadowCircle(rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h/2, rewindBut.w/2, indent);
 	rewindBut.draw(buttons.x+boxPad/2, buttons.y+(buttons.height-rewindBut.h)/2);
+  ofSetColor(yellow);
 	label.drawString("rewind", rewindBut.x+rewindBut.w/2, rewindBut.y+rewindBut.h+15);
   
   //_-_-_-_-_ play button drawing _-_-_-_-_
-	ofShadowCircle(playBut.x+playBut.w/2, playBut.y+playBut.h/2, playBut.w/2, indent);
   playBut.draw(rewindBut.x+rewindBut.w+5, _y+(_h-playBut.h)/2);
-  ofSetColor(white);
+  ofSetColor(yellow);
   if(playBut.pressed())
     label.drawString("pause", playBut.x+playBut.w/2, playBut.y+playBut.h+15);
   else label.drawString("play", playBut.x+playBut.w/2, playBut.y+playBut.h+15);
 	
   /*//_-_-_-_-_ loop button drawing _-_-_-_-_
-  ofShadowCircle(loopBut.x+loopBut.w/2, loopBut.y+loopBut.h/2, loopBut.w/2, indent);
 	loopBut.draw(x+w/2-playBut.w/2-100, _y+(_h-loopBut.h)/2);
 	label.drawString("loop", loopBut.x+loopBut.w/2, loopBut.y+loopBut.h+15);*/
   
-  ofSetShadowDarkness(1);
-  ofShadowRounded(display.x-10, display.y-10, display.w+20, display.h+20, (display.h+20)/4,1);
   ofSetColor(black);
   ofRoundedRect(display.x-10, display.y-10, display.w+20, display.h+20, (display.h+20)/8);
 	ofSetColor(blue);
 	
 	int secs=metronome.getElapsed();
 	display.draw(ssprintf("%02i:%02i.%02i",(secs/1000/60),(secs/1000)%60,(secs%1000/10)), playBut.x+playBut.w+30, _y+(_h-display.h)/2);
-  ofSetColor(white);
+  ofSetColor(yellow);
   label.drawString("Time in seconds", display.x+display.w/2, display.y+display.h+25);
   
   label.setMode(OF_FONT_LEFT);
@@ -336,16 +330,13 @@ void midiSequencer::drawControlBar(int _x, int _y, int _w, int _h)
   
   
   //_-_-_-_-_ song1 draw
-  ofSetShadowDarkness(.3);
-  ofShadowRounded(waltz.x, waltz.y, waltz.w, waltz.h, waltz.h/4, indent);
 	waltz.draw(loadSeq.x+boxPad/2, blues.y);
   
   //_-_-_-_-_song2 draw _-_-_-_-_
-  ofShadowRounded(blues.x, blues.y, blues.w, blues.h, blues.h/4, indent);
 	blues.draw(waltz.x+waltz.w+50, loadSeq.y+(loadSeq.height-blues.h*.5)/2);
 	
   label.setSize(20);
-  ofSetColor(255, 255, 255);
+  ofSetColor(yellow);
   label.setMode(OF_FONT_CENTER);
   label.drawString("Load example sequence", (waltz.x+(blues.x+blues.w))/2, rewindBut.y-5);
   
@@ -354,18 +345,17 @@ void midiSequencer::drawControlBar(int _x, int _y, int _w, int _h)
   //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
   //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_   Tempo slider draw  //_-_-_-_-_//_-_-_-_-_//_-_-_-_-_
   
-  ofShadowRounded(tempoSlide.x, tempoSlide.y, tempoSlide.w, tempoSlide.h, tempoSlide.h/4, indent);
-  tempoSlide.draw(tempBox.x+boxPad/2, tempBox.y+(tempBox.height-tempoSlide.h)/2,300,10);
-  ofSetColor(white);
+  tempoSlide.draw(tempBox.x+boxPad/2, tempBox.y+(tempBox.height-tempoSlide.h)/2+20,300,10);
+  ofSetColor(yellow);
   label.setMode(OF_FONT_BOT);
-  label.drawString("Slide to change tempo", tempoSlide.x+tempoSlide.w/2, tempoSlide.y-20);
+  label.drawString("Slide to change tempo", tempoSlide.x+tempoSlide.w/2, tempoSlide.y-40);
   label.setSize(12);
   
 }
 
 void midiSequencer::update()
 {
-  bar.update();
+  //bar.update();
 	band->update(-getBarPosition(),OF_HOR);
 	if(isPlaying()){
 		band->checkActives(cursor()+band->w);
@@ -376,7 +366,7 @@ void midiSequencer::update()
     band->checkActives(-200);
   }
 
-	if(loopBut.pressed()&&cursor()>band->farthestPoint()-x)
+	if(loopBut.pressed()&&cursor()>band->farthestPoint()-x&&!band->empty()&&bPlaying)
 		reset(),setScrollPos(0);
 	if(metronome.justExpired()){
 		reset();

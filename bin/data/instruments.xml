@@ -1,5 +1,5 @@
 <band font="ArialNarrow.ttf" xmlns:blck="http://www.smm.org/">
-  <instrument name="Chimes" color="0x700000">
+  <instrument name="Chimes" color="0xffe61d">
     <note>60</note>
     <channel>0</channel>
     <group>
@@ -30,29 +30,29 @@
     </group>
     <percussive />
   </instrument>
-  <instrument name="Wood Block" color="0x0060D0">
+  <instrument name="Wood Block" color="0xde8c3a">
 		<note>68</note>
 		<channel>0</channel>
 		<percussive>true</percussive>
 	</instrument>
-	<instrument name="Cabasa" color="0xA0A000">
+	<instrument name="Cabasa" color="0x65c270">
 		<note>69</note>
 		<channel>0</channel>
     <percussive />
 	</instrument>
-	<instrument name="Rainstick" color="0x00A0A0">
+	<instrument name="Rainstick" color="0xd4522a">
 		<note>75</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="Clicker" color="0xA000A0">
+	<instrument name="Clicker" color="0x13b5ea">
 		<note>76</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="Cymbals" color="0x70A000">
+	<instrument name="Cymbals" color="0xd58bbc">
 		<note>77</note>
 		<channel>0</channel>
 	</instrument>
-	<instrument name="synthesizer 1" color="0xA07000">
+	<instrument name="synthesizer 1" color="0xd6b130">
 		<note>60</note>
 		<channel>1</channel>
     <synth>
@@ -97,7 +97,7 @@
       </instrument>
     </synth>
 	</instrument>
-  <instrument name="synthesizer 2" color="0x00A070">
+  <instrument name="synthesizer 2" color="0x80a954">
 		<note>60</note>
 		<channel>2</channel>
     <synth>
@@ -142,7 +142,7 @@
       </instrument>
     </synth>
 	</instrument>
-  <instrument name="synthesizer 3" color="0xA00070">
+  <instrument name="synthesizer 3" color="0x46b0c7">
 		<note>60</note>
 		<channel>3</channel>
     <synth>
