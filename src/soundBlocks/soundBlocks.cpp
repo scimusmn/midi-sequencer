@@ -136,15 +136,13 @@ void rhythmBlock::setup(string title, unsigned char chan, unsigned char nt)
 
 void rhythmBlock::setDelay(double dly)
 {
-	rhythmTime=dly;
+  
 }
 
 void rhythmBlock::setMidi(unsigned char chan,unsigned char nt, double delay)
 {
 	note=nt;
 	channel=chan;
-	rhythmTime=delay;
-	playTime=.1;
 }
 
 void rhythmBlock::update()

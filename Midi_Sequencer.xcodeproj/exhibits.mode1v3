@@ -303,7 +303,7 @@
 							<real>156</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>254 143 1506 719 0 0 1920 1178 </string>
+						<string>215 229 1506 719 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -333,7 +333,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>AA0A694A14993D9D0082AA4E</string>
+										<string>AA0A698C14994B3F0082AA4E</string>
 										<key>history</key>
 										<array>
 											<string>AA9C35B4133A8FD500CB0F81</string>
@@ -376,14 +376,15 @@
 											<string>AAF37E9A1497BF9C00E5B730</string>
 											<string>AAF37F2A1497D67A00E5B730</string>
 											<string>AAF37F591497D94F00E5B730</string>
-											<string>AAF37F621497DAAA00E5B730</string>
 											<string>AAF37F6D1497DBD000E5B730</string>
 											<string>AAF37F731497E08E00E5B730</string>
 											<string>AAF37F741497E08E00E5B730</string>
 											<string>AAF37F7B1497E53D00E5B730</string>
 											<string>AAF37F821497E62F00E5B730</string>
 											<string>AAF37FDB1497F59E00E5B730</string>
-											<string>AAF380731498060200E5B730</string>
+											<string>AA0A6977149949EE0082AA4E</string>
+											<string>AA0A6978149949EE0082AA4E</string>
+											<string>AA0A6979149949EE0082AA4E</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -397,7 +398,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1328, 591}}</string>
 								<key>RubberWindowFrame</key>
-								<string>254 143 1506 719 0 0 1920 1178 </string>
+								<string>215 229 1506 719 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -417,7 +418,7 @@
 								<key>Frame</key>
 								<string>{{0, 596}, {1328, 82}}</string>
 								<key>RubberWindowFrame</key>
-								<string>254 143 1506 719 0 0 1920 1178 </string>
+								<string>215 229 1506 719 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -581,7 +582,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>AA0A695514993D9D0082AA4E</string>
 		<string>AA0A695614993D9D0082AA4E</string>
 		<string>AA0A695714993D9D0082AA4E</string>
 		<string>1C78EAAD065D492600B07095</string>
@@ -590,7 +590,7 @@
 		<string>/Users/exhibits/Documents/Xcode_Projects/openFrameworks/apps/projects/Miditron_Sequencer/Midi_Sequencer.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>254 143 1506 719 0 0 1920 1178 </string>
+	<string>215 229 1506 719 0 0 1920 1178 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>

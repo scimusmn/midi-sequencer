@@ -365,11 +365,13 @@ void midiSequencer::update()
   else {
     band->checkActives(-200);
   }
-
-	if(loopBut.pressed()&&cursor()>band->farthestPoint()-x&&!band->empty()&&bPlaying)
+  if(band->empty()&&isPlaying()) pause(),reset(); 
+	if(loopBut.pressed()&&cursor()>band->farthestPoint()-x&&bPlaying)
 		reset(),setScrollPos(0);
 	if(metronome.justExpired()){
+    pause();
 		reset();
+    setScrollPos(0);
     band->stopAll();
   }
 	midiConductor::update();
@@ -395,7 +397,13 @@ bool midiSequencer::clickDown(int _x, int _y)
 		if(isPlaying()) midiConductor::pause(),band->stopAll();
 		else midiConductor::play();
 	}
-	else if(rewindBut.clickDown(_x, _y)) reset(), band->stopAll(), setScrollPos(0);
+	else if(rewindBut.clickDown(_x, _y)){
+    bool wasPlaying=isPlaying();
+    pause();
+    reset(); 
+    band->stopAll(), setScrollPos(0);
+    if(wasPlaying) play();
+  }
 	else if(loopBut.toggle(_x, _y));
 	else if(waltz.clickDown(_x, _y)){
     loopBut.setPressed(true);

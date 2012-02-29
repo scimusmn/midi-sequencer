@@ -17,6 +17,21 @@
 #include "ofxMidiIn.h"
 #include "ofxMidiOut.h"
 
+/*****************************************************************
+ * class soundBlock : public ofInterObj
+ *
+ *  Description:: class which carries and send midi info for both the remapper and sequencer
+ *    Serve as both the base block and dragged blocks in derived class
+ *
+ *  Vars:
+ *
+ *   protected: bool bPercussive::_ tells how long to hold the note, either indefinitely or fraction of second
+ *   public: string title:: _ _ _ _ name of the current block
+ *   ofColor color::_ _ _ _ _ _ _ _ color of the block
+ *   ofFont header::_ _ _ _ _ _ _ _ font used for writing onscreen
+ */
+
+
 class soundBlock : public ofInterObj{
 protected:
   bool bPercussive;
@@ -24,7 +39,6 @@ public:
 	string title;
 	ofColor color;
 	ofFont header;
-	double xDisp, yDisp;
 	soundBlock():ofInterObj(){}
 	soundBlock(string objName);
 	~soundBlock();
@@ -42,11 +56,24 @@ public:
 	friend class inst;
 };
 
+/*****************************************************************
+ * class rhythmBlock : public soundBlock 
+ *
+ *  Description:: block class which serves as the base block class
+ *
+ *  Vars:
+ *
+ *   bool bPlaying::_ _ _ _ _ _ _ _ indicates if the block is currently playing
+ *   vector<unsigned char> message:: 
+ *   public: unsigned char note:: _ 
+ *   unsigned char channel::_ _ _ _  
+ *   friend class instrument::_ _ _ 
+ */
+
+
 class rhythmBlock : public soundBlock {
 protected:
 	ofBaseApp * baseApp;
-	ofTimer rhythmTimer,playTimer;
-	double playTime,rhythmTime;
 	bool bPlaying;
 	vector<unsigned char> message;
 public:
@@ -68,6 +95,29 @@ public:
   
 	friend class instrument;
 };
+
+/*****************************************************************
+ * class dragBlock : public soundBlock 
+ *
+ *  Description:: blocks which the user drags onscreen
+ *
+ *
+ *  Vars:
+ *
+ *   protected: ofButton leftAdj::_ 
+ *   ofButton rightAdj::_ _ _ _ _ _ 
+ *   bool bResizing:: _ _ _ _ _ _ _ 
+ *   bool bLResize::_ _ _ _ _ _ _ _ 
+ *   bool bActive:: _ _ _ _ _ _ _ _ 
+ *   bool bJustActive:: _ _ _ _ _ _ 
+ *   double aPos::_ _ _ _ _ _ _ _ _ 
+ *   bool bNewBlock:: _ _ _ _ _ _ _ 
+ *   public: unsigned char note:: _ 
+ *   return bNewBlock:: _ _ _ _ _ _ 
+ *   bNewBlock=false::_ _ _ _ _ _ _ 
+ *   friend class inst::_ _ _ _ _ _ 
+ */
+
 
 class dragBlock : public soundBlock {
 protected:
