@@ -8,6 +8,7 @@
  */
 
 #include "soundBlocks.h"
+#include "../midiConfig.h"
 
 extern ofColor white;
 extern ofColor black;
@@ -167,7 +168,7 @@ void rhythmBlock::play(unsigned char vel)
 void rhythmBlock::play()
 {
 	//if(!bPlaying)
-	play(45);
+	play(cfg().noteVelocity);
 	bPlaying=true;
 }
 

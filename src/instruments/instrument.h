@@ -53,7 +53,7 @@ public:
   
 	bool isHeld(){ return bHolding; }
   bool isDefault(){ return bDefault; }
-	void setDefault(bool holder){ bDefault=holder; } 
+	void setDefault(bool holder);
   
   double vertScrollPos(){ return scroll.y;}
   instType getType(){ return type; }
@@ -64,6 +64,7 @@ public:
   dragBlock & operator[](int i);
   void setMidi(unsigned char chan, unsigned char nt);
   void setColor(unsigned long hex);
+  void setHeld(bool hld);
   void setup(string objName, unsigned char chan, unsigned char nt);
 	void sendMidiMessage(vector<unsigned char> newMessage);
 	void play();
@@ -94,7 +95,7 @@ public:
     if(lastBlock>=0&&lastBlock<blocks.size()) return blocks[lastBlock];
     return blocks[blocks.size()-1];
   }
-  virtual void scaleToTempo(double time);
+  virtual void scaleToTempo(double time,double xScroll);
   virtual int farthestPoint();
   virtual void update(int disp,ofDirection dir);
   virtual void clear(){ blocks.clear();}

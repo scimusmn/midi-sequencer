@@ -13,13 +13,7 @@
 #include "../instruments/instrument.h"
 
 #define MIDI_KEYBOARD_START 36
-#define MIDI_KEYBOARD_END 84
-
-int loadProgramNames(string filename);
-
-vector<string> getProgramNames();
-
-void parseMidiProgramNames(string filename);
+#define MIDI_KEYBOARD_END 85
 
 class pianoKey:public ofInterObj{
 protected:

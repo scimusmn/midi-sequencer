@@ -1,0 +1,59 @@
+﻿Build started 4/23/2012 12:45:55 PM.
+     1>Project "C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\emptyExample.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "obj\Release\MidiSequencer.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\..\..\addons\ofxMidi\libs /I..\..\..\libs\openFrameworks /I..\..\..\addons\ofxMidi\src /I..\..\..\libs\openFrameworks\graphics /I..\..\..\libs\openFrameworks\app /I..\..\..\libs\openFrameworks\sound /I..\..\..\libs\openFrameworks\utils /I..\..\..\libs\openFrameworks\communication /I..\..\..\libs\openFrameworks\video /I..\..\..\libs\openFrameworks\events /I..\..\..\libs\glut\include /I..\..\..\libs\rtAudio\include /I..\..\..\libs\quicktime\include /I..\..\..\libs\freetype\include /I..\..\..\libs\freetype\include\freetype2 /I..\..\..\libs\freeImage\include /I..\..\..\libs\fmodex\include /I..\..\..\libs\videoInput\include /I..\..\..\libs\glee\include /I..\..\..\libs\glu\include /I..\..\..\libs\poco\include /I..\..\..\addons /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D POCO_STATIC /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"obj\Release\\" /Fd"obj\Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt src\band.cpp src\instruments\groupInstrument.cpp src\instruments\instrument.cpp src\instruments\synthInst.cpp src\keyboard\keyboard.cpp src\main.cpp src\testApp.cpp src\timeline\conductor.cpp
+         band.cpp
+         groupInstrument.cpp
+         instrument.cpp
+         synthInst.cpp
+         keyboard.cpp
+         main.cpp
+         testApp.cpp
+         conductor.cpp
+     1>src\timeline\conductor.cpp(481): warning C4390: ';' : empty controlled statement found; is this the intent?
+         Generating Code...
+       Link:
+         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"bin\MidiSequencer.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:..\..\..\libs\glut\lib\vs2010 /LIBPATH:..\..\..\libs\rtAudio\lib\vs2010 /LIBPATH:..\..\..\libs\FreeImage\lib\vs2010 /LIBPATH:..\..\..\libs\freetype\lib\vs2010 /LIBPATH:..\..\..\libs\quicktime\lib\vs2010 /LIBPATH:..\..\..\libs\fmodex\lib\vs2010 /LIBPATH:..\..\..\libs\videoInput\lib\vs2010 /LIBPATH:..\..\..\libs\glee\lib\vs2010 /LIBPATH:..\..\..\libs\glu\lib\vs2010 /LIBPATH:..\..\..\libs\Poco\lib\vs2010 /LIBPATH:..\..\..\libs\openFrameworksCompiled\lib\vs2010 openframeworksLib.lib OpenGL32.lib GLu32.lib kernel32.lib setupapi.lib glut32.lib rtAudio.lib videoInput.lib libfreetype.lib FreeImage.lib qtmlClient.lib dsound.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib GLee.lib fmodex_vc.lib glu32.lib PocoFoundationmt.lib PocoNetmt.lib PocoUtilmt.lib PocoXMLmt.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /NODEFAULTLIB:atlthunk.lib /NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCMT /MANIFEST /ManifestFile:"obj\Release\MidiSequencer.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\bin\MidiSequencer.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"bin\MidiSequencer.lib" /MACHINE:X86 obj\Release\RtMidi.obj
+         obj\Release\ofxMidiBase.obj
+         obj\Release\ofxMidiIn.obj
+         obj\Release\ofxMidiOut.obj
+         obj\Release\dallasEng.obj
+         obj\Release\band.obj
+         obj\Release\groupInstrument.obj
+         obj\Release\instrument.obj
+         obj\Release\synthInst.obj
+         obj\Release\keyboard.obj
+         obj\Release\main.obj
+         obj\Release\midiConfig.obj
+         obj\Release\soundBlocks.obj
+         obj\Release\testApp.obj
+         obj\Release\conductor.obj
+         obj\Release\timeline.obj
+         C:\Users\e\Documents\openFrameworks\libs\openFrameworksCompiled\lib\vs2010\openframeworksLib.lib
+         emptyExample.vcxproj -> C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\bin\MidiSequencer.exe
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"bin\MidiSequencer.exe;#1" /manifest obj\Release\MidiSequencer.exe.intermediate.manifest
+       PostBuildEvent:
+         Description: adding DLLs and creating data folder
+         xcopy /e /i /y "C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\..\..\..\export\vs2010\*.dll" "C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\bin"
+         if not exist "C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\bin\data" mkdir  "C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\bin\data"
+         
+         
+         :VCEnd
+         C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\..\..\..\export\vs2010\fmodex.dll
+         C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\..\..\..\export\vs2010\fmodexL.dll
+         C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\..\..\..\export\vs2010\FreeImage.dll
+         C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\..\..\..\export\vs2010\FreeType-6.dll
+         C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\..\..\..\export\vs2010\glut32.dll
+         C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\\..\..\..\export\vs2010\Zlib.dll
+         6 File(s) copied
+       FinalizeBuildStatus:
+         Deleting file "obj\Release\MidiSequencer.unsuccessfulbuild".
+         Touching "obj\Release\MidiSequencer.lastbuildstate".
+     1>Done Building Project "C:\Users\e\Documents\openFrameworks\apps\projects\MidiSequencer\emptyExample.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:23.47

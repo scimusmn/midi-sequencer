@@ -8,6 +8,7 @@
  */
 
 #include "keyboard.h"
+#include "../midiConfig.h"
 
 extern ofColor white;
 extern ofColor black;
@@ -15,44 +16,6 @@ extern ofColor gray;
 extern ofColor yellow;
 extern ofColor orange;
 extern ofColor blue;
-
-static vector<string> programNames;
-
-int loadProgramNames(string filename){
-	if(programNames.size()==0){
-		programNames.clear();
-		ifstream k(ofToDataPath(filename).c_str());
-		while(k.peek()!=EOF){
-			string temp;
-			getline(k, temp);
-			programNames.push_back(temp);
-		}
-	}
-	return programNames.size();
-}
-
-vector<string> getProgramNames(){
-	return programNames;
-}
-
-void parseMidiProgramNames(string filename){
-	ifstream k(ofToDataPath(filename).c_str());
-	while(k.peek()!=EOF){
-		string temp;
-		getline(k, temp);
-		vector<string> tokend=ofSplitString(temp, "\t");
-		if(tokend.size()>1)
-			programNames.push_back(tokend[1]);
-		else
-			programNames.push_back(tokend[0]);
-	}
-	k.close();
-	ofstream out(ofToDataPath(filename+"_parsed").c_str());
-	for (unsigned int i=0; i<programNames.size(); i++) {
-		out << programNames[i] << endl;
-	}
-	out.close();
-}
 
 pianoKey::pianoKey(double _w, double _h, char nt):ofInterObj(0,0,_w,_h)
 {
@@ -313,7 +276,11 @@ bool pianoKeyboard::clickDown(int _x, int _y)
 
 int pianoKeyboard::size()
 {
-	return octaves.size()*12;
+	int ret=0;
+	for(unsigned int i=0; i<octaves.size(); i++){
+		ret+=octaves[i].size();
+	}
+	return ret;
 }
 
 bool pianoKeyboard::clickUp()

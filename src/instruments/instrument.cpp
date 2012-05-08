@@ -60,6 +60,17 @@ void inst::setColor(unsigned long hex)
 	base.color.set(hex);
 }
 
+void inst::setDefault(bool holder)
+{ 
+	bDefault=holder;
+
+} 
+
+void inst::setHeld(bool hld)
+{
+	bHolding=hld;
+}
+
 void inst::setup(string objName, unsigned char chan, unsigned char nt)
 {
 	bHolding=false;
@@ -88,9 +99,10 @@ void inst::play()
 	base.play();
 }
 
-void inst::scaleToTempo(double time)
+void inst::scaleToTempo(double time,double xScroll)
 {
   for (unsigned int i=0; i<blocks.size(); i++) {
+	update(xScroll,OF_HOR);
     blocks[i].w*=time/tempo;
     blocks[i].x=(blocks[i].x-fullWidth)*time/tempo+fullWidth;
   }
@@ -185,8 +197,8 @@ void instrument::draw()
 	base.draw(x,y);
   //ofRect(x, y, w, h);
 	//if(!base.isPlaying()) ofSetColor(255, 0, 0);
-//	else ofSetColor(0, 255, 0);
-//	ofCircle(base.x, base.y+base.relPos.y, 10);
+	//else ofSetColor(0, 255, 0);
+	//ofCircle(base.x, base.y+base.relPos.y, 10);
 }
 
 void instrument::drawBackground()

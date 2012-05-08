@@ -10,6 +10,7 @@
 #include "band.h"
 #include "instruments/synthInst.h"
 #include "instruments/groupInstrument.h"
+#include "midiConfig.h"
 
 extern ofColor white;
 extern ofColor black;
@@ -97,7 +98,7 @@ void bandBar::setup(ofXML & xml)
   activeInst=0;
   lastY=0;
   bChangeSize=true;
-  loadInstruments("midiPrograms.ini");
+  //loadSynthInstruments("midiPrograms.ini");
 	clearBut.setup("Clear all instruments",20);
 	clearBut.setAvailable(true);
 	sideBarBack.loadImage("images/sidebar.jpg");
@@ -200,15 +201,8 @@ bool bandBar::empty()
 void bandBar::drawBackground()
 {
 	for (unsigned int i=0; i<instruments.size(); i++) {
-#if F_YEAH_WOOD
-		if(i%2) ofSetColor(0x80,0x63,0x3B,128);
-		else ofSetColor(0xA0,0x83,0x5B,128);
-#else
-		if(i%2) ofSetColor(0x66,0x66,0x66,128);
-		else ofSetColor(0x44,0x44,0x44,128);
-#endif
-    //ofSetColor(instruments[i]->getColor()-.3*255);
-    //ofColor k=instruments[i]->getColor();
+		if(i%2) ofSetColor((white*.4).opacity(.5));
+		else ofSetColor((white*.27).opacity(.5));
 		ofRect(instruments[i]->x, instruments[i]->y-bar.getScrollPosition()-3, ofGetWidth(), instruments[i]->h+6);
 	}
 }
@@ -222,12 +216,6 @@ void bandBar::drawInstruments()
 
 void drawGrid(float x,float y,float w,float h,float s)
 {
-  /*for (int i=0; i<w/s; i++) {
-    ofLine(x+i*s, y, x+i*s, y+h);
-  }
-  for (int i=0; i<h/s; i++) {
-    ofLine(x, y+i*s, x+w, y+i*s);
-  }*/
   ofSetColor(black.opacity(.25));
   drawHatching(x,y,w,h,s,s);
 }
@@ -251,10 +239,10 @@ void bandBar::draw(int _x, int _y)
   
   //_-_-_-_-_ sidebar background _-_-_-_-_
   
-  ofSetColor(black);
+  ofSetColor((white*.15).opacity(25));
 	ofRect(bin);
   
-  ofSetColor(gray);
+  ofSetColor(gray.opacity(25));
   drawHatching(bin.x, bin.y, bin.width, bin.height, 75, 75);
   drawBorder(bin);
   //_-_-_-_-_ draw each of the instruments
@@ -329,8 +317,6 @@ bool bandBar::clickDown(int _x, int _y)
 	bool ret=0;
   
   //_-_-_-_-_ control clickdowns
-  if(clearBut.clickDown(_x, _y))
-		ret=1,clear();
   if((scrollUp.getAvailable()||scrollDown.getAvailable())&&!ret){
     if(scrollUp.clickDown(_x, _y)){
       ret=1,bar.setScrollPosition(bar.getScrollPosition()-cell.y);
@@ -475,9 +461,9 @@ dragBlock & bandBar::lastBlock()
 	return instruments[lastInst]->lastDrop();
 }
 
-void bandBar::scaleToTempo(double time)
+void bandBar::scaleToTempo(double time,double xScroll)
 {
   for (unsigned int i=0; i<instruments.size(); i++) {
-    instruments[i]->scaleToTempo(time);
+    instruments[i]->scaleToTempo(time,xScroll);
   }
 }

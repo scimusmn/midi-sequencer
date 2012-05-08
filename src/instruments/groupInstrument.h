@@ -15,8 +15,6 @@
 
 #define as_groupInst(x) static_cast<groupInst *>(x)
 
-void loadInstruments(string filename);
-
 class groupInst : public inst{
 protected:
   bandBar * band;
@@ -60,7 +58,7 @@ public:
   
   bool isPlaying();
   dragBlock & lastDrop();
-  void scaleToTempo(double time);
+  void scaleToTempo(double time,double xScroll);
   void setBandWidth(double wid);
   int farthestPoint();
   void update(int disp, ofDirection dir);

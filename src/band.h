@@ -19,7 +19,6 @@ protected:
 	double xoff,yoff,yBot;
 	ofImage sideBarBack;
 	int lastInst;
-	dallasButton clearBut;
   double rightBorder;
 	int numBlocksPerBin;
 	int numBins;
@@ -39,6 +38,7 @@ protected:
   bool bChangeSize;
   int lastY;
 public:
+	dallasButton clearBut;
   dallasScroll bar;
   bool controlsAtBottom;
   
@@ -82,6 +82,6 @@ public:
 	int farthestPoint();
 	void stopAll();
 	dragBlock & lastBlock();
-  void scaleToTempo(double time);
+  void scaleToTempo(double time, double xScroll);
 	friend class conductor;
 };

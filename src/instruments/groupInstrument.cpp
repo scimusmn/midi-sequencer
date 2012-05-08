@@ -8,34 +8,12 @@
  */
 
 #include "groupInstrument.h"
+#include "../midiConfig.h"
 
 extern ofColor white;
 extern ofColor black;
 extern ofColor gray;
 extern ofColor yellow;
-
-struct instProg {
-  int number;
-  string name;
-  instProg(int i, string n):number(i),name(n){}
-};
-
-vector<instProg> instNames;
-
-void loadInstruments(string filename)
-{
-  ifstream file(ofToDataPath(filename).c_str());
-	while (file.peek()!=EOF) {
-		string nextLine;
-		getline(file, nextLine);
-		vector<string> token=ofSplitString(nextLine, "=");
-		if(token.size()>1){
-      instNames.push_back(instProg(ofToInt(token[0]),token[1]));
-		}
-		
-	}
-	file.close();
-}
 
 groupInst::groupInst(string title, unsigned char chan, unsigned char nt, bandBar * bnd){
   band=bnd;
@@ -214,7 +192,7 @@ bool groupInst::clickDown(int _x, int _y)
     ret=1;
   }
   if(bOpen&&!ret){
-    if(!openBut.pressed()&&(openBut.clickDown(_x, _y)||(_x>x+fullWidth&&_y>y+scroll.y&&_y<y+base.h+scroll.y)))
+    if(!openBut.pressed()&&(openBut.clickDown(_x, _y)||(0&&_x>x+fullWidth&&_y>y+scroll.y&&_y<y+base.h+scroll.y)))
       ret=1,loseFocus();
     else if(bSynth&&!synthDD.open&&synthDD.clickDown(_x, _y)){
       ret=1;
@@ -275,14 +253,20 @@ void groupInst::mouseMotion(int _x, int _y)
 
 bool groupInst::active(double pos)
 {
+	bool ret=false;
   for (unsigned int i=0; i<notes.size(); i++) {
-    if(notes[i].active(pos));
+    if(notes[i].active(pos)) ret=true;
   }
+  return ret;
 }
 
 bool groupInst::isPlaying()
 {
-  
+  bool ret=false;
+  for (unsigned int i=0; i<notes.size(); i++) {
+    if(notes[i].isPlaying()) ret=true;
+  }
+  return ret; 
 }
 
 dragBlock & groupInst::lastDrop()
@@ -290,10 +274,10 @@ dragBlock & groupInst::lastDrop()
   return notes[lastInst].lastDrop();
 }
 
-void groupInst::scaleToTempo(double time)
+void groupInst::scaleToTempo(double time,double xScroll)
 {
   for (unsigned int i=0; i<notes.size(); i++) {
-    notes[i].scaleToTempo(time);
+    notes[i].scaleToTempo(time,xScroll);
   }
 }
 
@@ -319,8 +303,8 @@ void groupInst::loadInstruments(string filename)
   bSynth=true;
   //synthDD.setTextSize(20);
   synthDD.dallasStyle();
-  for (unsigned int i=0; i<instNames.size(); i++) {
-    synthDD.setValue(instNames[i].name);
+  for (unsigned int i=0; i<getSynthInstruments().size(); i++) {
+    synthDD.setValue(getSynthInstruments()[i].name);
   }
   synthDD.setMode(false);
   synthDD.dallasStyle();
@@ -328,9 +312,9 @@ void groupInst::loadInstruments(string filename)
 
 void groupInst::changeProgram(int progNum)
 {
-  base.changeTitle(instNames[progNum].name);
+  base.changeTitle(getSynthInstruments()[progNum].name);
   vector<unsigned char> message;
   message.push_back(MIDI_PROGRAM_CHANGE+base.channel);
-  message.push_back(instNames[progNum].number);
+  message.push_back(getSynthInstruments()[progNum].number);
   base.sendMidiMessage(message);
 }

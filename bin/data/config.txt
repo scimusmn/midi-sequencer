@@ -1,0 +1,18 @@
+VERBOSE=1
+MIDI_OUT=USB Midi
+INSTRUMENT_FILE=instruments/instruments.xml
+SYNTH_INST_FILE=midiPrograms.ini
+SONG=songs/waltz.xml
+SONG=songs/slow.xml
+
+TIMEOUT=180
+NOTE_VELOCITY=100
+
+#measures range from 1-4 seconds in length, depending on slider pos.
+
+NUM_MEASURES=5
+ENABLE_SIDE_SCROLLING=0
+
+#if not side scrolling set width here:
+
+PIXELS_PER_MEASURE=400

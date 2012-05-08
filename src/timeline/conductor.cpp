@@ -10,6 +10,7 @@
 #include "conductor.h"
 #include "../instruments/synthInst.h"
 #include "../instruments/groupInstrument.h"
+#include "../midiConfig.h"
 
 extern ofColor white;
 extern ofColor black;
@@ -27,10 +28,14 @@ void midiSequencer::setup(double nMeasures, double secondsPerMeasure, double pix
 	w=vSize;
 	label.loadFont("DinC.ttf");
 	label.setSize(12);
-	midiConductor::setup(nMeasures*secondsPerMeasure,pixelsPerSec);
 	pps=pixelsPerSec;
 	numMeasures=nMeasures;
-	measureLength=secondsPerMeasure*pps;
+	if(cfg().scroll) measureLength=secondsPerMeasure*pps;
+	else{
+		pps=vSize/(nMeasures*secondsPerMeasure);
+		measureLength=vSize/nMeasures;
+	}
+	midiConductor::setup(nMeasures*secondsPerMeasure,pps);
 	bar.setup(30, vSize, OF_HOR);
 	bar.registerArea(vSize, playTime*pps);
 	playBut.setup(64, 64, "images/play2.png","images/pause2.png");
@@ -53,7 +58,7 @@ void midiSequencer::resize(){
     bar.setup(41, ofGetWidth()-band->w, OF_HOR);
     bar.registerArea(ofGetWidth()-band->w, playTime*pps);
     bar.changePadding();
-    if(numMeasures*measureLength<2*(ofGetWidth()-band->w)){
+    if(0&&numMeasures*measureLength>2*(ofGetWidth()-band->w)){
       double secondsPerMeasure=measureLength/pps;
       measureLength=2*(ofGetWidth()-band->w)/numMeasures;
       pps=measureLength/secondsPerMeasure;
@@ -81,7 +86,7 @@ void midiSequencer::setTempo(double secondsPerMeasure)
   if(wasPlaying) play();
   divsPerMeasure=4*int(secondsPerMeasure);
   bar.registerArea(w, playTime*pps);
-  band->scaleToTempo(secondsPerMeasure);
+  band->scaleToTempo(secondsPerMeasure, -getBarPosition());
 }
 
 void midiSequencer::registerPlayback(bandBar * bnd)
@@ -356,14 +361,13 @@ void midiSequencer::drawControlBar(int _x, int _y, int _w, int _h)
 void midiSequencer::update()
 {
   //bar.update();
-	band->update(-getBarPosition(),OF_HOR);
 	if(isPlaying()){
 		band->checkActives(cursor()+band->w);
-    if(!loopBut.pressed()&&cursor()+band->w>=numMeasures*measureLength+x)
-      pause(),reset();
-  }
+		if(!loopBut.pressed()&&cursor()+band->w>=numMeasures*measureLength+x)
+			pause(),reset();
+	}
   else {
-    band->checkActives(-200);
+    //band->checkActives(-200);
   }
   if(band->empty()&&isPlaying()) pause(),reset(); 
 	if(loopBut.pressed()&&cursor()>band->farthestPoint()-x&&bPlaying)
@@ -380,12 +384,28 @@ void midiSequencer::update()
     bar.setScrollPosition(temp);
   }
 	mark.x=cursor()+x;
+
+	band->update(-getBarPosition(),OF_HOR);
+	if(timeout.justExpired()){
+		band->stopAll(), setScrollPos(0);
+		pause();
+		tempoSlide.setPercent(0);
+		setTempo(1+tempoSlide.getPercent()*3);
+	}
 }
 
 bool midiSequencer::clickDown(int _x, int _y)
 {
+	timeout.set(cfg().timeout);
+	timeout.run();
 	bool ret=0;
 	if(mark.clickDown(_x, _y));
+	else if(band->clearBut.clickDown(_x, _y)){
+		band->stopAll(), setScrollPos(0);
+		ret=1,band->clear();
+		tempoSlide.setPercent(0);
+		setTempo(1+tempoSlide.getPercent()*3);
+	}
 	else if(_y>topBar.y&&_y<mark.y+mark.h&&_x>x){
 		mark.setPressed(true);
 		setCursorPosition(_x-x+getBarPosition());
@@ -398,20 +418,20 @@ bool midiSequencer::clickDown(int _x, int _y)
 		else midiConductor::play();
 	}
 	else if(rewindBut.clickDown(_x, _y)){
-    bool wasPlaying=isPlaying();
-    pause();
-    reset(); 
-    band->stopAll(), setScrollPos(0);
-    if(wasPlaying) play();
+		bool wasPlaying=isPlaying();
+		pause();
+		reset(); 
+		band->stopAll(), setScrollPos(0);
+		if(wasPlaying) play();
   }
-	else if(loopBut.toggle(_x, _y));
+	//else if(loopBut.toggle(_x, _y));
 	else if(waltz.clickDown(_x, _y)){
     loopBut.setPressed(true);
-    loadSong("waltz.xml");
+	loadSong(cfg().songFiles[0]);
   }
 	else if(blues.clickDown(_x, _y)){
     loopBut.setPressed(true);
-    loadSong("slow.xml");
+	loadSong(cfg().songFiles[1]);
   }
 	else if(tempoSlide.clickDown(_x, _y)){
     setTempo(1+tempoSlide.getPercent()*3);

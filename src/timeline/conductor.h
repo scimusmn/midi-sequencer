@@ -31,7 +31,7 @@ class midiSequencer : public midiConductor, public ofInterObj{
   
 	digitDisplay display;
   dallasSlider tempoSlide;
-  
+  ofTimer timeout;
   ofRectangle topBar;
 public:
 	midiSequencer():midiConductor(),ofInterObj(){

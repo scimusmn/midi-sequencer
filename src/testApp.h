@@ -8,9 +8,10 @@
 
 
 #include "band.h"
-#include "soundBlocks.h"
+#include "soundBlocks/soundBlocks.h"
 #include "keyboard/keyboard.h"
 #include "timeline/conductor.h"
+#include "../../dallasEng/dallasEng.h"
 
 
 class testApp : public ofBaseApp{
@@ -33,9 +34,9 @@ class testApp : public ofBaseApp{
 	//ofxMidiIn midiIn;
 	//MyMidiListener midiListener;
 
-	ofxMidiIn drumPad;
-	ofxMidiIn keyboard;
-	ofxMidiOut rolandSynth;
+	//ofxMidiIn drumPad;
+	//ofxMidiIn keyboard;
+	ofxMidiOut midiOut;
 	
 	ofFont report;
   

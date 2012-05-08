@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\band.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\testApp.cpp" />
+    <ClCompile Include="src\soundBlocks\soundBlocks.cpp">
+      <Filter>soundBlocks</Filter>
+    </ClCompile>
+    <ClCompile Include="src\timeline\conductor.cpp">
+      <Filter>timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="src\timeline\timeline.cpp">
+      <Filter>timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="src\keyboard\keyboard.cpp">
+      <Filter>keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="src\instruments\instrument.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="src\instruments\synthInst.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxMidi\src\ofxMidiBase.cpp">
+      <Filter>ofxMidi\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxMidi\src\ofxMidiIn.cpp">
+      <Filter>ofxMidi\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxMidi\src\ofxMidiOut.cpp">
+      <Filter>ofxMidi\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxMidi\libs\RtMidi.cpp">
+      <Filter>ofxMidi\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dallasEng\dallasEng.cpp">
+      <Filter>DallasEng</Filter>
+    </ClCompile>
+    <ClCompile Include="src\instruments\groupInstrument.cpp">
+      <Filter>instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="src\midiConfig.cpp">
+      <Filter>midiConfig</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\band.h" />
+    <ClInclude Include="src\testApp.h" />
+    <ClInclude Include="src\soundBlocks\soundBlocks.h">
+      <Filter>soundBlocks</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timeline\conductor.h">
+      <Filter>timeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\timeline\timeline.h">
+      <Filter>timeline</Filter>
+    </ClInclude>
+    <ClInclude Include="src\keyboard\keyboard.h">
+      <Filter>keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="src\instruments\instrument.h">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="src\instruments\synthInst.h">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxMidi\src\ofxMidiUtils.h">
+      <Filter>ofxMidi\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxMidi\src\ofxMidiBase.h">
+      <Filter>ofxMidi\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxMidi\src\ofxMidiIn.h">
+      <Filter>ofxMidi\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxMidi\src\ofxMidiOut.h">
+      <Filter>ofxMidi\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxMidi\libs\RtError.h">
+      <Filter>ofxMidi\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxMidi\libs\RtMidi.h">
+      <Filter>ofxMidi\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dallasEng\dallasEng.h">
+      <Filter>DallasEng</Filter>
+    </ClInclude>
+    <ClInclude Include="src\instruments\groupInstrument.h">
+      <Filter>instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="src\midiConfig.h">
+      <Filter>midiConfig</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="instruments">
+      <UniqueIdentifier>{f8336549-7efd-422b-9c9f-edacb55c137a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="keyboard">
+      <UniqueIdentifier>{065ca9f0-b72f-4bf6-ab51-c212049d0a8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="soundBlocks">
+      <UniqueIdentifier>{df5f9eda-d5cb-4f4e-a720-b86ffc151ab6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="timeline">
+      <UniqueIdentifier>{208a3931-fc45-4fe9-8dbe-9e87fc1d9efd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ofxMidi">
+      <UniqueIdentifier>{2cce49d6-87bb-4506-97a6-e966aea69f4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ofxMidi\libs">
+      <UniqueIdentifier>{8b817879-a08d-4eff-a30c-90b3a7a35acb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ofxMidi\src">
+      <UniqueIdentifier>{bfb63bd6-d710-4f58-a113-9d3bb4f3ca27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DallasEng">
+      <UniqueIdentifier>{24e881cc-8420-45c2-9ae5-1cc79ab8a6ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="midiConfig">
+      <UniqueIdentifier>{d3d37413-2823-42d7-bc29-aa4e078bd970}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

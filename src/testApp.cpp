@@ -1,9 +1,8 @@
 #include "testApp.h"
+#include "midiConfig.h"
 
 #define MSG_START "MSGSTRT"
 #define MSG_END   "MSGEND"
-
-#include "ofNewShapes.h"
 
 int roundH=300;
 int roundR=50;
@@ -15,32 +14,38 @@ extern ofColor yellow;
 
 //--------------------------------------------------------------
 void testApp::setup(){
+	//Setup the configuration for the system
+	cfg().setup();
 	
-	//Network Setup
-	
-	//we run at 60 fps!
-	ofSetVerticalSync(true);
-	
-	xml.loadFile("instruments.xml");
+	//Open the appropriately named midiport
+	midiOut.openPort(cfg().midiOutName);
+
+	//Read in the list of hardware instruments
+	xml.loadFile(cfg().instFile);
 	//MIDI setup
 	report.loadFont("fonts/DinC.ttf");
+	//Initialize the band with the instruments and notes
 	band.setup(xml);
-	//keyboard.openPort("keyboard");
-	rolandSynth.openPort("decoder");
-	background.loadImage("images/background.jpg");
+
+	//Setup the keyboard? I think this is not used
 	kb.setup(800, 4);
-	conductor.setup(10, 1, 50, ofGetWidth()-band.w); //10 seconds at 100 pixels per second
+
+	//init the conductor (the part that reads the blocks, and switches the instruments)
+	conductor.setup(cfg().numMeasures, 1, cfg().pixelsPerMeasure, ofGetWidth()-band.w); //10 seconds at 50 pixels per second
+
+	//pass the group of instruments to the conductor, so it can know what to turn on and off
 	conductor.registerPlayback(&band);
-  conductor.setTimeSignature(4);
-	test.setup(200, 6);
+
+	//4 beats per measure; this command possibly does nothing; have to check.
+	conductor.setTimeSignature(4);
+
+	//load the font for the title at the top of the screen
   title.loadFont("fonts/DinC.ttf",40);
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-	//band.update(-conductor.getBarPosition(),OF_HOR);
-//	if(conductor.isPlaying())
-//		band.checkActives(conductor.cursor()+band.w);
+	//
 	band.update();
 	conductor.update();
 	
@@ -89,7 +94,7 @@ void testApp::keyPressed(int key){
 		msg.push_back(MIDI_NOTE_ON+0);
 		msg.push_back(0x3c);
 		msg.push_back(0);
-		rolandSynth.sendMessage(msg);
+		midiToSend(msg);
 	}
   if(key=='t'){
     band.controlsAtBottom=!band.controlsAtBottom;
@@ -138,7 +143,10 @@ void testApp::windowResized(int w, int h){
 }
 
 void testApp::midiToSend(vector< unsigned char > message){
-	rolandSynth.sendMessage(message);
+	//for(unsigned int i=0; i<cfg().midiOut.size(); i++){
+	//	cfg().midiOut[i].sendMessage(message);
+	//}
+	midiOut.sendMessage(message);
   //cout << "Message Begin::";
 //  for (unsigned int i=0; i<message.size(); i++) {
 //    cout << int(message[i]) << "::";
@@ -147,7 +155,7 @@ void testApp::midiToSend(vector< unsigned char > message){
 }
 
 void testApp::midiReceived(double deltatime, std::vector< unsigned char > *message, int port){
-	if(message->size()>=3){
+	/*if(message->size()>=3){
 		if (message->at(0)==MIDI_NOTE_ON&&port==keyboard.getPort()) {
 			if(message->at(1)>MIDI_KEYBOARD_START&&message->at(1)<MIDI_KEYBOARD_END){
 				kb[message->at(1)-MIDI_KEYBOARD_START].setPressed(message->at(2));
@@ -157,5 +165,5 @@ void testApp::midiReceived(double deltatime, std::vector< unsigned char > *messa
 				midiToSend(msg);
 			}
 		}
-	}
+	}*/
 }
